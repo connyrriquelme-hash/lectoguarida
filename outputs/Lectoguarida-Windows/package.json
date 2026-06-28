@@ -1,0 +1,29 @@
+{
+  "name": "lectoguarida-windows-prototype",
+  "version": "1.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:world3d": "node tools/build-world3d.mjs",
+    "start": "node server.mjs",
+    "test": "node --test --test-isolation=none tests/*.test.mjs",
+    "check:encoding": "node tools/check-encoding.mjs",
+    "export:android": "npm run build:world3d && node tools/export-content.mjs && node tools/sync-android-assets.mjs",
+    "configure:remote": "node tools/configure-remote-api.mjs",
+    "build:apk": "powershell -ExecutionPolicy Bypass -File tools/build-apk-portable.ps1",
+    "cloudflare:prepare": "npm run build:world3d && node tools/export-content.mjs && node tools/prepare-cloudflare.mjs",
+    "cloudflare:db:local": "wrangler d1 execute lectoguarida-db --local --file cloudflare/schema.sql",
+    "cloudflare:dev": "wrangler dev --local --persist-to .wrangler/state",
+    "cloudflare:deploy": "npm run cloudflare:prepare && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.103.0"
+  },
+  "dependencies": {
+    "@react-three/fiber": "^9.6.1",
+    "esbuild": "^0.28.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "three": "^0.184.0"
+  }
+}

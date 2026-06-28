@@ -1,0 +1,54 @@
+{
+  "course": "2b",
+  "label": "Lenguaje y Comunicacion 2 basico",
+  "version": "draft-1",
+  "domains": [
+    {
+      "id": "fluency",
+      "name": "Fluidez lectora",
+      "priority": 5,
+      "skills": [
+        "precision",
+        "speed",
+        "prosody",
+        "pauses",
+        "repeated reading"
+      ]
+    },
+    {
+      "id": "decoding",
+      "name": "Decodificacion avanzada",
+      "priority": 4,
+      "skills": [
+        "trigraph handling",
+        "diphthongs",
+        "hiatus",
+        "clusters",
+        "complex syllables"
+      ]
+    },
+    {
+      "id": "comprehension",
+      "name": "Comprension lectora",
+      "priority": 5,
+      "skills": [
+        "literal",
+        "inferential",
+        "main idea",
+        "sequence",
+        "cause and consequence"
+      ]
+    },
+    {
+      "id": "writing",
+      "name": "Escritura frecuente y creativa",
+      "priority": 4,
+      "skills": [
+        "sentence creation",
+        "text completion",
+        "orthography basics",
+        "short summaries"
+      ]
+    }
+  ]
+}

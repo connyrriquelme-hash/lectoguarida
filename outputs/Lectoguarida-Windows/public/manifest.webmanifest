@@ -1,0 +1,13 @@
+{
+  "name": "Lectoguarida",
+  "short_name": "Lectoguarida",
+  "description": "Juego chileno HD de fluidez lectora para 2.º básico",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b1430",
+  "theme_color": "#101c3d",
+  "lang": "es-CL",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "id": "LE01_OA04",
+    "course": "1b",
+    "axis": "Lectura",
+    "skill": "Decodificacion y correspondencia letra-sonido",
+    "observable": "Reconoce sonidos, silabas y palabras frecuentes con apoyo visual.",
+    "activityTypes": ["tap", "multiple_choice", "build_word"],
+    "difficulty": 1,
+    "prerequisites": [],
+    "evidence": ["accuracy", "attempts", "hints_used"]
+  },
+  {
+    "id": "LE01_OA05",
+    "course": "1b",
+    "axis": "Lectura",
+    "skill": "Lectura oral con precision y expresion",
+    "observable": "Lee textos breves con apoyo de audio y retroalimentacion amable.",
+    "activityTypes": ["reading_mic", "repeated_reading", "karaoke"],
+    "difficulty": 2,
+    "prerequisites": ["LE01_OA04"],
+    "evidence": ["wpm", "accuracy", "pauses", "repetition"]
+  },
+  {
+    "id": "LE02_OA02",
+    "course": "2b",
+    "axis": "Lectura",
+    "skill": "Lectura oral fluida",
+    "observable": "Mantiene continuidad, pausas y entonacion acorde al texto.",
+    "activityTypes": ["reading_mic", "fluency_challenge", "model_compare"],
+    "difficulty": 3,
+    "prerequisites": ["LE01_OA05"],
+    "evidence": ["wpm", "accuracy", "prosody", "self_correction"]
+  },
+  {
+    "id": "LE02_OA05",
+    "course": "2b",
+    "axis": "Comprension",
+    "skill": "Comprension de narraciones",
+    "observable": "Localiza informacion, infiere relaciones simples y justifica con evidencia.",
+    "activityTypes": ["scene_choice", "sequence", "literal", "inferential"],
+    "difficulty": 3,
+    "prerequisites": ["LE02_OA02"],
+    "evidence": ["literal_score", "inferential_score", "evidence_use"]
+  },
+  {
+    "id": "LE02_OA07",
+    "course": "2b",
+    "axis": "Comprension",
+    "skill": "Comprension de textos no literarios",
+    "observable": "Interpreta instrucciones, afiches e informacion simple con apoyo visual.",
+    "activityTypes": ["instruction", "info_text", "graphic_organizer"],
+    "difficulty": 3,
+    "prerequisites": ["LE02_OA02"],
+    "evidence": ["task_success", "vocabulary", "sequence"]
+  }
+]

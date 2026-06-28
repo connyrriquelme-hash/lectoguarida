@@ -1,0 +1,64 @@
+{
+  "course": "1b",
+  "label": "Lenguaje y Comunicacion 1 basico",
+  "version": "draft-1",
+  "domains": [
+    {
+      "id": "phonological_awareness",
+      "name": "Conciencia fonologica",
+      "priority": 5,
+      "skills": [
+        "rimas",
+        "segmentacion silabica",
+        "sonido inicial",
+        "sonido final",
+        "fusion fonemica"
+      ]
+    },
+    {
+      "id": "alphabetic_principle",
+      "name": "Principio alfabetico",
+      "priority": 5,
+      "skills": [
+        "letra-sonido",
+        "lectura de silabas directas",
+        "lectura de silabas inversas",
+        "palabras simples",
+        "oraciones breves"
+      ]
+    },
+    {
+      "id": "fluency",
+      "name": "Fluidez inicial",
+      "priority": 4,
+      "skills": [
+        "lectura precisa",
+        "ritmo basico",
+        "entonacion simple",
+        "relectura amable"
+      ]
+    },
+    {
+      "id": "comprehension",
+      "name": "Comprension inicial",
+      "priority": 4,
+      "skills": [
+        "identificar personajes",
+        "reconocer ambiente",
+        "ordenar secuencias",
+        "responder preguntas literales"
+      ]
+    },
+    {
+      "id": "writing",
+      "name": "Escritura inicial",
+      "priority": 3,
+      "skills": [
+        "completar palabras",
+        "formar oraciones",
+        "mayuscula inicial",
+        "punto final"
+      ]
+    }
+  ]
+}

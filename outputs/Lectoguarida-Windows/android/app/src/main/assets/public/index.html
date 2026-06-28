@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101c3d">
+  <meta name="description" content="Lectoguarida HD, juego chileno de fluidez lectora para 2.º básico.">
+  <title>Lectoguarida - Tu voz abre caminos</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+  <header class="topbar">
+    <button class="brand" id="homeButton" aria-label="Volver al inicio">
+      <span class="brand-mark">✦</span>
+      <span><strong>Lectoguarida</strong><small>Tu voz abre caminos</small></span>
+    </button>
+    <div id="sessionBadge" class="session-badge hidden"></div>
+  </header>
+  <main id="app" class="app-shell" aria-live="polite"></main>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <script src="./content.js"></script>
+  <script src="./remote-config.js"></script>
+  <script src="./local-api.js"></script>
+  <script src="./world3d.bundle.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

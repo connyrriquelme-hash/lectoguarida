@@ -1,0 +1,5 @@
+node_modules/
+.wrangler/
+.dev.vars
+cloudflare/seed-store.mjs
+public/Lectoguarida-debug.apk

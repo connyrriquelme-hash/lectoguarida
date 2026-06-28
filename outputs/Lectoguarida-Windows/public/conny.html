@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel Conny · Lectoguarida</title>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <style>
+    :root { color-scheme: dark; --bg:#0b1430; --card:#121f46; --text:#f7fbff; --muted:#b9c4df; --accent:#ffd166; --good:#7CFFB2; --cyan:#8be9fd; --danger:#ff6b8a; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font-family:system-ui,-apple-system,Segoe UI,sans-serif; background:radial-gradient(circle at 15% 0,rgba(76,126,255,.28),transparent 30%),radial-gradient(circle at 90% 15%,rgba(139,233,253,.13),transparent 28%),linear-gradient(180deg,#152b66,var(--bg)); background-attachment:fixed; color:var(--text); padding:28px; -webkit-font-smoothing:antialiased; }
+    main { width:min(1440px,100%); margin:auto; display:grid; gap:22px; }
+    .card { background:rgba(18,31,70,.9); border:1px solid rgba(255,255,255,.14); border-radius:26px; padding:26px; box-shadow:0 26px 80px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.06); backdrop-filter:blur(16px); }
+    h1,h2,h3 { margin:0; }
+    p { color:var(--muted); line-height:1.55; }
+    input,button { font:inherit; }
+    input { width:100%; min-height:52px; padding:14px 16px; border-radius:16px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.08); color:var(--text); }
+    button,.button { border:0; border-radius:999px; padding:12px 18px; font-weight:800; color:#221429; background:linear-gradient(135deg,var(--accent),#ff8fab); cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
+    .ghost { background:rgba(255,255,255,.1); color:var(--text); }
+    .row { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; }
+    .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+    .stat { background:rgba(255,255,255,.08); border-radius:18px; padding:16px; }
+    .stat strong { display:block; font-size:2rem; color:var(--cyan); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:18px; }
+    .student { background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.045)); border:1px solid rgba(255,255,255,.1); border-radius:22px; padding:20px; box-shadow:0 16px 42px rgba(0,0,0,.18); }
+    .student header { display:flex; justify-content:space-between; gap:12px; align-items:start; }
+    .pill { background:rgba(139,233,253,.16); color:var(--cyan); padding:6px 10px; border-radius:999px; font-weight:800; }
+    .bar { height:9px; border-radius:999px; background:rgba(255,255,255,.12); overflow:hidden; margin:12px 0; }
+    .bar span { display:block; height:100%; background:linear-gradient(90deg,var(--good),var(--cyan)); }
+    .focus { display:flex; gap:6px; flex-wrap:wrap; }
+    .focus span { background:rgba(255,255,255,.1); padding:5px 8px; border-radius:999px; font-size:12px; color:var(--muted); }
+    .pin-tools { display:grid; grid-template-columns:1fr auto auto; gap:8px; margin-top:14px; }
+    .pin-tools input { min-height:44px; text-align:center; font-weight:900; letter-spacing:.25em; }
+    .pin-tools button { padding:9px 12px; font-size:12px; }
+    .hidden { display:none !important; }
+    .error { color:var(--danger); }
+    .filter { width:min(520px,100%); }
+    .course-tag { display:inline-flex; margin-top:8px; padding:6px 10px; border-radius:999px; background:rgba(124,255,178,.12); color:var(--good); font-size:12px; font-weight:800; }
+    .create-student { display:grid; grid-template-columns:1fr minmax(260px,430px); align-items:center; gap:22px; }
+    .create-student form { display:grid; gap:10px; padding:16px; border:1px solid rgba(255,255,255,.14); border-radius:18px; background:rgba(255,255,255,.05); }
+    .success { color:var(--good); }
+    @media (max-width:700px) { body{padding:12px}.card{padding:18px}.grid,.create-student{grid-template-columns:1fr}.pin-tools{grid-template-columns:1fr 1fr}.pin-tools input{grid-column:1/-1} }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card row">
+      <div>
+        <p>Lectoguarida online</p>
+        <h1>Panel de la profesora Conny</h1>
+      </div>
+      <a class="button ghost" href="/descargar.html">📲 Página de descarga</a>
+    </section>
+
+    <section id="login" class="card">
+      <h2>Entrar al panel</h2>
+      <p>Ingresa el PIN docente para ver los resultados registrados desde los celulares.</p>
+      <form id="loginForm" class="row">
+        <input id="pin" type="password" inputmode="numeric" placeholder="PIN docente" required>
+        <button type="submit">Entrar</button>
+      </form>
+      <p id="loginError" class="error"></p>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="card row">
+        <div>
+          <p id="updated">Sin actualizar</p>
+          <h2>Resultados de 2.º básico</h2>
+          <span class="course-tag" id="courseCapacity">Curso · hasta 40 estudiantes</span>
+        </div>
+        <div class="row">
+          <button class="ghost" id="refresh">Actualizar</button>
+          <button id="exportCsv">Exportar CSV</button>
+        </div>
+      </div>
+      <div class="card stats" id="stats"></div>
+      <section class="card create-student"><div><h3>Crear perfil de estudiante</h3><p>Como profesora administradora puedes agregar nuevas matrículas o perfiles de prueba hasta completar 40. Después podrás asignar o cambiar su PIN de cuatro números.</p></div><form id="createStudentForm"><input id="studentName" maxlength="60" autocomplete="off" placeholder="Primer nombre y apellido" required><button type="submit">Crear perfil</button><span id="createMessage"></span></form></section>
+      <div class="card row"><div><h3>Buscar estudiante</h3><p>Escribe el primer nombre o apellido paterno.</p></div><input class="filter" id="studentFilter" type="search" placeholder="Ej.: Luna Núñez" autocomplete="off"></div>
+      <div class="grid" id="students"></div>
+    </section>
+  </main>
+
+  <script>
+    let token = sessionStorage.getItem('teacherToken') || '';
+    const login = document.querySelector('#login');
+    const dashboard = document.querySelector('#dashboard');
+    const stats = document.querySelector('#stats');
+    const students = document.querySelector('#students');
+    const loginError = document.querySelector('#loginError');
+    let currentStudents = [];
+
+    const api = async (path, options = {}) => {
+      const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+      if (token) headers.Authorization = `Bearer ${token}`;
+      const response = await fetch(path, { ...options, headers });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Error de conexión');
+      return data;
+    };
+
+    const esc = (value = '') => String(value).replace(/[&<>"']/g, (char) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[char]);
+    const date = (value) => value ? new Intl.DateTimeFormat('es-CL', { dateStyle:'short', timeStyle:'short' }).format(new Date(value)) : 'Sin actividad';
+
+    function renderStudents() {
+      const query = document.querySelector('#studentFilter').value.trim().toLocaleLowerCase('es-CL');
+      const filtered = currentStudents.filter((student) => student.name.toLocaleLowerCase('es-CL').includes(query));
+      students.innerHTML = filtered.map((student) => {
+        const latest = student.latest?.scores;
+        return `<article class="student">
+          <header><div><h3>${esc(student.name)}</h3><p>2.º básico · ${student.xp || 0} XP · 🪙 ${student.coins || 0}</p></div><span class="pill">${student.average ?? '—'}</span></header>
+          <div class="bar"><span style="width:${student.progress || 0}%"></span></div>
+          <p>${student.completed || 0}/${student.totalMissions || 105} niveles · ${student.attempts || 0} intentos · 🧠 ${student.skillsUnlocked || 0} habilidades · ${date(student.latest?.createdAt)}</p>
+          ${latest ? `<p>Precisión ${latest.accuracy}% · PPM ${latest.wpm} · Comprensión ${latest.comprehension}%</p>` : '<p>Aún sin registros.</p>'}
+          <div class="focus">${(student.focus || []).map((item) => `<span>${esc(item)}</span>`).join('')}</div>
+          <div class="pin-tools"><input id="pin-${esc(student.id)}" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="PIN de 4 números"><button data-set-pin="${esc(student.id)}">${student.hasPin ? 'Cambiar PIN' : 'Crear PIN'}</button><button class="ghost" data-reset-pin="${esc(student.id)}" ${student.hasPin ? '' : 'disabled'}>Reiniciar</button></div>
+        </article>`;
+      }).join('') || '<article class="card"><h3>Sin coincidencias</h3><p>Revisa el nombre e inténtalo otra vez.</p></article>';
+    }
+
+    async function loadDashboard() {
+      const data = await api('/api/teacher/summary');
+      login.classList.add('hidden');
+      dashboard.classList.remove('hidden');
+      document.querySelector('#updated').textContent = `Actualizado: ${new Date().toLocaleString('es-CL')}`;
+      const s = data.classStats;
+      stats.innerHTML = [
+        ['Estudiantes', `${s.totalStudents || 0}/40`],
+        ['Con actividad', s.activeStudents || 0],
+        ['Intentos registrados', s.totalAttempts || 0],
+        ['Promedio general', s.average ?? '—'],
+        ['Plan completado', `${s.completion || 0}%`]
+      ].map(([label, value]) => `<div class="stat"><strong>${value}</strong><span>${label}</span></div>`).join('');
+      currentStudents = data.students.filter((student) => student.grade === 2);
+      document.querySelector('#courseCapacity').textContent = `Curso administrado por la profesora · ${currentStudents.length}/40 estudiantes`;
+      document.querySelector('#studentName').disabled = currentStudents.length >= 40;
+      document.querySelector('#createStudentForm button').disabled = currentStudents.length >= 40;
+      renderStudents();
+    }
+
+    document.querySelector('#loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      loginError.textContent = '';
+      try {
+        const result = await api('/api/teacher/login', { method:'POST', body: JSON.stringify({ pin: document.querySelector('#pin').value }) });
+        token = result.token;
+        sessionStorage.setItem('teacherToken', token);
+        await loadDashboard();
+      } catch (error) {
+        loginError.textContent = error.message;
+      }
+    });
+    document.querySelector('#refresh').addEventListener('click', loadDashboard);
+    document.querySelector('#createStudentForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const message = document.querySelector('#createMessage');
+      const input = document.querySelector('#studentName');
+      message.className = '';
+      message.textContent = '';
+      try {
+        const result = await api('/api/teacher/students', { method:'POST', body:JSON.stringify({ name:input.value, grade:2 }) });
+        message.className = 'success';
+        message.textContent = `Perfil de ${result.student.name} creado correctamente.`;
+        input.value = '';
+        await loadDashboard();
+      } catch (error) {
+        message.className = 'error';
+        message.textContent = error.message;
+      }
+    });
+    document.querySelector('#studentFilter').addEventListener('input', renderStudents);
+    students.addEventListener('click', async (event) => {
+      const setButton = event.target.closest('[data-set-pin]');
+      const resetButton = event.target.closest('[data-reset-pin]');
+      if (!setButton && !resetButton) return;
+      const studentId = (setButton || resetButton).dataset.setPin || (setButton || resetButton).dataset.resetPin;
+      try {
+        if (setButton) {
+          const pin = document.getElementById(`pin-${studentId}`).value;
+          if (!/^\d{4}$/.test(pin)) throw new Error('El PIN debe tener exactamente 4 números.');
+          await api(`/api/teacher/students/${encodeURIComponent(studentId)}/set-pin`, { method:'POST', body:JSON.stringify({ pin }) });
+          alert('PIN guardado correctamente.');
+        } else {
+          if (!confirm('¿Reiniciar el PIN para que el estudiante cree uno nuevo al entrar?')) return;
+          await api(`/api/teacher/students/${encodeURIComponent(studentId)}/reset-pin`, { method:'POST', body:'{}' });
+          alert('PIN reiniciado.');
+        }
+        await loadDashboard();
+      } catch (error) { alert(error.message); }
+    });
+    document.querySelector('#exportCsv').addEventListener('click', () => {
+      if (!token) return;
+      fetch('/api/teacher/export.csv', { headers: { Authorization: `Bearer ${token}` } })
+        .then((response) => response.blob())
+        .then((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'lectoguarida-resultados.csv';
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+    });
+    if (token) loadDashboard().catch(() => sessionStorage.removeItem('teacherToken'));
+  </script>
+</body>
+</html>

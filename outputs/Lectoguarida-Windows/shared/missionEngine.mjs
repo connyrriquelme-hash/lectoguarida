@@ -38,18 +38,23 @@ export function selectNextMission(student, templates) {
   
   const weakest = getWeakestSkill(student.mastery);
   const history = normalizeMissionHistory(student);
-  
-  const candidates = templates.filter(t => t.targetSkill === weakest);
-  if (candidates.length === 0) return getClassicMissionFallback(student);
+  if (!Array.isArray(templates) || !templates.length) return getClassicMissionFallback(student);
 
-  // Seleccionar la que menos se ha repetido recientemente
-  return candidates.sort((a, b) => {
-    const countA = history.filter(type => type === a.type).length;
-    const countB = history.filter(type => type === b.type).length;
-    return countA - countB;
-  })[0];
+  const scored = templates.slice().sort((a, b) => {
+    const scoreA = (history.includes(a.type) ? 2 : 0) + (a.targetSkill === weakest ? 1 : 0) + ((a.difficulty || 0) / 100);
+    const scoreB = (history.includes(b.type) ? 2 : 0) + (b.targetSkill === weakest ? 1 : 0) + ((b.difficulty || 0) / 100);
+    if (scoreA !== scoreB) return scoreA - scoreB;
+    return (a.difficulty || 0) - (b.difficulty || 0);
+  });
+  return scored[0] || getClassicMissionFallback(student);
 }
 
 export function getClassicMissionFallback(student) {
   return { id: 'classic-fallback', type: 'karaoke_reading', targetSkill: 'fluency', difficulty: 50 };
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.getWeakestSkill = getWeakestSkill;
+  globalThis.selectNextMission = selectNextMission;
+  globalThis.missionTemplates = missionTemplates;
 }

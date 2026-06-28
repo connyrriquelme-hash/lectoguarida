@@ -1,0 +1,1 @@
+import{build}from'esbuild';await build({entryPoints:['world3d/World3DMap.jsx'],bundle:true,minify:true,format:'iife',target:['es2020'],outfile:'public/world3d.bundle.js',jsx:'automatic',define:{'process.env.NODE_ENV':'"production"'}});console.log('Mundo 3D React/Three.js compilado.');

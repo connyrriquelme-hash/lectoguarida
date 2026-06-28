@@ -75,3 +75,57 @@ export function scoreAttempt({ reading, transcript, elapsedSeconds, warmupAnswer
       : 'Cada intento enciende una luz. La próxima misión traerá más ayuda.';
   return { accuracy, wpm, warmup, comprehension, overall, correctWords, totalWords: target.length, focus, xp, coins, message };
 }
+
+export function getDefaultMastery() {
+  return {
+    decoding: 50,
+    fluency: 50,
+    accuracy: 50,
+    vocabulary: 50,
+    literal_comprehension: 50,
+    inferential_comprehension: 50,
+    sequence: 50,
+    prosody: 50,
+    attention: 50
+  };
+}
+
+export function ensureMissionFieldsForStudent(student) {
+  if (!student.mastery || typeof student.mastery !== 'object') {
+    student.mastery = getDefaultMastery();
+  } else {
+    const defaults = getDefaultMastery();
+    for (const key of Object.keys(defaults)) {
+      if (student.mastery[key] === undefined || student.mastery[key] === null) {
+        student.mastery[key] = defaults[key];
+      }
+    }
+  }
+  if (!Array.isArray(student.unlockedZones)) student.unlockedZones = ['starter'];
+  if (!Array.isArray(student.completedMissionIds)) student.completedMissionIds = [];
+  if (!Array.isArray(student.recentMissionTypes)) student.recentMissionTypes = [];
+  if (student.missionEngineEnabled === undefined || student.missionEngineEnabled === null) student.missionEngineEnabled = false;
+  if (!Number.isFinite(Number(student.progressionVersion))) student.progressionVersion = 1;
+  return student;
+}
+
+export function ensureMissionFieldsForAttempt(attempt) {
+  if (attempt.missionId === undefined || attempt.missionId === null) attempt.missionId = null;
+  if (attempt.missionType === undefined || attempt.missionType === null) attempt.missionType = null;
+  if (!Array.isArray(attempt.focusAreas)) attempt.focusAreas = [];
+  if (!attempt.assistanceUsed || typeof attempt.assistanceUsed !== 'object') attempt.assistanceUsed = {};
+  if (!attempt.readingErrors || typeof attempt.readingErrors !== 'object') attempt.readingErrors = {};
+  if (attempt.progressionSnapshot === undefined || attempt.progressionSnapshot === null) attempt.progressionSnapshot = null;
+  return attempt;
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.normalizeWords = normalizeWords;
+  globalThis.normalizeAnswer = normalizeAnswer;
+  globalThis.answersMatch = answersMatch;
+  globalThis.lcsMatches = lcsMatches;
+  globalThis.scoreAttempt = scoreAttempt;
+  globalThis.getDefaultMastery = getDefaultMastery;
+  globalThis.ensureMissionFieldsForStudent = ensureMissionFieldsForStudent;
+  globalThis.ensureMissionFieldsForAttempt = ensureMissionFieldsForAttempt;
+}

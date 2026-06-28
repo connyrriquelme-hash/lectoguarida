@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Construct Demo - Lectoguarida</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="panel">
+      <p class="eyebrow">Minijuego HTML5 exportado</p>
+      <h1>Prueba Construct 3</h1>
+      <p id="context" class="lead">Cargando contexto...</p>
+      <div class="board">
+        <button class="bubble correct" data-score="20">🐟</button>
+        <button class="bubble" data-score="-10">🪨</button>
+        <button class="bubble" data-score="-10">☁️</button>
+        <button class="bubble correct" data-score="20">⭐</button>
+      </div>
+      <div class="status">
+        <strong>Score: <span id="score">0</span></strong>
+        <strong>Aciertos: <span id="hits">0</span></strong>
+        <strong>Errores: <span id="errors">0</span></strong>
+        <strong>Tiempo: <span id="time">0</span>s</strong>
+      </div>
+      <div class="actions">
+        <button id="finish" class="primary">Terminar minijuego</button>
+        <button id="fallback" class="ghost">Usar fallback</button>
+      </div>
+      <p class="note">Este módulo es independiente. Si falla, la app principal sigue funcionando.</p>
+    </section>
+  </main>
+  <script src="./game.js"></script>
+</body>
+</html>
