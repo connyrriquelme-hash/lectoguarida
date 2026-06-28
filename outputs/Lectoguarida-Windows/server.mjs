@@ -390,6 +390,48 @@ function ensureStudentEconomy(student, index) {
   for (const part of ['library','garden','observatory','musicRoom']) student.refuge[part] = Math.max(0, Math.min(5, Number(student.refuge[part]) || 0));
   student.lastDailyRewardDate = String(student.lastDailyRewardDate || '');
   student.skillProgress = student.skillProgress && typeof student.skillProgress === 'object' ? student.skillProgress : {};
+  ensureMissionFieldsForStudent(student);
+}
+
+function getDefaultMastery() {
+  return {
+    decoding: 50,
+    fluency: 50,
+    accuracy: 50,
+    vocabulary: 50,
+    literal_comprehension: 50,
+    inferential_comprehension: 50,
+    sequence: 50,
+    prosody: 50,
+    attention: 50
+  };
+}
+
+function ensureMissionFieldsForStudent(student) {
+  if (!student.mastery || typeof student.mastery !== 'object') {
+    student.mastery = getDefaultMastery();
+  } else {
+    const defaults = getDefaultMastery();
+    for (const key of Object.keys(defaults)) {
+      if (student.mastery[key] === undefined || student.mastery[key] === null) {
+        student.mastery[key] = defaults[key];
+      }
+    }
+  }
+  if (!Array.isArray(student.unlockedZones)) student.unlockedZones = ['starter'];
+  if (!Array.isArray(student.completedMissionIds)) student.completedMissionIds = [];
+  if (!Array.isArray(student.recentMissionTypes)) student.recentMissionTypes = [];
+  if (student.missionEngineEnabled === undefined || student.missionEngineEnabled === null) student.missionEngineEnabled = false;
+  if (!Number.isFinite(Number(student.progressionVersion))) student.progressionVersion = 1;
+}
+
+function ensureMissionFieldsForAttempt(attempt) {
+  if (attempt.missionId === undefined || attempt.missionId === null) attempt.missionId = null;
+  if (attempt.missionType === undefined || attempt.missionType === null) attempt.missionType = null;
+  if (!Array.isArray(attempt.focusAreas)) attempt.focusAreas = [];
+  if (!attempt.assistanceUsed || typeof attempt.assistanceUsed !== 'object') attempt.assistanceUsed = {};
+  if (!attempt.readingErrors || typeof attempt.readingErrors !== 'object') attempt.readingErrors = {};
+  if (attempt.progressionSnapshot === undefined || attempt.progressionSnapshot === null) attempt.progressionSnapshot = null;
 }
 
 function chileDateKey(date = new Date()) {
@@ -501,11 +543,13 @@ async function loadStore() {
     }
     const economyBefore = JSON.stringify({ coins: student.coins, unlocked: student.unlocked, streak:student.streak, longestStreak:student.longestStreak, lastActiveDate:student.lastActiveDate, stickers:student.stickers, packsOpened:student.packsOpened, packsSinceRare:student.packsSinceRare, pinSalt:student.pinSalt, pinHash:student.pinHash, exchangeStars:student.exchangeStars, refuge:student.refuge, lastDailyRewardDate:student.lastDailyRewardDate });
     ensureStudentEconomy(student, index);
+    ensureMissionFieldsForStudent(student);
     if (economyBefore !== JSON.stringify({ coins: student.coins, unlocked: student.unlocked, streak:student.streak, longestStreak:student.longestStreak, lastActiveDate:student.lastActiveDate, stickers:student.stickers, packsOpened:student.packsOpened, packsSinceRare:student.packsSinceRare, pinSalt:student.pinSalt, pinHash:student.pinHash, exchangeStars:student.exchangeStars, refuge:student.refuge, lastDailyRewardDate:student.lastDailyRewardDate })) changed = true;
   }
   for (const attempt of store.attempts) {
     if (legacyIds[attempt.readingId]) { attempt.readingId = legacyIds[attempt.readingId]; changed = true; }
     if (attempt.scores && attempt.scores.warmup == null) { attempt.scores.warmup = 100; changed = true; }
+    ensureMissionFieldsForAttempt(attempt);
   }
   if (changed) await saveStore(store);
   return store;
@@ -1088,4 +1132,4 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
   });
 }
 
-export { normalizeWords, lcsMatches, scoreAttempt, readings, SKIN_CATALOG, STICKER_CATALOG, awardCurriculumSkill };
+export { normalizeWords, lcsMatches, scoreAttempt, readings, SKIN_CATALOG, STICKER_CATALOG, awardCurriculumSkill, getDefaultMastery, ensureMissionFieldsForStudent, ensureMissionFieldsForAttempt };
