@@ -1,0 +1,31 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "lectoguarida-conny",
+	"main": "cloudflare/worker.mjs",
+	"compatibility_date": "2026-06-21",
+	"workers_dev": true,
+	"routes": [
+		{ "pattern": "www.lectoguarida.cl", "custom_domain": true },
+		{ "pattern": "lectoguarida.cl", "custom_domain": true }
+	],
+	"assets": {
+		"directory": "./public",
+		"binding": "ASSETS",
+		"not_found_handling": "single-page-application",
+		"run_worker_first": [
+			"/api/*",
+			"/descargar-apk"
+		]
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "lectoguarida-db",
+			"database_id": "74acba1e-b3b6-46a5-b9fc-3e53df02783d"
+		}
+	],
+"vars": {
+    "TEACHER_NAME": "Conny",
+    "ENABLE_MISSION_ENGINE": "false"
+  }
+}
