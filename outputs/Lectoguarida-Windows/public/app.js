@@ -475,6 +475,11 @@ function homeView() {
             <span class="icon">🔭</span><h3>Soy profesora</h3>
             <p>Conny administra hasta 40 perfiles, puntajes, habilidades y focos de apoyo.</p>
           </button>
+          <a class="role-card" href="/expedicion/index.html">
+            <span class="badge-temporal">Piloto</span>
+            <span class="icon">🤝</span><h3>Trabajo Colaborativo</h3>
+            <p>Acceso exclusivo para el equipo docente. Proyecto de innovación pedagógica.</p>
+          </a>
         </div>
         ${state.installPrompt ? '<div class="btn-row"><button class="btn btn-secondary" data-action="install-app">📲 Instalar Lectoguarida</button></div>' : ''}
       </div>

@@ -180,7 +180,7 @@ h3 { margin-bottom: 8px; font-size: 20px; }
   display: grid;
   gap: 16px;
 }
-.role-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 30px; }
+.role-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 30px; }
 .profile-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
 .stat-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .scene-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -201,9 +201,47 @@ h3 { margin-bottom: 8px; font-size: 20px; }
 .card { padding: clamp(22px, 4vw, 38px); }
 .role-card, .profile-card, .scene-card { padding: 24px; text-align: left; transition: transform .18s ease, border-color .18s ease, background .18s ease; }
 .role-card, .scene-card { cursor: pointer; }
+.role-card { position: relative; display: block; text-decoration: none; color: inherit; }
+.badge-temporal {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(104, 231, 255, 0.22), rgba(255, 255, 255, 0.10));
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #effcff;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 0 10px rgba(104, 231, 255, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 8px 18px rgba(0, 0, 0, 0.16);
+  animation: brilloPiloto 2s infinite alternate;
+}
+
+@keyframes brilloPiloto {
+  from {
+    box-shadow:
+      0 0 10px rgba(104, 231, 255, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      0 8px 18px rgba(0, 0, 0, 0.16);
+  }
+  to {
+    box-shadow:
+      0 0 10px rgba(104, 231, 255, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.30),
+      0 8px 18px rgba(0, 0, 0, 0.16);
+  }
+}
 .role-card:hover, .profile-card:hover, .scene-card:hover { transform: translateY(-4px); border-color: rgba(94, 242, 214, .8); }
 .role-card:nth-child(1) { border-color: rgba(94,242,214,.45); background: linear-gradient(145deg,rgba(38,111,151,.94),rgba(40,56,133,.94)); }
 .role-card:nth-child(2) { border-color: rgba(255,126,179,.45); background: linear-gradient(145deg,rgba(116,67,153,.94),rgba(48,55,137,.94)); }
+.role-card:nth-child(3) { border-color: rgba(255, 212, 95, .45); background: linear-gradient(145deg,rgba(87, 79, 35,.94),rgba(54, 74, 122,.94)); }
 .role-card .icon, .profile-avatar, .scene-icon { display: block; margin-bottom: 16px; font-size: 46px; }
 .role-card p, .profile-card p { margin: 0; color: var(--muted); line-height: 1.45; }
 .profile-card { position: relative; overflow: hidden; box-shadow: var(--shadow-hd); }
@@ -620,7 +658,7 @@ body.reward-shake .app-shell{animation:rewardShake .5s cubic-bezier(.36,.07,.19,
   .hero-kicker { gap: 8px; }
   .hero-kicker .eyebrow { font-size: 11px; letter-spacing: 1.2px; }
   .lead { font-size: 16px; line-height: 1.5; }
-  .role-grid { margin-top: 18px; gap: 12px; }
+  .role-grid { margin-top: 18px; gap: 12px; grid-template-columns: 1fr; }
   .role-card { padding: 18px; }
   .role-card .icon { margin-bottom: 10px; font-size: 34px; }
   .role-card h3 { font-size: 18px; margin-bottom: 6px; }

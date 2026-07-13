@@ -1931,10 +1931,16 @@ var worker_default = {
     try {
       const url = new URL(request.url);
       if (url.pathname.startsWith("/api/")) return await handleApi(request, env);
+      if (url.pathname === "/expedicion" || url.pathname === "/expedicion/") return env.ASSETS.fetch(new Request(new URL("/expedicion/index.html", request.url), request));
+      if (url.pathname === "/expedicion/juego" || url.pathname === "/expedicion/juego/") return env.ASSETS.fetch(new Request(new URL("/expedicion/juego.html", request.url), request));
+      if (url.pathname === "/expedicion/dashboard" || url.pathname === "/expedicion/dashboard/") return env.ASSETS.fetch(new Request(new URL("/expedicion/dashboard.html", request.url), request));
       if (url.pathname === "/descargar-apk") return env.ASSETS.fetch(new Request(new URL("/Lectoguarida-debug.apk", request.url), request));
       const response = await env.ASSETS.fetch(request);
       const headers = new Headers(response.headers);
       const contentType = headers.get("Content-Type") || "";
+      if (url.pathname.startsWith("/expedicion/")) {
+        headers.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+      }
       if (url.pathname.endsWith(".js") && !/charset=utf-8/i.test(contentType)) headers.set("Content-Type", "text/javascript; charset=utf-8");
       if (url.pathname.endsWith(".css") && !/charset=utf-8/i.test(contentType)) headers.set("Content-Type", "text/css; charset=utf-8");
       if ((url.pathname.endsWith(".html") || url.pathname === "/") && !/charset=utf-8/i.test(contentType)) headers.set("Content-Type", "text/html; charset=utf-8");

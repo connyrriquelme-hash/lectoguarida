@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101c3d">
+  <title>Lectoguarida Expedición | Dashboard</title>
+  <style>
+    :root {
+      --bg: #0b132d;
+      --panel: rgba(16, 28, 61, 0.9);
+      --panel-2: rgba(22, 35, 73, 0.92);
+      --text: #f7fbff;
+      --muted: rgba(232, 240, 255, 0.75);
+      --line: rgba(255,255,255,.1);
+      --accent: #68e7ff;
+      --accent-2: #ffd45f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(104,231,255,.16), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(255,212,95,.12), transparent 22%),
+        linear-gradient(180deg, #13224d 0%, var(--bg) 100%);
+      color: var(--text);
+      font-family: Inter, system-ui, sans-serif;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      min-height: 100vh;
+    }
+    aside {
+      padding: 24px;
+      border-right: 1px solid var(--line);
+      background: rgba(7, 13, 29, 0.3);
+      backdrop-filter: blur(10px);
+    }
+    main {
+      padding: 24px;
+    }
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #68e7ff, #ffd45f);
+      color: #091126;
+      font-size: 26px;
+      font-weight: 900;
+    }
+    nav {
+      display: grid;
+      gap: 10px;
+    }
+    .nav-item {
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid transparent;
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      text-align: left;
+      font-weight: 700;
+    }
+    .nav-item.active {
+      border-color: rgba(104,231,255,.28);
+      background: rgba(104,231,255,.12);
+    }
+    .hero {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .hero h1 { margin: 0; font-size: clamp(1.7rem, 3vw, 2.6rem); }
+    .hero p { margin: 6px 0 0; color: var(--muted); }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .metric {
+      border-radius: 24px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      box-shadow: 0 20px 48px rgba(0,0,0,.24);
+    }
+    .metric small { color: var(--muted); display: block; margin-bottom: 8px; }
+    .metric strong { display: block; font-size: clamp(1.7rem, 2.5vw, 2.4rem); }
+    .metric span { display: block; margin-top: 6px; color: var(--muted); }
+    .chart {
+      margin-top: 18px;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      min-height: 280px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      text-align: center;
+      padding: 20px;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { border-right: 0; border-bottom: 1px solid var(--line); }
+      .metric-grid { grid-template-columns: 1fr; }
+      .hero { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">✦</div>
+        <div>
+          <strong>Lectoguarida</strong><br>
+          <span style="color: var(--muted)">Dashboard Docente</span>
+        </div>
+      </div>
+      <nav aria-label="Navegación lateral">
+        <button class="nav-item active">Resumen</button>
+        <button class="nav-item">Cursos</button>
+        <button class="nav-item">Progreso</button>
+        <button class="nav-item">Informes</button>
+      </nav>
+    </aside>
+
+    <main>
+      <section class="hero">
+        <div>
+          <h1>Panel de control docente</h1>
+          <p>Vista estática base con métricas de ejemplo para la etapa inicial.</p>
+        </div>
+        <div style="padding:12px 16px;border-radius:999px;background:rgba(255,212,95,.12);border:1px solid rgba(255,212,95,.2);color:#ffeec0;font-weight:700;">Portal seguro</div>
+      </section>
+
+      <section class="metric-grid" aria-label="Métricas del curso">
+        <article class="metric">
+          <small>Participación semanal</small>
+          <strong>92%</strong>
+          <span>Asistencia y uso activo de la expedición.</span>
+        </article>
+        <article class="metric">
+          <small>Lecturas completadas</small>
+          <strong>128</strong>
+          <span>Misiones terminadas por los cursos conectados.</span>
+        </article>
+        <article class="metric">
+          <small>Estudiantes destacados</small>
+          <strong>34</strong>
+          <span>Con progreso alto en fluidez y comprensión.</span>
+        </article>
+      </section>
+
+      <section class="chart" aria-label="Espacio de analíticas">
+        Aquí luego se podrán incrustar gráficos, tablas o exportaciones del sistema real.
+      </section>
+    </main>
+  </div>
+</body>
+</html>
