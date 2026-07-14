@@ -133,6 +133,19 @@
       visibility: hidden;
       pointer-events: none;
     }
+    .static-demo.hidden {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      display: none !important;
+    }
+    body.expedicion-jugando #bootOverlay,
+    body.expedicion-jugando .static-demo {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
     .boot-card {
       width: min(92vw, 720px);
       border-radius: 28px;
@@ -250,6 +263,37 @@
     </div>
   </div>
   <div id="contenedor-juego"></div>
-  <script src="./game.js?v=20260713c"></script>
+  <button id="cambiarNivel" type="button" style="
+    display: none;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9998;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.15);
+    font-size: 14px;
+    font-family: Inter, system-ui, sans-serif;
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+    transition: opacity 0.2s;
+  ">Cambiar nivel</button>
+  <script>
+    (function() {
+      var btn = document.getElementById('cambiarNivel');
+      document.addEventListener('expedicion:level-started', function() {
+        btn.style.display = 'block';
+      });
+      btn.addEventListener('click', function() {
+        if (typeof mostrarSelectorDeNivel === 'function') {
+          mostrarSelectorDeNivel();
+          btn.style.display = 'none';
+        }
+      });
+    })();
+  </script>
+  <script src="./game.js?v=20260713d"></script>
 </body>
 </html>

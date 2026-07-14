@@ -342,6 +342,18 @@
       }
     });
 
+    // Escuchar cuando el motor inicia un nivel
+    document.addEventListener('expedicion:level-started', (e) => {
+      if (state.v2Container) {
+        state.v2Container.classList.add('v2-playing');
+      }
+      const staticDemo = document.querySelector('.static-demo');
+      if (staticDemo) {
+        staticDemo.classList.add('hidden');
+        staticDemo.hidden = true;
+      }
+    });
+
     // Escuchar eventos personalizados si game.js los emite
     window.addEventListener('lectoguarida:score', (e) => {
       updateScore(e.detail?.score);

@@ -21,6 +21,7 @@ let estadoNivel = 1;
 let estadoJuego = 'SELECCION_NIVEL';
 let handposeListo = false;
 let nivelActual = 'kinder';
+let selectorVisible = false;
 
 let camaraLista = false;
 let camaraIntentada = false;
@@ -173,23 +174,77 @@ function seleccionarNivel(nivel) {
   nivelActual = nivel;
   puntos = 0;
   estadoNivel = nivelesBase[nivelActual]?.nivel || 1;
-  ocultarOverlayInicio();
+  cerrarSelectorDeNivel();
   estadoJuego = 'JUGANDO';
   colocarObjetivo();
+
+  document.dispatchEvent(new CustomEvent('expedicion:level-started', {
+    detail: { nivel }
+  }));
 
   if (!camaraLista && !camaraIntentada) {
     iniciarCamaraEnSegundoPlano();
   }
 }
 
-function ocultarOverlayInicio() {
+function cerrarSelectorDeNivel() {
   if (bootOverlayHidden) return;
   bootOverlayHidden = true;
+  selectorVisible = false;
+
   const overlay = document.getElementById('bootOverlay');
   if (overlay) {
     overlay.classList.add('hidden');
+    overlay.hidden = true;
+    overlay.setAttribute('aria-hidden', 'true');
     overlay.setAttribute('aria-busy', 'false');
+    overlay.style.pointerEvents = 'none';
+    if ('inert' in overlay) {
+      overlay.inert = true;
+    }
   }
+
+  const staticDemo = document.querySelector('.static-demo');
+  if (staticDemo) {
+    staticDemo.classList.add('hidden');
+    staticDemo.hidden = true;
+    staticDemo.setAttribute('aria-hidden', 'true');
+    staticDemo.style.pointerEvents = 'none';
+  }
+
+  document.body.classList.add('expedicion-jugando');
+  document.body.dataset.gameState = 'playing';
+}
+
+function mostrarSelectorDeNivel() {
+  bootOverlayHidden = false;
+  selectorVisible = true;
+
+  const overlay = document.getElementById('bootOverlay');
+  if (overlay) {
+    overlay.classList.remove('hidden');
+    overlay.hidden = false;
+    overlay.setAttribute('aria-hidden', 'false');
+    overlay.setAttribute('aria-busy', 'false');
+    overlay.style.pointerEvents = '';
+    if ('inert' in overlay) {
+      overlay.inert = false;
+    }
+  }
+
+  const staticDemo = document.querySelector('.static-demo');
+  if (staticDemo) {
+    staticDemo.classList.remove('hidden');
+    staticDemo.hidden = false;
+    staticDemo.setAttribute('aria-hidden', 'false');
+    staticDemo.style.pointerEvents = '';
+  }
+
+  document.body.classList.remove('expedicion-jugando');
+  document.body.dataset.gameState = 'selecting';
+
+  const firstChoice = document.querySelector('[data-level]');
+  if (firstChoice) firstChoice.focus();
 }
 
 function cargarNarrativasDeApoyo() {

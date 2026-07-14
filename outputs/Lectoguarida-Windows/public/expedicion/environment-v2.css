@@ -530,3 +530,11 @@
 #v2-environment.v2-ready {
   opacity: 1;
 }
+
+/* -----------------------------------------------------------------
+   ESTADO JUGANDO (selector cerrado)
+   ----------------------------------------------------------------- */
+#v2-environment.v2-playing .v2-ambient-bg {
+  opacity: 0.3;
+  pointer-events: none;
+}
