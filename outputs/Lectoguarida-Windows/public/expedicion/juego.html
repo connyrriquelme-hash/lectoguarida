@@ -180,9 +180,13 @@
       box-shadow: 0 14px 28px rgba(0,0,0,.22);
       cursor: pointer;
       text-align: left;
+      pointer-events: auto;
+      position: relative;
+      z-index: 10000;
       transition: transform .18s ease, filter .18s ease;
     }
     .level-choice:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    .level-choice:focus-visible { outline: 3px solid #68e7ff; outline-offset: 3px; }
     .level-choice strong { display: block; font-size: 1.02rem; margin-bottom: 4px; }
     .level-choice span { display: block; color: rgba(232,240,255,.84); font-size: .92rem; line-height: 1.35; }
     .level-choice.kinder { background: linear-gradient(180deg, rgba(138,255,198,.18), rgba(18,32,74,.9)); }

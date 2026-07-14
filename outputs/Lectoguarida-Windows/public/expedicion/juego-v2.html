@@ -68,6 +68,92 @@
         border-radius: 14px;
       }
     }
+
+    .boot-overlay {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top, rgba(104, 231, 255, 0.16), transparent 28%),
+        linear-gradient(180deg, rgba(10, 18, 42, 0.94), rgba(8, 14, 34, 0.98));
+      color: #f7fbff;
+      z-index: 9999;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+    .boot-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .boot-card {
+      width: min(92vw, 720px);
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(16, 28, 61, 0.9);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 26px 60px rgba(0,0,0,.35);
+      padding: 28px;
+      text-align: center;
+    }
+    .boot-title {
+      margin: 0 0 8px;
+      font: 800 clamp(1.4rem, 3vw, 2rem)/1.1 Inter, system-ui, sans-serif;
+    }
+    .boot-copy {
+      margin: 0;
+      color: rgba(232,240,255,.84);
+      line-height: 1.55;
+      font: 500 1rem/1.55 Inter, system-ui, sans-serif;
+    }
+    .boot-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(104, 231, 255, 0.14);
+      border: 1px solid rgba(104, 231, 255, 0.22);
+      color: #dffbff;
+      font-weight: 700;
+    }
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .level-choice {
+      border: 0;
+      border-radius: 20px;
+      padding: 16px 14px;
+      background: linear-gradient(180deg, rgba(104,231,255,.16), rgba(18,32,74,.9));
+      color: #f7fbff;
+      box-shadow: 0 14px 28px rgba(0,0,0,.22);
+      cursor: pointer;
+      text-align: left;
+      pointer-events: auto;
+      position: relative;
+      z-index: 10000;
+      transition: transform .18s ease, filter .18s ease;
+    }
+    .level-choice:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    .level-choice:focus-visible { outline: 3px solid #68e7ff; outline-offset: 3px; }
+    .level-choice strong { display: block; font-size: 1.02rem; margin-bottom: 4px; }
+    .level-choice span { display: block; color: rgba(232,240,255,.84); font-size: .92rem; line-height: 1.35; }
+    .level-choice.kinder { background: linear-gradient(180deg, rgba(138,255,198,.18), rgba(18,32,74,.9)); }
+    .level-choice.segundo { background: linear-gradient(180deg, rgba(104,231,255,.18), rgba(18,32,74,.9)); }
+    .level-choice.sexto { background: linear-gradient(180deg, rgba(255,212,95,.18), rgba(18,32,74,.9)); }
+    .boot-mini {
+      margin-top: 14px;
+      color: rgba(232,240,255,.76);
+      font-size: .92rem;
+    }
+    @media (max-width: 760px) {
+      .level-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -93,7 +179,8 @@
           <span>Comprensión breve con una misión visible desde el inicio.</span>
         </div>
       </div>
-      <p class="static-footer">Esta capa es independiente de p5.js, así que siempre se ve aunque la IA o la cámara no respondan.</p </section>
+      <p class="static-footer">Esta capa es independiente de p5.js, así que siempre se ve aunque la IA o la cámara no respondan.</p>
+    </section>
   </div>
 
   <!-- Overlay de arranque (cámara + IA) -->

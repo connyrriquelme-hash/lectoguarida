@@ -141,17 +141,20 @@
 
   function bindUIEvents() {
     // Cerrar panel lateral
-    $('#v2PanelClose', state.v2Container)?.addEventListener('click', () => {
+    $('#v2PanelClose', state.v2Container)?.addEventListener('click', (e) => {
+      e.stopPropagation();
       toggleSidePanel(true);
     });
 
     // Reabrir panel con click en badge (opcional)
-    $('#v2LevelBadge', state.v2Container)?.addEventListener('click', () => {
+    $('#v2LevelBadge', state.v2Container)?.addEventListener('click', (e) => {
+      e.stopPropagation();
       toggleSidePanel(false);
     });
 
-    // Cerrar panel al hacer click fuera (móvil)
+    // Cerrar panel al hacer click fuera — solo en elementos V2, nunca en overlay del boot
     state.v2Container?.addEventListener('click', (e) => {
+      if (e.target.closest('#bootOverlay')) return;
       const panel = $('#v2SidePanel', state.v2Container);
       if (panel && !panel.contains(e.target) && !e.target.closest('.v2-level-badge')) {
         toggleSidePanel(true);

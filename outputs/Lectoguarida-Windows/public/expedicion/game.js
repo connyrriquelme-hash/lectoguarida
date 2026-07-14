@@ -22,8 +22,13 @@ let estadoJuego = 'SELECCION_NIVEL';
 let handposeListo = false;
 let nivelActual = 'kinder';
 
-// Base path estable para recursos de la expedición
-const EXPEDICION_BASE = '/expedicion/';
+let camaraLista = false;
+let camaraIntentada = false;
+let camaraRechazada = false;
+let modeloCargando = false;
+let modeloTiempoAgotado = false;
+
+const TIMEOUT_MODELO_MS = 10000;
 
 const nivelesBase = {
   kinder: {
@@ -69,29 +74,9 @@ function setup() {
   canvas = createCanvas(w, h);
   canvas.parent('contenedor-juego');
 
-  video = createCapture(VIDEO, () => {
-    console.log('Cámara lista');
-  });
-  video.size(width, height);
-  video.hide();
-
   iniciarCargasNoBloqueantes();
 
-  handpose = ml5.handpose(video, modelReady);
-  handpose.on('predict', (results) => {
-    predictions = results || [];
-    if (predictions.length > 0) {
-      const hand = predictions[0];
-      const indexFingerTip = hand.landmarks && hand.landmarks[8];
-      if (indexFingerTip) {
-        dedo.x = width - indexFingerTip[0];
-        dedo.y = indexFingerTip[1];
-        dedo.visible = true;
-      }
-    } else {
-      dedo.visible = false;
-    }
-  });
+  iniciarCamaraEnSegundoPlano();
 
   colocarObjetivo();
   textFont('system-ui, sans-serif');
@@ -99,18 +84,102 @@ function setup() {
   conectarSeleccionDeNivel();
 }
 
+function iniciarCamaraEnSegundoPlano() {
+  if (camaraIntentada) return;
+  camaraIntentada = true;
+
+  try {
+    video = createCapture(VIDEO, () => {
+      camaraLista = true;
+      console.log('[expedicion] Cámara lista');
+    });
+    video.size(width, height);
+    video.hide();
+
+    video.elt.addEventListener('error', () => {
+      camaraRechazada = true;
+      console.warn('[expedicion] Cámara no disponible (error elemento)');
+    }, { once: true });
+
+    iniciarModeloEnSegundoPlano();
+  } catch (e) {
+    camaraRechazada = true;
+    console.warn('[expedicion] No se pudo acceder a la cámara:', e.message || e);
+  }
+
+  setTimeout(() => {
+    if (!camaraLista && !camaraRechazada) {
+      camaraRechazada = true;
+      console.warn('[expedicion] Timeout de cámara — modo táctil activado');
+    }
+  }, 8000);
+}
+
+function iniciarModeloEnSegundoPlano() {
+  if (modeloCargando) return;
+  modeloCargando = true;
+
+  try {
+    if (!video || !video.elt) {
+      console.warn('[expedicion] Sin video, modelo no iniciado');
+      modeloTiempoAgotado = true;
+      return;
+    }
+
+    handpose = ml5.handpose(video, modelReady);
+    handpose.on('predict', (results) => {
+      predictions = results || [];
+      if (predictions.length > 0) {
+        const hand = predictions[0];
+        const indexFingerTip = hand.landmarks && hand.landmarks[8];
+        if (indexFingerTip) {
+          dedo.x = width - indexFingerTip[0];
+          dedo.y = indexFingerTip[1];
+          dedo.visible = true;
+        }
+      } else {
+        dedo.visible = false;
+      }
+    });
+  } catch (e) {
+    console.warn('[expedicion] No se pudo iniciar modelo ml5:', e.message || e);
+    modeloTiempoAgotado = true;
+  }
+
+  setTimeout(() => {
+    if (!handposeListo && !modeloTiempoAgotado) {
+      modeloTiempoAgotado = true;
+      console.warn('[expedicion] Timeout de modelo IA — modo táctil activado');
+    }
+  }, TIMEOUT_MODELO_MS);
+}
+
 function conectarSeleccionDeNivel() {
   const choices = document.querySelectorAll('[data-level]');
   choices.forEach((choice) => {
     choice.addEventListener('click', () => {
-      nivelActual = choice.dataset.level || 'kinder';
-      puntos = 0;
-      estadoNivel = nivelesBase[nivelActual]?.nivel || 1;
-      ocultarOverlayInicio();
-      estadoJuego = 'JUGANDO';
-      colocarObjetivo();
+      seleccionarNivel(choice.dataset.level || 'kinder');
+    });
+    choice.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        seleccionarNivel(choice.dataset.level || 'kinder');
+      }
     });
   });
+}
+
+function seleccionarNivel(nivel) {
+  nivelActual = nivel;
+  puntos = 0;
+  estadoNivel = nivelesBase[nivelActual]?.nivel || 1;
+  ocultarOverlayInicio();
+  estadoJuego = 'JUGANDO';
+  colocarObjetivo();
+
+  if (!camaraLista && !camaraIntentada) {
+    iniciarCamaraEnSegundoPlano();
+  }
 }
 
 function ocultarOverlayInicio() {
@@ -190,11 +259,8 @@ function imagenPersonajeUtilizable(img) {
 }
 
 function modelReady() {
-  console.log('Handpose listo');
+  console.log('[expedicion] Handpose listo');
   handposeListo = true;
-  if (estadoJuego === 'CARGANDO') {
-    estadoJuego = 'JUGANDO';
-  }
 }
 
 function draw() {
@@ -212,11 +278,6 @@ function draw() {
 
   if (estadoJuego === 'SELECCION_NIVEL') {
     drawNivelIntroVisible();
-    return;
-  }
-
-  if (estadoJuego === 'CARGANDO') {
-    drawLoadingState();
     return;
   }
 
@@ -277,28 +338,6 @@ function drawAmbientOverlay() {
   noStroke();
   fill(11, 19, 45, 70);
   rect(0, 0, width, height);
-}
-
-function drawLoadingState() {
-  push();
-  fill(247, 251, 255);
-  textAlign(CENTER, CENTER);
-  textStyle(BOLD);
-  textSize(max(22, width * 0.036));
-  text('Conectando cámara e Inteligencia Artificial...', width / 2, height / 2 - 18);
-
-  textStyle(NORMAL);
-  textSize(max(14, width * 0.02));
-  text(
-    handposeListo
-      ? 'Preparando la lectura...'
-      : narrativaCargada
-        ? 'El canvas ya está listo mientras carga la IA.'
-        : 'Cargando apoyos de lectura...',
-    width / 2,
-    height / 2 + 22
-  );
-  pop();
 }
 
 function drawNivelIntroVisible() {
@@ -383,7 +422,12 @@ function drawSearchText() {
     textAlign(LEFT, BOTTOM);
     textSize(max(18, width * 0.024));
     textStyle(BOLD);
-    text('🔍 Buscando mano... (Mueva el cuerpo frente a la cámara)', 20, height - 60);
+    const camMsg = camaraRechazada
+      ? 'Cámara no disponible. Puedes jugar con mouse o pantalla táctil.'
+      : handposeListo
+        ? '🔍 Buscando mano... (Mueva el cuerpo frente a la cámara)'
+        : 'Cargando reconocimiento de manos...';
+    text(camMsg, 20, height - 60);
   }
 
   textSize(14);
