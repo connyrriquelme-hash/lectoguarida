@@ -1926,15 +1926,50 @@ async function handleApi(request, env) {
   return json({ error: "Ruta no encontrada" }, 404);
 }
 __name(handleApi, "handleApi");
+async function serveExpedicionAsset(request, env, canonicalPath) {
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    return new Response("Method Not Allowed", {
+      status: 405,
+      headers: {
+        "Allow": "GET, HEAD",
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-store"
+      }
+    });
+  }
+  var assetUrl = new URL(request.url);
+  assetUrl.pathname = canonicalPath;
+  assetUrl.search = "";
+  var assetRequest = new Request(assetUrl.toString(), {
+    method: request.method === "HEAD" ? "HEAD" : "GET",
+    headers: request.headers
+  });
+  var response = await env.ASSETS.fetch(assetRequest);
+  var headers = new Headers(response.headers);
+  headers.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+  return new Response(request.method === "HEAD" ? null : response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+__name(serveExpedicionAsset, "serveExpedicionAsset");
 var worker_default = {
   async fetch(request, env) {
     try {
-      const url = new URL(request.url);
+      var url = new URL(request.url);
       if (url.pathname.startsWith("/api/")) return await handleApi(request, env);
+      if (url.pathname === "/expedicion" || url.pathname === "/expedicion/") return serveExpedicionAsset(request, env, "/expedicion/");
+      if (url.pathname === "/expedicion/juego" || url.pathname === "/expedicion/juego/") return serveExpedicionAsset(request, env, "/expedicion/juego");
+      if (url.pathname === "/expedicion/juego-v2" || url.pathname === "/expedicion/juego-v2/") return serveExpedicionAsset(request, env, "/expedicion/juego-v2");
+      if (url.pathname === "/expedicion/dashboard" || url.pathname === "/expedicion/dashboard/") return serveExpedicionAsset(request, env, "/expedicion/dashboard");
       if (url.pathname === "/descargar-apk") return env.ASSETS.fetch(new Request(new URL("/Lectoguarida-debug.apk", request.url), request));
       const response = await env.ASSETS.fetch(request);
       const headers = new Headers(response.headers);
       const contentType = headers.get("Content-Type") || "";
+      if (url.pathname.startsWith("/expedicion/")) {
+        headers.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+      }
       if (url.pathname.endsWith(".js") && !/charset=utf-8/i.test(contentType)) headers.set("Content-Type", "text/javascript; charset=utf-8");
       if (url.pathname.endsWith(".css") && !/charset=utf-8/i.test(contentType)) headers.set("Content-Type", "text/css; charset=utf-8");
       if ((url.pathname.endsWith(".html") || url.pathname === "/") && !/charset=utf-8/i.test(contentType)) headers.set("Content-Type", "text/html; charset=utf-8");
