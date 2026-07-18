@@ -3,10 +3,96 @@
  * Router de modo individual — maneja todas las rutas /expedicion/solo/*.
  * Se carga en el contexto del menú (index.html) y renderiza el contenido
  * correspondiente según la ruta actual.
+ * Carga dinámicamente los scripts del modo solo cuando es necesario.
  */
 
 (function () {
   'use strict';
+
+  var SOLO_SCRIPTS_LOADED = false;
+
+  var SOLO_SCRIPT_BASE = '/expedicion/solo/';
+
+  var SOLO_SCRIPT_LIST = [
+    'core/solo-state-machine.js',
+    'core/game-config-validator.js',
+    'core/input-manager.js',
+    'core/scoring-engine.js',
+    'core/feedback-manager.js',
+    'core/reward-manager.js',
+    'core/progress-repository.js',
+    'core/audio-manager.js',
+    'core/accessibility-manager.js',
+    'core/error-boundary.js',
+    'templates/click-selection-template.js',
+    'templates/drag-drop-template.js',
+    'templates/avatar-movement-template.js',
+    'templates/syllable-tap-template.js',
+    'templates/falling-items-template.js',
+    'plugins/audio-instruction-plugin.js',
+    'plugins/timer-plugin.js',
+    'plugins/keyboard-input-plugin.js',
+    'plugins/reward-plugin.js',
+    'plugins/accessibility-plugin.js',
+    'core/solo-game-engine.js',
+    'core/solo-game-adapter.js',
+    'games/vocal-a-game.js',
+    'games/non-reader/rim-catcher.js',
+    'games/non-reader/initial-sound-detector.js',
+    'games/non-reader/syllable-counter.js',
+    'games/non-reader/final-sound-catcher.js',
+    '../menu/menu.js',
+    '../menu/solo-entry.js'
+  ];
+
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      if (document.querySelector('script[data-solo-src="' + src + '"]')) {
+        resolve();
+        return;
+      }
+      var script = document.createElement('script');
+      script.src = src;
+      script.setAttribute('data-solo-src', src);
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  function loadSoloScripts(callback) {
+    if (SOLO_SCRIPTS_LOADED) {
+      callback();
+      return;
+    }
+    var toLoad = [];
+    for (var i = 0; i < SOLO_SCRIPT_LIST.length; i++) {
+      var src = SOLO_SCRIPT_BASE + SOLO_SCRIPT_LIST[i];
+      if (!document.querySelector('script[data-solo-src="' + src + '"]')) {
+        toLoad.push(src);
+      }
+    }
+    if (toLoad.length === 0) {
+      SOLO_SCRIPTS_LOADED = true;
+      callback();
+      return;
+    }
+    var loaded = 0;
+    toLoad.forEach(function (src) {
+      loadScript(src).then(function () {
+        loaded++;
+        if (loaded === toLoad.length) {
+          SOLO_SCRIPTS_LOADED = true;
+          callback();
+        }
+      }).catch(function () {
+        loaded++;
+        if (loaded === toLoad.length) {
+          callback();
+        }
+      });
+    });
+  }
 
   const SOLO_CONTAINER_ID = 'solo-container';
   const MENU_CONTAINER_SELECTOR = '.menu-grid, .menu-header, .footer';
@@ -77,7 +163,74 @@
     bindSoloLinks(container);
   }
 
+  function renderNonReaderMap() {
+    var games = SoloGameAdapter.listGames('non_reader');
+    var container = getOrCreateContainer();
+    var cardsHtml = '';
+    var icons = { 'rim-catcher': '🎵', 'initial-sound-detector': '🔤', 'syllable-counter': '🧩', 'final-sound-catcher': '🎯', 'vocal-a': '🅰️' };
+    var descriptions = {
+      'rim-catcher': 'Identifica palabras que riman con una palabra objetivo.',
+      'initial-sound-detector': 'Reconoce el sonido con que empieza una palabra.',
+      'syllable-counter': 'Toca cada sílaba de la palabra en orden correcto.',
+      'final-sound-catcher': 'Atrapa los items que terminan con el sonido indicado.',
+      'vocal-a': 'Selecciona la vocal correcta.'
+    };
+
+    games.forEach(function (game) {
+      var icon = icons[game.id] || '🎮';
+      var desc = descriptions[game.id] || '';
+      var progress = getGameProgress(game.id);
+      var progressHtml = progress > 0
+        ? '<div style="margin-top:8px;"><div style="background:var(--line);border-radius:4px;height:6px;overflow:hidden;"><div style="width:' + progress + '%;background:var(--accent);height:100%;"></div></div></div>'
+        : '';
+      cardsHtml += '<a href="/expedicion/solo/juego/non_reader/' + game.id + '" class="menu-card" style="min-height:120px;display:flex;flex-direction:column;justify-content:center;">' +
+        '<div style="font-size:32px;margin-bottom:8px;">' + icon + '</div>' +
+        '<h3 style="margin:0 0 4px;font-size:1rem;">' + game.title + '</h3>' +
+        '<p style="margin:0;color:var(--muted);font-size:0.85rem;line-height:1.4;">' + desc + '</p>' +
+        progressHtml +
+        '</a>';
+    });
+
+    container.innerHTML = '\
+      <div style="padding:24px 16px;">\
+        <div style="text-align:center;margin-bottom:24px;">\
+          <div style="font-size:48px;margin-bottom:8px;">🌱</div>\
+          <h2 style="margin:0 0 4px;font-size:1.5rem;">No Lectores — Mapa de Juegos</h2>\
+          <p style="color:var(--muted);margin:0;">Sonidos, letras, imágenes y aventuras guiadas.</p>\
+        </div>\
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;max-width:800px;margin:0 auto;">' +
+          cardsHtml +
+        '</div>\
+        <div style="text-align:center;margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">\
+          <a href="/expedicion/solo/" style="color:var(--accent);text-decoration:none;font-weight:600;">← Cambiar perfil</a>\
+          <a href="/expedicion/" style="color:var(--muted);text-decoration:none;">Menú principal</a>\
+        </div>\
+      </div>';
+
+    bindSoloLinks(container);
+
+    var session = loadSession();
+    updateSessionProfile(session, 'non_reader');
+  }
+
+  function getGameProgress(gameId) {
+    try {
+      var session = loadSession();
+      var studentProfileId = session && session.studentProfileId ? session.studentProfileId : 'default-student';
+      var progress = SoloProgressRepository.getProfileProgress(studentProfileId, 'non_reader');
+      if (!progress || !progress.stars) return 0;
+      var gameStars = progress.stars[gameId] || 0;
+      return Math.min(100, gameStars * 34);
+    } catch {
+      return 0;
+    }
+  }
+
   function renderProfilePlaceholder(profileId) {
+    if (profileId === 'non_reader' && typeof SoloGameAdapter !== 'undefined') {
+      renderNonReaderMap();
+      return;
+    }
     var names = { non_reader: 'No Lectores', beginner: 'Principiantes', advanced: 'Avanzados' };
     var icons = { non_reader: '🌱', beginner: '📖', advanced: '🛡️' };
     var descriptions = {
@@ -93,7 +246,7 @@
         <h2 style="margin:0 0 8px;font-size:1.5rem;">' + names[profileId] + '</h2>\
         <p style="color:var(--muted);margin:0 0 24px;max-width:480px;margin-left:auto;margin-right:auto;">' + descriptions[profileId] + '</p>\
         <div style="background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:28px;max-width:480px;margin:0 auto;">\
-          <p style="margin:0 0 16px;font-weight:700;font-size:1.1rem;">Proximamente</p>\
+          <p style="margin:0 0 16px;font-weight:700;font-size:1.1rem;">Próximamente</p>\
           <p style="margin:0;color:var(--muted);line-height:1.5;">Los minijuegos de este perfil estarán disponibles en la próxima actualización. Tu progreso se guardará automáticamente.</p>\
         </div>\
         <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">\
@@ -301,6 +454,14 @@
     document.title = 'Lectoguarida Expedición — Modo Individual';
 
     hideMenuContent();
+
+    loadSoloScripts(function () {
+      handleSoloRouteAfterLoad();
+    });
+  }
+
+  function handleSoloRouteAfterLoad() {
+    var path = window.location.pathname;
 
     if (path === '/expedicion/solo' || path === '/expedicion/solo/') {
       renderProfileSelector();

@@ -19,7 +19,7 @@ var NonReaderProfileConfig = (function () {
       voiceGuidance: true
     },
     inputModes: ['touch', 'mouse', 'keyboard'],
-    templates: ['click_selection'],
+    templates: ['click_selection', 'syllable_tap', 'falling_items'],
     maxRounds: 5,
     hintsAvailable: true
   };
