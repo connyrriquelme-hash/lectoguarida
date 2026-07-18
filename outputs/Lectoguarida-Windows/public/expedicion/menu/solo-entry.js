@@ -22,6 +22,7 @@
     'core/reward-manager.js',
     'core/progress-repository.js',
     'core/audio-manager.js',
+    'core/voice-guidance-ui.js',
     'core/accessibility-manager.js',
     'core/error-boundary.js',
     'templates/click-selection-template.js',

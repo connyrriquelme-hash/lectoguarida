@@ -68,7 +68,7 @@
       extendedTime: true,
       reducedMotion: false,
       largeTargets: true,
-      voiceGuidance: false
+      voiceGuidance: true
     },
     content: GAME_CONTENT,
     scoring: {

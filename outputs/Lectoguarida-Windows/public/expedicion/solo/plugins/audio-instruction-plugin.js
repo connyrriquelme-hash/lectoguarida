@@ -13,13 +13,21 @@ var AudioInstructionPlugin = (function () {
 
     function init(context) {}
     function start() {
-      if (config && config.instructions && config.instructions.audio) {
-        audioManager.playSound('voice');
+      if (config && config.instructions && config.instructions.text) {
+        audioManager.speakInstruction(config.instructions.text);
       }
     }
-    function pause() {}
-    function resume() {}
-    function destroy() {}
+    function pause() {
+      if (audioManager && audioManager.stopSpeech) audioManager.stopSpeech();
+    }
+    function resume() {
+      if (config && config.instructions && config.instructions.text) {
+        audioManager.repeatLastInstruction();
+      }
+    }
+    function destroy() {
+      if (audioManager && audioManager.stopSpeech) audioManager.stopSpeech();
+    }
 
     return { init: init, start: start, pause: pause, resume: resume, destroy: destroy };
   }

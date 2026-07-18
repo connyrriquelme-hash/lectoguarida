@@ -11,6 +11,9 @@
   var GAME_CONTENT = [
     {
       question: '¿Con qué sonido empieza "MANZANA"?',
+      word: 'Manzana',
+      phoneme: 'm',
+      phonemeExamples: ['manzana', 'mono', 'mar'],
       options: [
         { label: 'M', id: 'm' },
         { label: 'P', id: 'p' },
@@ -22,6 +25,9 @@
     },
     {
       question: '¿Con qué sonido empieza "SOL"?',
+      word: 'Sol',
+      phoneme: 's',
+      phonemeExamples: ['sol', 'sapo', 'silla'],
       options: [
         { label: 'L', id: 'l' },
         { label: 'S', id: 's' },
@@ -33,6 +39,9 @@
     },
     {
       question: '¿Con qué sonido empieza "FAMILIA"?',
+      word: 'Familia',
+      phoneme: 'f',
+      phonemeExamples: ['familia', 'foca', 'fresa'],
       options: [
         { label: 'V', id: 'v' },
         { label: 'P', id: 'p' },
@@ -44,6 +53,9 @@
     },
     {
       question: '¿Con qué sonido empieza "CASA"?',
+      word: 'Casa',
+      phoneme: 'k',
+      phonemeExamples: ['casa', 'conejo', 'cola'],
       options: [
         { label: 'K', id: 'k' },
         { label: 'G', id: 'g' },
@@ -55,6 +67,9 @@
     },
     {
       question: '¿Con qué sonido empieza "OJO"?',
+      word: 'Ojo',
+      phoneme: 'o',
+      phonemeExamples: ['ojo', 'oso', 'olla'],
       options: [
         { label: 'U', id: 'u' },
         { label: 'O', id: 'o' },
@@ -88,7 +103,7 @@
       extendedTime: true,
       reducedMotion: false,
       largeTargets: true,
-      voiceGuidance: false
+      voiceGuidance: true
     },
     content: GAME_CONTENT,
     scoring: {

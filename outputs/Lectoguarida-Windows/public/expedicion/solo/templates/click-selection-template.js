@@ -58,7 +58,21 @@ var ClickSelectionTemplate = (function () {
       html += '</div>';
       container.innerHTML = html;
 
+      maybeRenderVoiceGuidance(round);
       bindOptions();
+    }
+
+    function maybeRenderVoiceGuidance(round) {
+      if (!window.VoiceGuidanceUI) return;
+      if (!(config && config.accessibility && config.accessibility.voiceGuidance)) return;
+      var word = (round && round.word) ? round.word : null;
+      window.VoiceGuidanceUI.createVoiceGuidanceBar({
+        container: container,
+        instruction: (round && round.question) ? round.question : (config.instructions && config.instructions.text),
+        word: word,
+        phoneme: (round && round.phoneme) ? round.phoneme : null,
+        phonemeExamples: (round && round.phonemeExamples) ? round.phonemeExamples : []
+      });
     }
 
     function bindOptions() {

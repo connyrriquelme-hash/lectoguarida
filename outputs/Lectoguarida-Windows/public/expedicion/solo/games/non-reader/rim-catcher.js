@@ -11,6 +11,7 @@
   var GAME_CONTENT = [
     {
       question: '¿Cuál palabra rima con GATO?',
+      word: 'Gato',
       options: [
         { label: 'Pato', id: 'pato' },
         { label: 'Casa', id: 'casa' },
@@ -22,6 +23,7 @@
     },
     {
       question: '¿Cuál palabra rima con SOL?',
+      word: 'Sol',
       options: [
         { label: 'Pan', id: 'pan' },
         { label: 'Flor', id: 'flor' },
@@ -33,6 +35,7 @@
     },
     {
       question: '¿Cuál palabra rima con LUNA?',
+      word: 'Luna',
       options: [
         { label: 'Cuna', id: 'cuna' },
         { label: 'Gato', id: 'gato' },
@@ -44,6 +47,7 @@
     },
     {
       question: '¿Cuál palabra rima con MESA?',
+      word: 'Mesa',
       options: [
         { label: 'Pasa', id: 'pasa' },
         { label: 'Cielo', id: 'cielo' },
@@ -55,6 +59,7 @@
     },
     {
       question: '¿Cuál palabra rima con PERRO?',
+      word: 'Perro',
       options: [
         { label: 'Cerro', id: 'cerro' },
         { label: 'Gato', id: 'gato' },
@@ -88,7 +93,7 @@
       extendedTime: true,
       reducedMotion: false,
       largeTargets: true,
-      voiceGuidance: false
+      voiceGuidance: true
     },
     content: GAME_CONTENT,
     scoring: {
