@@ -44,6 +44,8 @@
     'games/non-reader/initial-sound-detector.js',
     'games/non-reader/syllable-counter.js',
     'games/non-reader/final-sound-catcher.js',
+    'profiles/non-reader/non-reader-difficulties.js',
+    'profiles/non-reader/non-reader-difficulty-store.js',
     '../menu/menu.js',
     '../menu/solo-entry.js'
   ];
@@ -210,10 +212,54 @@
         </div>\
       </div>';
 
+    renderDifficultySelector(container);
+
     bindSoloLinks(container);
 
     var session = loadSession();
     updateSessionProfile(session, 'non_reader');
+  }
+
+  function renderDifficultySelector(container) {
+    if (typeof NonReaderDifficultyStore === 'undefined' || typeof NonReaderDifficulty === 'undefined') return;
+
+    var session = loadSession();
+    var studentProfileId = session && session.studentProfileId ? session.studentProfileId : 'default-student';
+    var current = NonReaderDifficultyStore.getDifficulty(studentProfileId, 'non_reader');
+
+    var choices = NonReaderDifficulty.getNonReaderDifficultyList().map(function (d) {
+      var active = d.id === current ? 'border:2px solid var(--accent);background:var(--accent-soft);' : 'border:2px solid var(--line);';
+      var desc = d.description || '';
+      return '<button class="nr-difficulty-btn" data-difficulty="' + d.id + '" style="cursor:pointer;' + active + 'border-radius:14px;padding:14px 16px;background:var(--panel);text-align:left;min-width:200px;flex:1;max-width:240px;" aria-pressed="' + (d.id === current) + '">' +
+        '<div style="font-weight:700;font-size:1rem;margin-bottom:4px;">' + d.label + '</div>' +
+        '<div style="color:var(--muted);font-size:0.8rem;line-height:1.4;">' + desc + '</div>' +
+        '</button>';
+    }).join('');
+
+    var selector = document.createElement('div');
+    selector.id = 'nr-difficulty-selector';
+    selector.style.cssText = 'max-width:800px;margin:28px auto 0;';
+    selector.innerHTML = '\
+      <div style="text-align:center;margin-bottom:12px;">\
+        <h3 style="margin:0 0 4px;font-size:1.1rem;">¿Cómo quieres jugar?</h3>\
+        <p style="color:var(--muted);margin:0;font-size:0.85rem;">Elige tu nivel. Se guarda para esta estudiante en los juegos No Lectores.</p>\
+      </div>\
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">' + choices + '</div>';
+
+    container.appendChild(selector);
+
+    selector.querySelectorAll('.nr-difficulty-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-difficulty');
+        NonReaderDifficultyStore.setDifficulty(studentProfileId, 'non_reader', id);
+        selector.querySelectorAll('.nr-difficulty-btn').forEach(function (b) {
+          var isActive = b.getAttribute('data-difficulty') === id;
+          b.style.border = isActive ? '2px solid var(--accent)' : '2px solid var(--line)';
+          b.style.background = isActive ? 'var(--accent-soft)' : 'var(--panel)';
+          b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+      });
+    });
   }
 
   function getGameProgress(gameId) {
@@ -315,10 +361,24 @@
     var session = loadSession();
     var studentProfileId = session && session.studentProfileId ? session.studentProfileId : 'default-student';
 
+    var currentDifficulty = (typeof NonReaderDifficultyStore !== 'undefined')
+      ? NonReaderDifficultyStore.getDifficulty(studentProfileId, 'non_reader')
+      : 'standard';
+    var difficultyLabel = (typeof NonReaderDifficulty !== 'undefined')
+      ? NonReaderDifficulty.getNonReaderDifficultyConfig(currentDifficulty).label
+      : 'Estándar';
+
+    var difficultyBanner = document.createElement('div');
+    difficultyBanner.id = 'solo-game-difficulty';
+    difficultyBanner.style.cssText = 'text-align:center;margin:0 auto 12px;max-width:600px;color:var(--muted);font-size:0.85rem;';
+    difficultyBanner.innerHTML = 'Nivel: <strong style="color:var(--text);">' + difficultyLabel + '</strong> · <a href="/expedicion/solo/no-lectores" style="color:var(--accent);text-decoration:none;">Cambiar antes de jugar</a>';
+    gameArea.parentNode.insertBefore(difficultyBanner, gameArea);
+
     var adapter = SoloGameAdapter.createEngine({
       studentProfileId: studentProfileId,
       container: gameArea,
-      gameId: gameId
+      gameId: gameId,
+      difficulty: currentDifficulty
     });
 
     if (!adapter) {
@@ -538,6 +598,8 @@
     handleSoloRoute: handleSoloRoute,
     renderProfileSelector: renderProfileSelector,
     renderProfilePlaceholder: renderProfilePlaceholder,
+    renderNonReaderMap: renderNonReaderMap,
+    renderDifficultySelector: renderDifficultySelector,
     renderDemo: renderDemo
   };
 })();

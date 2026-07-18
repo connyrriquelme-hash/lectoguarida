@@ -32,6 +32,13 @@ var FallingItemsTemplate = (function () {
       running: false
     };
 
+    var contentConfig = (config && config.content) ? config.content : null;
+    if (contentConfig && typeof contentConfig.fallSpeed === 'number') {
+      state.itemSpeed = contentConfig.fallSpeed;
+    }
+    var largeTargets = !!(contentConfig && contentConfig.largeTargets) || !!(config && config.accessibility && config.accessibility.largeTargets);
+    var staticGrid = !!(contentConfig && contentConfig.staticGrid) || !!(config && config.accessibility && config.accessibility.reducedMotion);
+
     function start() {
       state.currentRound = 0;
       state.totalRounds = (config && config.content) ? config.content.length : 0;
@@ -40,7 +47,11 @@ var FallingItemsTemplate = (function () {
       state.items = [];
       state.running = true;
       state.lastSpawn = Date.now();
-      render();
+      if (staticGrid) {
+        renderStaticGrid();
+      } else {
+        render();
+      }
     }
 
     function render() {
@@ -71,8 +82,89 @@ var FallingItemsTemplate = (function () {
       startAnimation(round);
     }
 
-    function decorateAssets() {
-      if (window.ResilientGameAsset && config && config.__assetLoader) {
+    function renderStaticGrid() {
+      if (!container || !config || !config.content) return;
+      var round = config.content[state.currentRound];
+      if (!round) { finish(); return; }
+
+      state.answered = false;
+      state.capturedIds = [];
+      state.missedIds = [];
+      state.items = [];
+
+      var html = '<div class="solo-falling-items solo-falling-grid">';
+      html += '<div class="solo-falling-header">';
+      html += '<span class="solo-round-label">Ronda ' + (state.currentRound + 1) + '/' + state.totalRounds + '</span>';
+      if (round.question) html += '<h3>' + round.question + '</h3>';
+      html += '</div>';
+      html += '<div class="solo-falling-grid-zone" data-role="grid-zone" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:12px;">';
+      var options = round.options || [];
+      for (var i = 0; i < options.length; i++) {
+        var o = options[i];
+        var isAnswer = round.answers ? (round.answers.indexOf(i) !== -1) : false;
+        var size = largeTargets ? 'min-width:120px;height:90px;font-size:22px;' : 'min-width:90px;height:64px;font-size:16px;';
+        html += '<div class="solo-falling-item solo-grid-item" data-item-id="' + o.id + '" data-correct="' + (isAnswer ? '1' : '0') + '" style="position:relative;' + size + 'display:flex;align-items:center;justify-content:center;background:#FF9800;border-radius:8px;font-weight:bold;cursor:pointer;">';
+        html += (o.fallbackEmoji || o.label);
+        html += '</div>';
+      }
+      html += '</div>';
+      html += '<div class="solo-falling-instructions"><p>Toca los items correctos</p></div>';
+      html += '</div>';
+      container.innerHTML = html;
+
+      maybeRenderVoiceGuidance(round);
+      bindStaticGrid(round);
+    }
+
+    function bindStaticGrid(round) {
+      var zone = container.querySelector('[data-role="grid-zone"]');
+      if (!zone) return;
+
+      zone.addEventListener('click', function (e) {
+        if (state.answered) return;
+        var item = e.target.closest ? e.target.closest('.solo-grid-item') : null;
+        if (!item) return;
+        handleStaticCapture(round, item);
+      });
+    }
+
+    function handleStaticCapture(round, item) {
+      var isCorrect = item.getAttribute('data-correct') === '1';
+      var itemId = item.getAttribute('data-item-id');
+
+      if (isCorrect) {
+        if (state.capturedIds.indexOf(itemId) === -1) {
+          state.capturedIds.push(itemId);
+          state.correctInRound++;
+        }
+        item.style.background = '#4CAF50';
+        if (feedback) feedback.showCorrect();
+      } else {
+        state.incorrectInRound++;
+        item.style.background = '#f44336';
+        if (feedback) feedback.showIncorrect();
+      }
+
+      var allCorrectCaptured = round.answers ? round.answers.every(function (ai) {
+        var opt = (round.options || [])[ai];
+        return opt && state.capturedIds.indexOf(opt.id) !== -1;
+      }) : false;
+
+      if (allCorrectCaptured) {
+        state.answered = true;
+        state.running = false;
+        setTimeout(function () {
+          state.currentRound++;
+          if (state.currentRound >= state.totalRounds) {
+            finish();
+          } else {
+            renderStaticGrid();
+          }
+        }, 1200);
+      }
+    }
+
+    function decorateAssets() {      if (window.ResilientGameAsset && config && config.__assetLoader) {
         try {
           window.ResilientGameAsset.decorate(container, config.__assetLoader, {
             reducedMotion: !!(config.accessibility && config.accessibility.reducedMotion)

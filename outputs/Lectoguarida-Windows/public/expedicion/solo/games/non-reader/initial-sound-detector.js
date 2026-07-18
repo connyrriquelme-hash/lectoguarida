@@ -17,7 +17,9 @@
       options: [
         { label: 'M', id: 'm', assetId: 'mono', fallbackEmoji: '🐵' },
         { label: 'P', id: 'p', assetId: 'pelota', fallbackEmoji: '⚽' },
-        { label: 'S', id: 's', assetId: 'sapo', fallbackEmoji: '🐸' }
+        { label: 'S', id: 's', assetId: 'sapo', fallbackEmoji: '🐸' },
+        { label: 'R', id: 'r', assetId: 'rosa', fallbackEmoji: '🌹' },
+        { label: 'N', id: 'n', assetId: 'nube', fallbackEmoji: '☁️' }
       ],
       answers: [0],
       audio: 'inicial-manzana.mp3',
@@ -31,7 +33,9 @@
       options: [
         { label: 'L', id: 'l', assetId: 'luna', fallbackEmoji: '🌙' },
         { label: 'S', id: 's', assetId: 'sol', fallbackEmoji: '☀️' },
-        { label: 'T', id: 't', assetId: 'taza', fallbackEmoji: '☕' }
+        { label: 'T', id: 't', assetId: 'taza', fallbackEmoji: '☕' },
+        { label: 'F', id: 'f', assetId: 'flor', fallbackEmoji: '🌸' },
+        { label: 'C', id: 'c', assetId: 'conejo', fallbackEmoji: '🐰' }
       ],
       answers: [1],
       audio: 'inicial-sol.mp3',
@@ -45,7 +49,9 @@
       options: [
         { label: 'V', id: 'v', assetId: 'farol', fallbackEmoji: '🏮' },
         { label: 'P', id: 'p', assetId: 'pelota', fallbackEmoji: '⚽' },
-        { label: 'F', id: 'f', assetId: 'flor', fallbackEmoji: '🌸' }
+        { label: 'F', id: 'f', assetId: 'flor', fallbackEmoji: '🌸' },
+        { label: 'M', id: 'm', assetId: 'mono', fallbackEmoji: '🐵' },
+        { label: 'S', id: 's', assetId: 'sapo', fallbackEmoji: '🐸' }
       ],
       answers: [2],
       audio: 'inicial-familia.mp3',
@@ -59,7 +65,9 @@
       options: [
         { label: 'K', id: 'k', assetId: 'farol', fallbackEmoji: '🏠' },
         { label: 'G', id: 'g', assetId: 'tortuga', fallbackEmoji: '🐢' },
-        { label: 'Q', id: 'q', assetId: 'taza', fallbackEmoji: '🔑' }
+        { label: 'Q', id: 'q', assetId: 'taza', fallbackEmoji: '🔑' },
+        { label: 'P', id: 'p', assetId: 'pelota', fallbackEmoji: '⚽' },
+        { label: 'T', id: 't', assetId: 'taza', fallbackEmoji: '☕' }
       ],
       answers: [0],
       audio: 'inicial-casa.mp3',
@@ -73,7 +81,9 @@
       options: [
         { label: 'U', id: 'u', assetId: 'vaso', fallbackEmoji: '🥤' },
         { label: 'O', id: 'o', assetId: 'pelota', fallbackEmoji: '👁️' },
-        { label: 'A', id: 'a', assetId: 'farol', fallbackEmoji: '🅰️' }
+        { label: 'A', id: 'a', assetId: 'farol', fallbackEmoji: '🅰️' },
+        { label: 'E', id: 'e', assetId: 'elefante', fallbackEmoji: '🐘' },
+        { label: 'I', id: 'i', assetId: 'iguana', fallbackEmoji: '🦎' }
       ],
       answers: [1],
       audio: 'inicial-ojo.mp3',

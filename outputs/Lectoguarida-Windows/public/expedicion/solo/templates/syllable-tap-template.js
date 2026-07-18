@@ -58,6 +58,10 @@ var SyllableTapTemplate = (function () {
 
       html += '<div class="solo-syllable-blocks" data-role="syllable-tap-zone">';
 
+      if (round.visualDemo) {
+        html += '<div class="solo-syllable-demo" role="note">Toca en este orden: ' + (round.syllables || []).map(function (s, i) { return (i + 1) + '.' + s; }).join('  ') + '</div>';
+      }
+
       var syllables = round.syllables || [];
       syllables.forEach(function (syl, i) {
         var sizeClass = (config.accessibility && config.accessibility.largeTargets) ? ' solo-syllable--large' : '';

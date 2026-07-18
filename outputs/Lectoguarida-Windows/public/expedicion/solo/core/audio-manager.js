@@ -26,6 +26,7 @@ var AudioManager = (function () {
   var activeUtterance = null;
   var lastInstruction = null;
   var speechErrorHandler = null;
+  var defaultSpeechRate = 0.88;
 
   function getSynth() {
     return (typeof window !== 'undefined' && window.speechSynthesis) ? window.speechSynthesis : null;
@@ -85,7 +86,7 @@ var AudioManager = (function () {
     var voice = selectChileanSpanishVoice();
     if (voice) u.voice = voice;
     u.lang = (voice && voice.lang) ? voice.lang : SPEECH_LOCALE;
-    u.rate = (options && typeof options.rate === 'number') ? options.rate : 0.95;
+    u.rate = (options && typeof options.rate === 'number') ? options.rate : defaultSpeechRate;
     u.pitch = (options && typeof options.pitch === 'number') ? options.pitch : 1.0;
     u.volume = (muted) ? 0 : ((options && typeof options.volume === 'number') ? options.volume : 1.0);
     u.onerror = function (err) {
@@ -243,6 +244,16 @@ var AudioManager = (function () {
     muted = !!value;
   }
 
+  function setDefaultSpeechRate(rate) {
+    if (typeof rate === 'number' && rate > 0 && rate <= 2) {
+      defaultSpeechRate = rate;
+    }
+  }
+
+  function getDefaultSpeechRate() {
+    return defaultSpeechRate;
+  }
+
   function isMuted() {
     return muted;
   }
@@ -264,6 +275,8 @@ var AudioManager = (function () {
     unlock: unlock,
     playSound: playSound,
     setMuted: setMuted,
+    setDefaultSpeechRate: setDefaultSpeechRate,
+    getDefaultSpeechRate: getDefaultSpeechRate,
     isMuted: isMuted,
     isUnlocked: isUnlocked,
     destroy: destroy,
