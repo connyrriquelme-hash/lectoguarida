@@ -114,6 +114,50 @@ const SoloProgressRepository = (function () {
     save(studentProfileId, progress);
   }
 
+  function updateProfile(studentProfileId, readerProfile, patch) {
+    var progress = load(studentProfileId);
+    var profileData = progress.profiles[readerProfile];
+    if (!profileData) return;
+    Object.keys(patch).forEach(function (key) {
+      profileData[key] = patch[key];
+    });
+    save(studentProfileId, progress);
+  }
+
+  function addReward(studentProfileId, readerProfile, reward) {
+    var progress = load(studentProfileId);
+    var profileData = progress.profiles[readerProfile];
+    if (!profileData) return;
+    var rewards = profileData.rewards || [];
+    if (rewards.indexOf(reward) === -1) {
+      rewards.push(reward);
+      profileData.rewards = rewards;
+      save(studentProfileId, progress);
+    }
+  }
+
+  function markGameCompleted(studentProfileId, readerProfile, gameId, result) {
+    var progress = load(studentProfileId);
+    var profileData = progress.profiles[readerProfile];
+    if (!profileData) return;
+    if (!profileData.completedGames.includes(gameId)) {
+      profileData.completedGames.push(gameId);
+    }
+    if (result && result.stars) {
+      profileData.stars[gameId] = Math.max(profileData.stars[gameId] || 0, result.stars);
+    }
+    if (result && result.score) {
+      profileData.skillProgress[gameId] = result.score;
+    }
+    save(studentProfileId, progress);
+  }
+
+  function resetProfile(studentProfileId, readerProfile) {
+    var progress = load(studentProfileId);
+    progress.profiles[readerProfile] = createDefaultProgress(studentProfileId).profiles[readerProfile];
+    save(studentProfileId, progress);
+  }
+
   function clearAll(studentProfileId) {
     try {
       localStorage.removeItem(getProgressKey(studentProfileId));
@@ -128,9 +172,13 @@ const SoloProgressRepository = (function () {
     save: save,
     getProfileProgress: getProfileProgress,
     updateProfileProgress: updateProfileProgress,
+    updateProfile: updateProfile,
     addLostPages: addLostPages,
     getLostPages: getLostPages,
     completeGame: completeGame,
+    addReward: addReward,
+    markGameCompleted: markGameCompleted,
+    resetProfile: resetProfile,
     clearAll: clearAll,
     createDefaultProgress: createDefaultProgress
   };
