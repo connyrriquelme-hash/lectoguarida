@@ -23,6 +23,8 @@
     'core/progress-repository.js',
     'core/audio-manager.js',
     'core/voice-guidance-ui.js',
+    'core/asset-loader.js',
+    'ui/resilient-game-asset.js',
     'core/accessibility-manager.js',
     'core/error-boundary.js',
     'templates/click-selection-template.js',

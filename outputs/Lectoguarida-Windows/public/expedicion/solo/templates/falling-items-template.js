@@ -66,8 +66,19 @@ var FallingItemsTemplate = (function () {
       container.innerHTML = html;
 
       maybeRenderVoiceGuidance(round);
+      decorateAssets();
       bindRound(round);
       startAnimation(round);
+    }
+
+    function decorateAssets() {
+      if (window.ResilientGameAsset && config && config.__assetLoader) {
+        try {
+          window.ResilientGameAsset.decorate(container, config.__assetLoader, {
+            reducedMotion: !!(config.accessibility && config.accessibility.reducedMotion)
+          });
+        } catch (e) { /* ignore */ }
+      }
     }
 
     function maybeRenderVoiceGuidance(round) {
@@ -150,7 +161,31 @@ var FallingItemsTemplate = (function () {
       el.setAttribute('data-item-id', itemData.id);
       el.setAttribute('data-correct', itemData.isCorrect ? '1' : '0');
       el.style.cssText = 'position:absolute;top:-40px;left:' + (10 + Math.random() * 80) + '%;width:60px;height:40px;display:flex;align-items:center;justify-content:center;background:#FF9800;border-radius:6px;font-weight:bold;font-size:16px;cursor:pointer;transition:top 0.05s linear;';
-      el.textContent = itemData.label;
+      var sourceOpt = options.filter(function (o) { return o.id === itemData.id; })[0];
+      if (sourceOpt && sourceOpt.assetId && window.ResilientGameAsset) {
+        window.ResilientGameAsset.render(el, {
+          id: sourceOpt.assetId,
+          src: '',
+          type: 'image/svg+xml',
+          alt: itemData.label,
+          fallback: sourceOpt.fallbackEmoji || (sourceOpt.fallback || itemData.label),
+          ok: false
+        }, { reducedMotion: !!(config && config.accessibility && config.accessibility.reducedMotion) });
+        if (sourceOpt.assetId && config && config.__assetLoader) {
+          config.__assetsReady.then(function () {
+            try {
+              var def = config.__assetLoader.getAsset(sourceOpt.assetId);
+              if (def && def.ok) {
+                window.ResilientGameAsset.render(el, def, {
+                  reducedMotion: !!(config && config.accessibility && config.accessibility.reducedMotion)
+                });
+              }
+            } catch (e) { /* ignore */ }
+          });
+        }
+      } else {
+        el.textContent = itemData.label;
+      }
       zone.appendChild(el);
     }
 

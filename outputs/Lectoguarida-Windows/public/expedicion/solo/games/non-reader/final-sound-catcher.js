@@ -13,10 +13,10 @@
       question: 'Atrapa los que terminan en -O',
       targetSound: '-o',
       options: [
-        { label: 'Gato', id: 'gato', isCorrect: true },
-        { label: 'Mesa', id: 'mesa', isCorrect: false },
-        { label: 'Sol', id: 'sol', isCorrect: false },
-        { label: 'Perro', id: 'perro', isCorrect: true }
+        { label: 'Gato', id: 'gato', isCorrect: true, assetId: 'gato', fallbackEmoji: '🐱' },
+        { label: 'Mesa', id: 'mesa', isCorrect: false, assetId: 'mesa', fallbackEmoji: '🪑' },
+        { label: 'Sol', id: 'sol', isCorrect: false, assetId: 'sol', fallbackEmoji: '☀️' },
+        { label: 'Perro', id: 'perro', isCorrect: true, assetId: 'raton', fallbackEmoji: '🐶' }
       ],
       answers: [0, 3],
       audio: 'final-o.mp3',
@@ -26,10 +26,10 @@
       question: 'Atrapa los que terminan en -A',
       targetSound: '-a',
       options: [
-        { label: 'Casa', id: 'casa', isCorrect: true },
-        { label: 'Pato', id: 'pato', isCorrect: false },
-        { label: 'Luna', id: 'luna', isCorrect: true },
-        { label: 'Sol', id: 'sol', isCorrect: false }
+        { label: 'Casa', id: 'casa', isCorrect: true, assetId: 'casa', fallbackEmoji: '🏠' },
+        { label: 'Pato', id: 'pato', isCorrect: false, assetId: 'raton', fallbackEmoji: '🦆' },
+        { label: 'Luna', id: 'luna', isCorrect: true, assetId: 'luna', fallbackEmoji: '🌙' },
+        { label: 'Sol', id: 'sol', isCorrect: false, assetId: 'sol', fallbackEmoji: '☀️' }
       ],
       answers: [0, 2],
       audio: 'final-a.mp3',
@@ -39,10 +39,10 @@
       question: 'Atrapa los que terminan en -L',
       targetSound: '-l',
       options: [
-        { label: 'Animal', id: 'animal', isCorrect: true },
-        { label: 'Casa', id: 'casa', isCorrect: false },
-        { label: 'Flor', id: 'flor', isCorrect: false },
-        { label: 'Papel', id: 'papel', isCorrect: true }
+        { label: 'Animal', id: 'animal', isCorrect: true, assetId: 'elefante', fallbackEmoji: '🐘' },
+        { label: 'Casa', id: 'casa', isCorrect: false, assetId: 'casa', fallbackEmoji: '🏠' },
+        { label: 'Flor', id: 'flor', isCorrect: false, assetId: 'flor', fallbackEmoji: '🌸' },
+        { label: 'Papel', id: 'papel', isCorrect: true, assetId: 'papel', fallbackEmoji: '📄' }
       ],
       answers: [0, 3],
       audio: 'final-l.mp3',
@@ -52,10 +52,10 @@
       question: 'Atrapa los que terminan en -N',
       targetSound: '-n',
       options: [
-        { label: 'Pan', id: 'pan', isCorrect: true },
-        { label: 'Luna', id: 'luna', isCorrect: false },
-        { label: 'Corazón', id: 'corazon', isCorrect: true },
-        { label: 'Pato', id: 'pato', isCorrect: false }
+        { label: 'Pan', id: 'pan', isCorrect: true, assetId: 'vaso', fallbackEmoji: '🍞' },
+        { label: 'Luna', id: 'luna', isCorrect: false, assetId: 'luna', fallbackEmoji: '🌙' },
+        { label: 'Corazón', id: 'corazon', isCorrect: true, assetId: 'libro', fallbackEmoji: '💙' },
+        { label: 'Pato', id: 'pato', isCorrect: false, assetId: 'raton', fallbackEmoji: '🦆' }
       ],
       answers: [0, 2],
       audio: 'final-n.mp3',
@@ -65,10 +65,10 @@
       question: 'Atrapa los que terminan en -S',
       targetSound: '-s',
       options: [
-        { label: 'Mesas', id: 'mesas', isCorrect: true },
-        { label: 'Gato', id: 'gato', isCorrect: false },
-        { label: 'Lunes', id: 'lunes', isCorrect: true },
-        { label: 'Pato', id: 'pato', isCorrect: false }
+        { label: 'Mesas', id: 'mesas', isCorrect: true, assetId: 'papel', fallbackEmoji: '📄' },
+        { label: 'Gato', id: 'gato', isCorrect: false, assetId: 'gato', fallbackEmoji: '🐱' },
+        { label: 'Lunes', id: 'lunes', isCorrect: true, assetId: 'luna', fallbackEmoji: '🌙' },
+        { label: 'Pato', id: 'pato', isCorrect: false, assetId: 'raton', fallbackEmoji: '🦆' }
       ],
       answers: [0, 2],
       audio: 'final-s.mp3',

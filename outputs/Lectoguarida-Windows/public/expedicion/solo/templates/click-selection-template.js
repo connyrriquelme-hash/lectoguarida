@@ -49,7 +49,11 @@ var ClickSelectionTemplate = (function () {
       options.forEach(function (opt, i) {
         var sizeClass = (config.accessibility && config.accessibility.largeTargets) ? ' solo-option--large' : '';
         html += '<button class="solo-option' + sizeClass + '" data-index="' + i + '" tabindex="0">';
-        if (opt.image) html += '<img src="' + opt.image + '" alt="' + (opt.label || '') + '">';
+        if (opt.assetId) {
+          html += '<img class="solo-option-img" data-asset-id="' + opt.assetId + '" alt="' + (opt.label || '') + '" data-fallback="' + (opt.fallbackEmoji || (opt.fallback || '')) + '">';
+        } else if (opt.image) {
+          html += '<img src="' + opt.image + '" alt="' + (opt.label || '') + '">';
+        }
         if (opt.label) html += '<span>' + opt.label + '</span>';
         html += '</button>';
       });
@@ -59,7 +63,18 @@ var ClickSelectionTemplate = (function () {
       container.innerHTML = html;
 
       maybeRenderVoiceGuidance(round);
+      decorateAssets();
       bindOptions();
+    }
+
+    function decorateAssets() {
+      if (window.ResilientGameAsset && config && config.__assetLoader) {
+        try {
+          window.ResilientGameAsset.decorate(container, config.__assetLoader, {
+            reducedMotion: !!(config.accessibility && config.accessibility.reducedMotion)
+          });
+        } catch (e) { /* ignore */ }
+      }
     }
 
     function maybeRenderVoiceGuidance(round) {

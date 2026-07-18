@@ -13,9 +13,9 @@
       question: '¿Cuál palabra rima con GATO?',
       word: 'Gato',
       options: [
-        { label: 'Pato', id: 'pato' },
-        { label: 'Casa', id: 'casa' },
-        { label: 'Luna', id: 'luna' }
+        { label: 'Pato', id: 'pato', assetId: 'pato', fallbackEmoji: '🦆' },
+        { label: 'Casa', id: 'casa', assetId: 'ventana', fallbackEmoji: '🏠' },
+        { label: 'Luna', id: 'luna', assetId: 'campana', fallbackEmoji: '🌙' }
       ],
       answers: [0],
       audio: 'rima-gato.mp3',
@@ -25,9 +25,9 @@
       question: '¿Cuál palabra rima con SOL?',
       word: 'Sol',
       options: [
-        { label: 'Pan', id: 'pan' },
-        { label: 'Flor', id: 'flor' },
-        { label: 'Color', id: 'color' }
+        { label: 'Pan', id: 'pan', assetId: 'boton', fallbackEmoji: '🍞' },
+        { label: 'Flor', id: 'flor', assetId: 'girasol', fallbackEmoji: '🌸' },
+        { label: 'Color', id: 'color', assetId: 'estrella', fallbackEmoji: '🎨' }
       ],
       answers: [2],
       audio: 'rima-sol.mp3',
@@ -37,9 +37,9 @@
       question: '¿Cuál palabra rima con LUNA?',
       word: 'Luna',
       options: [
-        { label: 'Cuna', id: 'cuna' },
-        { label: 'Gato', id: 'gato' },
-        { label: 'Perro', id: 'perro' }
+        { label: 'Cuna', id: 'cuna', assetId: 'caracol', fallbackEmoji: '🍼' },
+        { label: 'Gato', id: 'gato', assetId: 'gato', fallbackEmoji: '🐱' },
+        { label: 'Perro', id: 'perro', assetId: 'raton', fallbackEmoji: '🐶' }
       ],
       answers: [0],
       audio: 'rima-luna.mp3',
@@ -49,9 +49,9 @@
       question: '¿Cuál palabra rima con MESA?',
       word: 'Mesa',
       options: [
-        { label: 'Pasa', id: 'pasa' },
-        { label: 'Cielo', id: 'cielo' },
-        { label: 'Río', id: 'rio' }
+        { label: 'Pasa', id: 'pasa', assetId: 'botella', fallbackEmoji: '🍞' },
+        { label: 'Cielo', id: 'cielo', assetId: 'estrella', fallbackEmoji: '🌌' },
+        { label: 'Río', id: 'rio', assetId: 'zapato', fallbackEmoji: '🌊' }
       ],
       answers: [0],
       audio: 'rima-mesa.mp3',
@@ -61,9 +61,9 @@
       question: '¿Cuál palabra rima con PERRO?',
       word: 'Perro',
       options: [
-        { label: 'Cerro', id: 'cerro' },
-        { label: 'Gato', id: 'gato' },
-        { label: 'Pato', id: 'pato' }
+        { label: 'Cerro', id: 'cerro', assetId: 'girasol', fallbackEmoji: '⛰️' },
+        { label: 'Gato', id: 'gato', assetId: 'gato', fallbackEmoji: '🐱' },
+        { label: 'Pato', id: 'pato', assetId: 'pato', fallbackEmoji: '🦆' }
       ],
       answers: [0],
       audio: 'rima-perro.mp3',

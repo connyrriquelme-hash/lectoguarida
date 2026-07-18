@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "gameId": "syllable-counter",
+  "assets": [
+    { "id": "huella", "src": "/expedicion/solo/assets/non-reader/syllables/huella.svg", "type": "image/svg+xml", "alt": "Huella", "fallback": "👣", "category": "ui" },
+    { "id": "circulo-silabico", "src": "/expedicion/solo/assets/non-reader/syllables/circulo-silabico.svg", "type": "image/svg+xml", "alt": "Círculo silábico", "fallback": "🔵", "category": "ui" },
+    { "id": "obstaculo", "src": "/expedicion/solo/assets/non-reader/syllables/obstaculo.svg", "type": "image/svg+xml", "alt": "Obstáculo", "fallback": "⛔", "category": "ui" },
+    { "id": "avatar-explorador", "src": "/expedicion/solo/assets/non-reader/syllables/avatar-explorador.svg", "type": "image/svg+xml", "alt": "Avatar explorador", "fallback": "🧒", "category": "ui" },
+    { "id": "boton-escuchar", "src": "/expedicion/solo/assets/non-reader/syllables/boton-escuchar.svg", "type": "image/svg+xml", "alt": "Botón escuchar", "fallback": "🔊", "category": "ui" },
+    { "id": "boton-reiniciar", "src": "/expedicion/solo/assets/non-reader/syllables/boton-reiniciar.svg", "type": "image/svg+xml", "alt": "Botón reiniciar", "fallback": "🔄", "category": "ui" }
+  ]
+}

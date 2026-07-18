@@ -1,0 +1,5 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="ventana">
+  <title>ventana</title>
+  <rect x="0" y="0" width="100" height="100" rx="14" fill="#ffffff" stroke="#cfd8dc" stroke-width="2"/>
+  <rect x="28" y="24" width="44" height="52" rx="6" fill="#81d4fa"/><line x1="50" y1="24" x2="50" y2="76" stroke="#0277bd" stroke-width="3"/><line x1="28" y1="50" x2="72" y2="50" stroke="#0277bd" stroke-width="3"/>
+</svg>

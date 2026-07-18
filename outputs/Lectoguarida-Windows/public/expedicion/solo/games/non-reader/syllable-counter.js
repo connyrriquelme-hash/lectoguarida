@@ -12,6 +12,8 @@
     {
       question: 'Toca las sílabas de "MAN-ZA-NA"',
       word: 'Manzana',
+      avatarAssetId: 'avatar-explorador',
+      avatarFallback: '🧒',
       syllables: ['man', 'za', 'na'],
       audio: 'siliba-manzana.mp3',
       hint: 'Man-za-na: 3 sílabas'
@@ -19,6 +21,8 @@
     {
       question: 'Toca las sílabas de "SO-LAR"',
       word: 'Solar',
+      avatarAssetId: 'avatar-explorador',
+      avatarFallback: '🧒',
       syllables: ['so', 'lar'],
       audio: 'siliba-solar.mp3',
       hint: 'So-lar: 2 sílabas'
@@ -26,6 +30,8 @@
     {
       question: 'Toca las sílabas de "MA-RI-PO-SA"',
       word: 'Mariposa',
+      avatarAssetId: 'avatar-explorador',
+      avatarFallback: '🧒',
       syllables: ['ma', 'ri', 'po', 'sa'],
       audio: 'siliba-mariposa.mp3',
       hint: 'Ma-ri-po-sa: 4 sílabas'
@@ -33,6 +39,8 @@
     {
       question: 'Toca las sílabas de "PA-TO"',
       word: 'Pato',
+      avatarAssetId: 'avatar-explorador',
+      avatarFallback: '🧒',
       syllables: ['pa', 'to'],
       audio: 'siliba-pato.mp3',
       hint: 'Pa-to: 2 sílabas'
@@ -40,6 +48,8 @@
     {
       question: 'Toca las sílabas de "CA-RA-COL"',
       word: 'Caracol',
+      avatarAssetId: 'avatar-explorador',
+      avatarFallback: '🧒',
       syllables: ['ca', 'ra', 'col'],
       audio: 'siliba-caracol.mp3',
       hint: 'Ca-ra-col: 3 sílabas'

@@ -52,6 +52,8 @@ var SyllableTapTemplate = (function () {
 
       if (round.wordImage) {
         html += '<div class="solo-syllable-image"><img src="' + round.wordImage + '" alt="' + (round.word || '') + '"></div>';
+      } else if (round.avatarAssetId) {
+        html += '<div class="solo-syllable-image"><img class="solo-syllable-avatar" data-asset-id="' + round.avatarAssetId + '" alt="Avatar explorador" data-fallback="' + (round.avatarFallback || '🧒') + '"></div>';
       }
 
       html += '<div class="solo-syllable-blocks" data-role="syllable-tap-zone">';
@@ -60,6 +62,7 @@ var SyllableTapTemplate = (function () {
       syllables.forEach(function (syl, i) {
         var sizeClass = (config.accessibility && config.accessibility.largeTargets) ? ' solo-syllable--large' : '';
         html += '<button class="solo-syllable' + sizeClass + '" data-syl-index="' + i + '" data-syl="' + syl + '" tabindex="0">';
+        html += '<img class="solo-syllable-circle" data-asset-id="circulo-silabico" alt="" data-fallback="🔵">';
         html += '<span class="solo-syllable-text">' + syl + '</span>';
         html += '<span class="solo-syllable-order">' + (i + 1) + '</span>';
         html += '</button>';
@@ -77,7 +80,18 @@ var SyllableTapTemplate = (function () {
       container.innerHTML = html;
 
       maybeRenderVoiceGuidance(round);
+      decorateAssets();
       bindSyllables(round);
+    }
+
+    function decorateAssets() {
+      if (window.ResilientGameAsset && config && config.__assetLoader) {
+        try {
+          window.ResilientGameAsset.decorate(container, config.__assetLoader, {
+            reducedMotion: !!(config.accessibility && config.accessibility.reducedMotion)
+          });
+        } catch (e) { /* ignore */ }
+      }
     }
 
     function maybeRenderVoiceGuidance(round) {

@@ -1,0 +1,5 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="obstaculo">
+  <title>obstaculo</title>
+  <rect x="0" y="0" width="100" height="100" rx="14" fill="#ffffff" stroke="#cfd8dc" stroke-width="2"/>
+  <rect x="30" y="34" width="40" height="34" rx="8" fill="#ef9a9a" stroke="#c62828" stroke-width="3"/><line x1="42" y1="42" x2="58" y2="60" stroke="#c62828" stroke-width="4"/><line x1="58" y1="42" x2="42" y2="60" stroke="#c62828" stroke-width="4"/>
+</svg>

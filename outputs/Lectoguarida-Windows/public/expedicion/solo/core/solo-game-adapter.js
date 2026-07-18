@@ -44,6 +44,18 @@ var SoloGameAdapter = (function () {
       container: container
     });
 
+    var assetLoader = options.assetLoader || (typeof AssetLoader !== 'undefined' ? AssetLoader.create({}) : null);
+    var manifestUrl = (gameDef.profile === 'non_reader')
+      ? ('/expedicion/solo/games/non-reader/' + gameDef.id + '/assets-manifest.json')
+      : null;
+
+    var assetsReady = Promise.resolve(null);
+    if (assetLoader && manifestUrl) {
+      assetsReady = assetLoader.loadManifest(manifestUrl).then(function (manifest) {
+        return assetLoader.preloadAssets(manifest.assets);
+      }).catch(function () { return null; });
+    }
+
     var template = gameDef.createTemplate(container, gameDef.content, engine);
 
     engine.setTemplate(template);
@@ -63,15 +75,32 @@ var SoloGameAdapter = (function () {
       content: gameDef.content,
       scoring: gameDef.scoring,
       rewards: gameDef.rewards,
-      completion: gameDef.completion
+      completion: gameDef.completion,
+      __assetLoader: assetLoader,
+      __assetsReady: assetsReady
     };
+
+    function startGameSafe() {
+      engine.loadGame(config);
+      engine.startGame();
+      if (assetLoader && container) {
+        assetsReady.then(function () {
+          try {
+            if (window.ResilientGameAsset) window.ResilientGameAsset.decorate(container, assetLoader, {
+              reducedMotion: !!(config.accessibility && config.accessibility.reducedMotion)
+            });
+          } catch (e) { /* ignore decoración tardía */ }
+        });
+      }
+    }
 
     return {
       engine: engine,
       config: config,
+      assetLoader: assetLoader,
+      assetsReady: assetsReady,
       loadAndStart: function () {
-        engine.loadGame(config);
-        engine.startGame();
+        startGameSafe();
       }
     };
   }
