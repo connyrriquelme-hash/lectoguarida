@@ -158,7 +158,7 @@ const SoloProgressRepository = (function () {
     save(studentProfileId, progress);
   }
 
-  function clearAll(studentProfileId) {
+  function resetAllDevelopmentData(studentProfileId) {
     try {
       localStorage.removeItem(getProgressKey(studentProfileId));
       localStorage.removeItem(getSettingsKey(studentProfileId));
@@ -179,7 +179,6 @@ const SoloProgressRepository = (function () {
     addReward: addReward,
     markGameCompleted: markGameCompleted,
     resetProfile: resetProfile,
-    clearAll: clearAll,
     createDefaultProgress: createDefaultProgress
   };
 })();

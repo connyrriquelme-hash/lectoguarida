@@ -32,7 +32,20 @@ var AccessibilityManager = (function () {
   function load(studentProfileId) {
     try {
       var raw = localStorage.getItem(getSettingsKey(studentProfileId));
-      if (!raw) return createDefaultSettings();
+      if (!raw) {
+        var oldKey = SETTINGS_KEY_PREFIX;
+        var oldRaw = localStorage.getItem(oldKey);
+        if (oldRaw) {
+          try {
+            var oldParsed = JSON.parse(oldRaw);
+            if (oldParsed && oldParsed.version === 1) {
+              save(studentProfileId, oldParsed);
+              return oldParsed;
+            }
+          } catch { /* ignore old data */ }
+        }
+        return createDefaultSettings();
+      }
       var parsed = JSON.parse(raw);
       if (parsed && parsed.version === 1) return parsed;
       return createDefaultSettings();
