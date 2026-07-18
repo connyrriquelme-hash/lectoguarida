@@ -79,7 +79,7 @@
   function createTemplate(container, content, engine) {
     return FallingItemsTemplate.create({
       container: container,
-      config: { content: content, accessibility: { largeTargets: true } },
+      config: { content: content, accessibility: { largeTargets: true, voiceGuidance: true } },
       engine: engine
     });
   }

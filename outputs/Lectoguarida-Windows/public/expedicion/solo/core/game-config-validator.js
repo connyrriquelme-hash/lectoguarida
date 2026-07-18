@@ -9,7 +9,7 @@ var GameConfigValidator = (function () {
 
   var REQUIRED_FIELDS = ['id', 'title', 'profile', 'template'];
   var VALID_PROFILES = ['non_reader', 'beginner', 'advanced'];
-  var VALID_TEMPLATES = ['click_selection', 'drag_drop', 'avatar_movement'];
+  var VALID_TEMPLATES = ['click_selection', 'drag_drop', 'avatar_movement', 'syllable_tap', 'falling_items'];
 
   function validate(config) {
     var errors = [];

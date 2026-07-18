@@ -124,7 +124,7 @@ var AssetLoader = (function () {
     return this._fetch(manifestUrl).then(function (fetched) {
       var manifest;
       try {
-        manifest = JSON.parse(fetched.body);
+        manifest = JSON.parse(String(fetched.body).replace(/^﻿/, ''));
       } catch (e) {
         throw new Error('manifest-parse-error');
       }
@@ -150,7 +150,22 @@ var AssetLoader = (function () {
       url = this.baseUrl + url.replace(/^\.\//, '');
     }
     return this._fetch(url).then(function (fetched) {
-      self._validateType(def, fetched);
+      try {
+        self._validateType(def, fetched);
+      } catch (e) {
+        var fallback = {
+          id: def.id,
+          src: def.src,
+          type: def.type,
+          alt: def.alt,
+          fallback: def.fallback,
+          category: def.category || 'option',
+          ok: false,
+          error: e && e.message ? e.message : 'validation-failed'
+        };
+        self.sessionCache[def.id] = fallback;
+        return fallback;
+      }
       if (self.destroyed) return def;
       var stored = {
         id: def.id,

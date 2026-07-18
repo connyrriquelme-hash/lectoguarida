@@ -183,6 +183,7 @@ var SoloGameAdapter = (function () {
     }
 
     if (gameDef.template === 'falling_items') {
+      if (!Array.isArray(copy)) copy = Array.isArray(content) ? content.slice() : copy;
       copy.fallSpeed = difficultyConfig.fallSpeed;
       copy.closeDistractors = !!difficultyConfig.closeDistractors;
       copy.largeTargets = !!difficultyConfig.largeTargets;
