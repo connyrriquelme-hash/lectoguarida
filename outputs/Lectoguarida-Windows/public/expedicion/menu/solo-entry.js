@@ -121,6 +121,12 @@
   }
 
   function renderGamePlaceholder(profileId, gameId) {
+    var gameDef = SoloGameAdapter.getGameDef(gameId);
+    if (gameDef) {
+      renderGameArea(profileId, gameId);
+      return;
+    }
+
     var container = getOrCreateContainer();
     container.innerHTML = '\
       <div style="text-align:center;padding:40px 16px;">\
@@ -133,6 +139,90 @@
         </div>\
         <a href="/expedicion/solo/' + (profileId === 'non_reader' ? 'no-lectores' : profileId === 'beginner' ? 'principiantes' : 'avanzados') + '" style="display:inline-block;margin-top:24px;color:var(--accent);text-decoration:none;font-weight:600;">← Volver al mapa</a>\
       </div>';
+  }
+
+  function renderGameArea(profileId, gameId) {
+    var container = getOrCreateContainer();
+    container.innerHTML = '\
+      <div style="padding:16px;">\
+        <div id="solo-game-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">\
+          <a href="/expedicion/solo/' + (profileId === 'non_reader' ? 'no-lectores' : profileId === 'beginner' ? 'principiantes' : 'avanzados') + '" style="color:var(--accent);text-decoration:none;font-weight:600;">← Volver</a>\
+          <span id="solo-game-score" style="font-weight:700;"></span>\
+        </div>\
+        <div id="solo-game-area" style="max-width:600px;margin:0 auto;"></div>\
+        <div id="solo-game-footer" style="text-align:center;margin-top:16px;"></div>\
+      </div>';
+
+    var gameArea = document.getElementById('solo-game-area');
+    if (!gameArea) return;
+
+    var session = loadSession();
+    var studentProfileId = session && session.studentProfileId ? session.studentProfileId : 'default-student';
+
+    var adapter = SoloGameAdapter.createEngine({
+      studentProfileId: studentProfileId,
+      container: gameArea,
+      gameId: gameId
+    });
+
+    if (!adapter) {
+      gameArea.innerHTML = '<p style="text-align:center;color:var(--muted);">Juego no encontrado</p>';
+      return;
+    }
+
+    var engine = adapter.engine;
+
+    engine.getStateMachine().subscribe(function (state, phase) {
+      var header = document.getElementById('solo-game-header');
+      var footer = document.getElementById('solo-game-footer');
+      var scoreEl = document.getElementById('solo-game-score');
+
+      if (phase === 'PLAYING' && scoreEl) {
+        scoreEl.textContent = 'Jugando...';
+      }
+
+      if (phase === 'FEEDBACK' && scoreEl) {
+        var sc = engine.getScoring();
+        if (sc) scoreEl.textContent = 'Puntaje: ' + sc.score;
+      }
+
+      if (phase === 'GAME_COMPLETE' && footer) {
+        var finalSc = engine.getScoring();
+        var stars = finalSc ? finalSc.score >= 200 ? '⭐⭐⭐' : finalSc.score >= 100 ? '⭐⭐' : '⭐' : '⭐';
+        footer.innerHTML = '\
+          <div style="background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;max-width:400px;margin:0 auto;">\
+            <p style="font-size:2rem;margin:0 0 8px;">' + stars + '</p>\
+            <p style="margin:0 0 4px;font-weight:700;">¡Completado!</p>\
+            <p style="margin:0 0 16px;color:var(--muted);">Puntaje: ' + (finalSc ? finalSc.score : 0) + '</p>\
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">\
+              <button id="solo-replay-btn" style="padding:8px 20px;border-radius:8px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-weight:600;">Replay</button>\
+              <a href="/expedicion/solo/' + (profileId === 'non_reader' ? 'no-lectores' : profileId === 'beginner' ? 'principiantes' : 'avanzados') + '" style="padding:8px 20px;border-radius:8px;border:none;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;">Volver al mapa</a>\
+            </div>\
+          </div>';
+        if (scoreEl) scoreEl.textContent = '';
+
+        var replayBtn = document.getElementById('solo-replay-btn');
+        if (replayBtn) {
+          replayBtn.addEventListener('click', function () {
+            footer.innerHTML = '';
+            engine.resetGame();
+            adapter.loadAndStart();
+          });
+        }
+      }
+
+      if (phase === 'GAME_FAILED' && footer) {
+        footer.innerHTML = '\
+          <div style="background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;max-width:400px;margin:0 auto;">\
+            <p style="margin:0 0 8px;font-weight:700;color:#f44336;">Hubo un error</p>\
+            <p style="margin:0 0 16px;color:var(--muted);">Intenta de nuevo</p>\
+            <a href="/expedicion/solo/' + (profileId === 'non_reader' ? 'no-lectores' : profileId === 'beginner' ? 'principiantes' : 'avanzados') + '" style="padding:8px 20px;border-radius:8px;border:none;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;">Volver al mapa</a>\
+          </div>';
+        if (scoreEl) scoreEl.textContent = '';
+      }
+    });
+
+    adapter.loadAndStart();
   }
 
   function renderGuardianPlaceholder(worldId) {
