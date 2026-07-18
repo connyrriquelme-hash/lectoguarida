@@ -1,4 +1,4 @@
-import test from 'node:test';
+import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -9,6 +9,14 @@ import { JSDOM } from 'jsdom';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const BASE = resolve(__dirname, '../public/expedicion/solo');
+
+const __openDoms = new Set();
+after(() => {
+  for (const d of __openDoms) {
+    try { d.window.close(); } catch (e) { /* ignore */ }
+  }
+  __openDoms.clear();
+});
 
 function readFile(subpath) {
   return readFileSync(resolve(BASE, subpath), 'utf8');
@@ -58,6 +66,7 @@ function createDom() {
   });
   dom.window.requestAnimationFrame = function(cb) { return setTimeout(cb, 0); };
   dom.window.cancelAnimationFrame = function(id) { clearTimeout(id); };
+  __openDoms.add(dom);
   return dom;
 }
 

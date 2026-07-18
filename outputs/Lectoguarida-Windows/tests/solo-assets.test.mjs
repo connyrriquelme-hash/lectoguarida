@@ -1,4 +1,4 @@
-import test from 'node:test';
+import test, { after, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -10,6 +10,45 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const BASE = resolve(__dirname, '../public/expedicion/solo');
 
+const __openDoms = new Set();
+const __rafTimers = new Set();
+let __currentDom = null;
+function __raf(cb) {
+  const id = setTimeout(cb, 0);
+  __rafTimers.add(id);
+  return id;
+}
+function __cancelRaf(id) {
+  clearTimeout(id);
+  __rafTimers.delete(id);
+}
+function __cleanupHandles() {
+  for (const id of __rafTimers) clearTimeout(id);
+  __rafTimers.clear();
+  for (const d of __openDoms) {
+    try { d.window.close(); } catch (e) { /* ignore */ }
+  }
+  __openDoms.clear();
+  const handles = (process._getActiveHandles && process._getActiveHandles()) || [];
+  for (const h of handles) {
+    try {
+      if (typeof h.destroy === 'function') h.destroy();
+      else if (typeof h.close === 'function') h.close();
+    } catch (e) { /* ignore */ }
+  }
+}
+afterEach(() => {
+  if (__currentDom) {
+    try { __currentDom.window.close(); } catch (e) { /* ignore */ }
+    __openDoms.delete(__currentDom);
+    __currentDom = null;
+  }
+});
+after(() => {
+  __cleanupHandles();
+});
+
+
 function readFile(subpath) {
   return readFileSync(resolve(BASE, subpath), 'utf8');
 }
@@ -18,8 +57,10 @@ function createDom() {
   const dom = new JSDOM('<!DOCTYPE html><html><body><div id="container"></div></body></html>', {
     url: 'http://localhost:3000/expedicion/solo/juego/non_reader/rim-catcher'
   });
-  dom.window.requestAnimationFrame = function (cb) { return setTimeout(cb, 0); };
-  dom.window.cancelAnimationFrame = function (id) { clearTimeout(id); };
+  dom.window.requestAnimationFrame = __raf;
+  dom.window.cancelAnimationFrame = __cancelRaf;
+  __openDoms.add(dom);
+  __currentDom = dom;
   return dom;
 }
 

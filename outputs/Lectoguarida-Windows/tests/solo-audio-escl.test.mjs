@@ -1,4 +1,4 @@
-import test from 'node:test';
+import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -10,6 +10,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const BASE = resolve(__dirname, '../public/expedicion/solo');
 
+const __openDoms = new Set();
+after(() => {
+  for (const d of __openDoms) {
+    try { d.window.close(); } catch (e) { /* ignore */ }
+  }
+  __openDoms.clear();
+});
+function __track(dom) { __openDoms.add(dom); return dom; }
+
 function readFile(subpath) {
   return readFileSync(resolve(BASE, subpath), 'utf8');
 }
@@ -19,9 +28,9 @@ function readFile(subpath) {
  * Permite configurar la lista de voces y registrar las locuciones emitidas.
  */
 function createDomWithSpeech(voices) {
-  const dom = new JSDOM('<!DOCTYPE html><html><body><div id="container"></div></body></html>', {
+  const dom = __track(new JSDOM('<!DOCTYPE html><html><body><div id="container"></div></body></html>', {
     url: 'http://localhost:3000/expedicion/solo/juego/non_reader/rim-catcher'
-  });
+  }));
   dom.window.requestAnimationFrame = function (cb) { return setTimeout(cb, 0); };
   dom.window.cancelAnimationFrame = function (id) { clearTimeout(id); };
 
@@ -75,7 +84,7 @@ test('isSpeechAvailable es true con speechSynthesis', () => {
 });
 
 test('isSpeechAvailable es false sin speechSynthesis', () => {
-  const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
+  const dom = __track(new JSDOM('<!DOCTYPE html><html><body></body></html>'));
   dom.window.speechSynthesis = undefined;
   dom.window.SpeechSynthesisUtterance = undefined;
   loadAudioModules(dom.window);
@@ -232,7 +241,7 @@ test('destroy llama stopSpeech', () => {
 // 8. Sin SpeechSynthesis no bloquea
 // ============================================================
 test('speakInstruction no lanza sin speechSynthesis', () => {
-  const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
+  const dom = __track(new JSDOM('<!DOCTYPE html><html><body></body></html>'));
   dom.window.speechSynthesis = undefined;
   dom.window.SpeechSynthesisUtterance = undefined;
   loadAudioModules(dom.window);
