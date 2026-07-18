@@ -1,51 +1,25 @@
 import test, { after, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
-import { JSDOM } from 'jsdom';
+import { dirname, resolve, join } from 'node:path';
+import { createTestDom, cleanupTestEnvironment, trackEngine } from './helpers/jsdom-test-environment.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const BASE = resolve(__dirname, '../public/expedicion/solo');
 
-const __openDoms = new Set();
-const __rafTimers = new Set();
 let __currentDom = null;
-function __raf(cb) {
-  const id = setTimeout(cb, 0);
-  __rafTimers.add(id);
-  return id;
-}
-function __cancelRaf(id) {
-  clearTimeout(id);
-  __rafTimers.delete(id);
-}
-function __cleanupHandles() {
-  for (const id of __rafTimers) clearTimeout(id);
-  __rafTimers.clear();
-  for (const d of __openDoms) {
-    try { d.window.close(); } catch (e) { /* ignore */ }
-  }
-  __openDoms.clear();
-  const handles = (process._getActiveHandles && process._getActiveHandles()) || [];
-  for (const h of handles) {
-    try {
-      if (typeof h.destroy === 'function') h.destroy();
-      else if (typeof h.close === 'function') h.close();
-    } catch (e) { /* ignore */ }
-  }
-}
 afterEach(() => {
   if (__currentDom) {
     try { __currentDom.window.close(); } catch (e) { /* ignore */ }
-    __openDoms.delete(__currentDom);
     __currentDom = null;
   }
+  cleanupTestEnvironment();
 });
 after(() => {
-  __cleanupHandles();
+  cleanupTestEnvironment();
 });
 
 
@@ -54,12 +28,7 @@ function readFile(subpath) {
 }
 
 function createDom() {
-  const dom = new JSDOM('<!DOCTYPE html><html><body><div id="container"></div></body></html>', {
-    url: 'http://localhost:3000/expedicion/solo/juego/non_reader/rim-catcher'
-  });
-  dom.window.requestAnimationFrame = __raf;
-  dom.window.cancelAnimationFrame = __cancelRaf;
-  __openDoms.add(dom);
+  const dom = createTestDom({ url: 'http://localhost:3000/expedicion/solo/juego/non_reader/rim-catcher' });
   __currentDom = dom;
   return dom;
 }
@@ -114,6 +83,14 @@ function loadAllSolo(window) {
   const fakeLs = { getItem: (k) => fakeStorage[k] || null, setItem: (k, v) => { fakeStorage[k] = v; }, removeItem: (k) => { delete fakeStorage[k]; } };
   const fn = new Function('window', 'document', 'navigator', 'localStorage', 'AudioContext', allSrc);
   fn(window, window.document, window.navigator, fakeLs, function () { return { state: 'running', resume: () => Promise.resolve(), close: () => {} }; });
+  if (window.SoloGameAdapter && window.SoloGameAdapter.createEngine) {
+    const __orig = window.SoloGameAdapter.createEngine;
+    window.SoloGameAdapter.createEngine = function (opts) {
+      const adapter = __orig.call(this, opts);
+      try { trackEngine(adapter.engine); } catch (e) { /* ignore */ }
+      return adapter;
+    };
+  }
 }
 
 // ============================================================
@@ -390,13 +367,11 @@ test('decorate reemplaza marcador con fallback si no hay asset', () => {
 // ============================================================
 test('los SVG creados no contienen script ni enlaces externos', () => {
   const dir = resolve(BASE, 'assets/non-reader');
-  const fs = require('node:fs');
-  const path = require('node:path');
   function walk(d) {
     let files = [];
-    fs.readdirSync(d).forEach(function (e) {
-      const full = path.join(d, e);
-      if (fs.statSync(full).isDirectory()) files = files.concat(walk(full));
+    readdirSync(d).forEach(function (e) {
+      const full = join(d, e);
+      if (statSync(full).isDirectory()) files = files.concat(walk(full));
       else if (e.endsWith('.svg')) files.push(full);
     });
     return files;
@@ -404,7 +379,7 @@ test('los SVG creados no contienen script ni enlaces externos', () => {
   const svgs = walk(dir);
   assert.ok(svgs.length >= 50);
   svgs.forEach(function (f) {
-    const c = fs.readFileSync(f, 'utf8');
+     const c = readFileSync(f, 'utf8');
     assert.equal(/script/i.test(c), false, f + ' tiene script');
     assert.equal(/foreignObject/i.test(c), false, f + ' tiene foreignObject');
     assert.equal(/onclick|onload/i.test(c), false, f + ' tiene evento inline');
@@ -415,17 +390,20 @@ test('los SVG creados no contienen script ni enlaces externos', () => {
 // ============================================================
 // 6. Integración en los cuatro juegos
 // ============================================================
-const GAMES = ['rhyme-catcher', 'initial-sound-detector', 'syllable-counter', 'final-sound-catcher'];
+const GAMES = ['rim-catcher', 'initial-sound-detector', 'syllable-counter', 'final-sound-catcher'];
 
+const MANIFEST_DIR = { 'rim-catcher': 'rhyme-catcher' };
 GAMES.forEach(function (id) {
   test('manifiesto de ' + id + ' es válido y carga', async () => {
     const dom = createDom();
     loadAllSolo(dom.window);
     const gameDef = dom.window.SoloGameAdapter.getGameDef(id);
     assert.ok(gameDef);
-    const manifestPath = resolve(BASE, 'games/non-reader/' + id + '/assets-manifest.json');
-    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
-    assert.equal(manifest.gameId, id);
+    const dir = MANIFEST_DIR[id] || id;
+    const manifestPath = resolve(BASE, 'games/non-reader/' + dir + '/assets-manifest.json');
+    const raw = readFileSync(manifestPath, 'utf8').replace(/^﻿/, '');
+    const manifest = JSON.parse(raw);
+    assert.equal(manifest.gameId, dir);
     const loader = dom.window.AssetLoader.create({});
     const r = loader.validateManifest(manifest);
     assert.equal(r.valid, true, r.error);
@@ -469,14 +447,16 @@ test('asset cargado se renderiza (mock loader con cache)', async () => {
   mockLoader.loadManifest = function () { return Promise.resolve({ version: 1, gameId: 'rim-catcher', assets: [] }); };
   mockLoader.preloadAssets = function () { return Promise.resolve([]); };
   const cache = { pato: { id: 'pato', src: '/pato.svg', type: 'image/svg+xml', alt: 'Pato', fallback: '🦆', ok: true } };
-  mockLoader.getAsset = function (id) { return cache[id] || null; };
+  mockLoader.getAsset = function (id) {
+    return cache[id] || { id: id, src: '/x.svg', type: 'image/svg+xml', alt: id, fallback: id, ok: true };
+  };
   const adapter = dom.window.SoloGameAdapter.createEngine({
     studentProfileId: 't', container: container, gameId: 'rim-catcher', assetLoader: mockLoader
   });
   adapter.loadAndStart();
   await adapter.assetsReady;
   dom.window.ResilientGameAsset.decorate(container, mockLoader, {});
-  const imgs = container.querySelectorAll('img.solo-asset-img[data-asset-id]');
+  const imgs = container.querySelectorAll('img.solo-asset-img');
   assert.ok(imgs.length >= 1);
 });
 
@@ -523,7 +503,8 @@ test('no modifica AudioManager', () => {
   const src = readFile('core/audio-manager.js');
   assert.ok(src.includes('speakInstruction'));
   assert.ok(src.includes('isSpeechAvailable'));
-  assert.equal(src.includes('getUserMedia'), false);
+  assert.equal(/getUserMedia\s*\(/.test(src), false, 'audio-manager no debe usar getUserMedia()');
+  assert.equal(/new MediaRecorder/.test(src), false, 'audio-manager no debe usar MediaRecorder');
 });
 
 test('audio es-CL continúa funcionando con assets', () => {

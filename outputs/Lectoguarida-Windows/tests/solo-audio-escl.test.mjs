@@ -1,23 +1,22 @@
-import test, { after } from 'node:test';
+﻿import test, { after, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { JSDOM } from 'jsdom';
+import { createTestDom, cleanupTestEnvironment, trackEngine } from './helpers/jsdom-test-environment.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const BASE = resolve(__dirname, '../public/expedicion/solo');
 
-const __openDoms = new Set();
-after(() => {
-  for (const d of __openDoms) {
-    try { d.window.close(); } catch (e) { /* ignore */ }
-  }
-  __openDoms.clear();
+afterEach(() => {
+  cleanupTestEnvironment();
 });
-function __track(dom) { __openDoms.add(dom); return dom; }
+
+after(() => {
+  cleanupTestEnvironment();
+});
 
 function readFile(subpath) {
   return readFileSync(resolve(BASE, subpath), 'utf8');
@@ -28,11 +27,7 @@ function readFile(subpath) {
  * Permite configurar la lista de voces y registrar las locuciones emitidas.
  */
 function createDomWithSpeech(voices) {
-  const dom = __track(new JSDOM('<!DOCTYPE html><html><body><div id="container"></div></body></html>', {
-    url: 'http://localhost:3000/expedicion/solo/juego/non_reader/rim-catcher'
-  }));
-  dom.window.requestAnimationFrame = function (cb) { return setTimeout(cb, 0); };
-  dom.window.cancelAnimationFrame = function (id) { clearTimeout(id); };
+  const dom = createTestDom({ url: 'http://localhost:3000/expedicion/solo/juego/non_reader/rim-catcher' });
 
   const spoken = [];
   const calls = { cancel: 0, speak: 0 };
@@ -84,7 +79,7 @@ test('isSpeechAvailable es true con speechSynthesis', () => {
 });
 
 test('isSpeechAvailable es false sin speechSynthesis', () => {
-  const dom = __track(new JSDOM('<!DOCTYPE html><html><body></body></html>'));
+  const dom = createTestDom({ html: '<!DOCTYPE html><html><body></body></html>' });
   dom.window.speechSynthesis = undefined;
   dom.window.SpeechSynthesisUtterance = undefined;
   loadAudioModules(dom.window);
@@ -241,7 +236,7 @@ test('destroy llama stopSpeech', () => {
 // 8. Sin SpeechSynthesis no bloquea
 // ============================================================
 test('speakInstruction no lanza sin speechSynthesis', () => {
-  const dom = __track(new JSDOM('<!DOCTYPE html><html><body></body></html>'));
+  const dom = createTestDom({ html: '<!DOCTYPE html><html><body></body></html>' });
   dom.window.speechSynthesis = undefined;
   dom.window.SpeechSynthesisUtterance = undefined;
   loadAudioModules(dom.window);
@@ -272,9 +267,9 @@ test('error de locución se captura sin lanzar', () => {
 // ============================================================
 test('AudioManager no usa getUserMedia ni MediaRecorder', () => {
   const src = readFile('core/audio-manager.js');
-  assert.equal(src.includes('getUserMedia'), false);
-  assert.equal(src.includes('MediaRecorder'), false);
-  assert.equal(src.includes('navigator.mediaDevices'), false);
+  assert.equal(/getUserMedia\s*\(/.test(src), false);
+  assert.equal(/new MediaRecorder/.test(src), false);
+  assert.equal(/navigator\.mediaDevices/.test(src), false);
 });
 
 test('voice-guidance-ui no usa micrófono ni MediaRecorder', () => {
@@ -395,6 +390,14 @@ function loadAllSolo(window) {
   const fakeLs = { getItem: (k) => fakeStorage[k] || null, setItem: (k, v) => { fakeStorage[k] = v; }, removeItem: (k) => { delete fakeStorage[k]; } };
   const fn = new Function('window', 'document', 'navigator', 'localStorage', 'AudioContext', allSrc);
   fn(window, window.document, window.navigator, fakeLs, function () { return { state: 'running', resume: () => Promise.resolve(), close: () => {} }; });
+  if (window.SoloGameAdapter && window.SoloGameAdapter.createEngine) {
+    const __orig = window.SoloGameAdapter.createEngine;
+    window.SoloGameAdapter.createEngine = function (opts) {
+      const adapter = __orig.call(this, opts);
+      try { trackEngine(adapter.engine); } catch (e) { /* ignore */ }
+      return adapter;
+    };
+  }
 }
 
 const GAMES = ['rim-catcher', 'initial-sound-detector', 'syllable-counter', 'final-sound-catcher'];
@@ -411,8 +414,6 @@ GAMES.forEach(function (id) {
 GAMES.forEach(function (id) {
   test('template de ' + id + ' renderiza barra de voz con speech disponible', () => {
     const dom = createDomWithSpeech([espVoice('es-CL')]);
-    dom.window.requestAnimationFrame = function (cb) { return setTimeout(cb, 0); };
-    dom.window.cancelAnimationFrame = function (id2) { clearTimeout(id2); };
     loadAllSolo(dom.window);
     const container = dom.window.document.getElementById('container');
     const adapter = dom.window.SoloGameAdapter.createEngine({

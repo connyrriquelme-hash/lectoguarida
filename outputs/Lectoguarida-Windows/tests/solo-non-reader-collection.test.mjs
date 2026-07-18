@@ -1,21 +1,21 @@
-import test, { after } from 'node:test';
+import test, { after, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { JSDOM } from 'jsdom';
+import { createTestDom, cleanupTestEnvironment, trackEngine } from './helpers/jsdom-test-environment.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const BASE = resolve(__dirname, '../public/expedicion/solo');
 
-const __openDoms = new Set();
+afterEach(() => {
+  cleanupTestEnvironment();
+});
+
 after(() => {
-  for (const d of __openDoms) {
-    try { d.window.close(); } catch (e) { /* ignore */ }
-  }
-  __openDoms.clear();
+  cleanupTestEnvironment();
 });
 
 function readFile(subpath) {
@@ -57,16 +57,19 @@ function loadAllModules(window) {
   const fakeLs = { getItem: (k) => fakeStorage[k] || null, setItem: (k, v) => { fakeStorage[k] = v; }, removeItem: (k) => { delete fakeStorage[k]; } };
   const fn = new Function('window', 'document', 'navigator', 'localStorage', 'AudioContext', allSrc);
   fn(window, window.document, window.navigator, fakeLs, function() { return { state: 'running', resume: () => Promise.resolve(), close: () => {} }; });
+  if (window.SoloGameAdapter && window.SoloGameAdapter.createEngine) {
+    const __orig = window.SoloGameAdapter.createEngine;
+    window.SoloGameAdapter.createEngine = function (opts) {
+      const adapter = __orig.call(this, opts);
+      try { trackEngine(adapter.engine); } catch (e) { /* ignore */ }
+      return adapter;
+    };
+  }
   return fakeLs;
 }
 
 function createDom() {
-  const dom = new JSDOM('<!DOCTYPE html><html><body><div id="container"></div></body></html>', {
-    url: 'http://localhost:3000/expedicion/solo/no-lectores'
-  });
-  dom.window.requestAnimationFrame = function(cb) { return setTimeout(cb, 0); };
-  dom.window.cancelAnimationFrame = function(id) { clearTimeout(id); };
-  __openDoms.add(dom);
+  const dom = createTestDom({ url: 'http://localhost:3000/expedicion/solo/no-lectores' });
   return dom;
 }
 
@@ -302,20 +305,25 @@ test('FallingItemsTemplate renderiza zona de items', () => {
   const origCAF = globalThis.cancelAnimationFrame;
   globalThis.requestAnimationFrame = function(cb) { return setTimeout(cb, 0); };
   globalThis.cancelAnimationFrame = function(id) { clearTimeout(id); };
-  loadAllModules(dom.window);
-  const container = dom.window.document.getElementById('container');
-  const template = dom.window.FallingItemsTemplate.create({
-    container: container,
-    config: { content: [
-      { question: 'Atrapa la A', options: [{ label: 'A', id: 'a', isCorrect: true }, { label: 'B', id: 'b', isCorrect: false }], answers: [0] }
-    ] },
-    engine: null
-  });
-  template.start();
-  const zone = container.querySelector('[data-role="falling-zone"]');
-  assert.ok(zone);
-  const catcher = container.querySelector('[data-role="catcher"]');
-  assert.ok(catcher);
+  try {
+    loadAllModules(dom.window);
+    const container = dom.window.document.getElementById('container');
+    const template = dom.window.FallingItemsTemplate.create({
+      container: container,
+      config: { content: [
+        { question: 'Atrapa la A', options: [{ label: 'A', id: 'a', isCorrect: true }, { label: 'B', id: 'b', isCorrect: false }], answers: [0] }
+      ] },
+      engine: null
+    });
+    template.start();
+    const zone = container.querySelector('[data-role="falling-zone"]');
+    assert.ok(zone);
+    const catcher = container.querySelector('[data-role="catcher"]');
+    assert.ok(catcher);
+  } finally {
+    globalThis.requestAnimationFrame = origRAF;
+    globalThis.cancelAnimationFrame = origCAF;
+  }
 });
 
 // ============================================================
