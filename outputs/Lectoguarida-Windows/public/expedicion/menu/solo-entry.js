@@ -249,7 +249,7 @@
     container.appendChild(selector);
 
     selector.querySelectorAll('.nr-difficulty-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
+      function activate() {
         var id = btn.getAttribute('data-difficulty');
         NonReaderDifficultyStore.setDifficulty(studentProfileId, 'non_reader', id);
         selector.querySelectorAll('.nr-difficulty-btn').forEach(function (b) {
@@ -258,6 +258,13 @@
           b.style.background = isActive ? 'var(--accent-soft)' : 'var(--panel)';
           b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
         });
+      }
+      btn.addEventListener('click', activate);
+      btn.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+          e.preventDefault();
+          activate();
+        }
       });
     });
   }

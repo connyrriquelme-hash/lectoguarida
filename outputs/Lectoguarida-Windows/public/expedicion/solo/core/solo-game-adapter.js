@@ -111,6 +111,7 @@ var SoloGameAdapter = (function () {
         visualDemo: !!difficultyConfig.visualDemo,
         hintsAvailable: !!difficultyConfig.hintsAvailable,
         closeDistractors: !!difficultyConfig.closeDistractors,
+        timer: !!difficultyConfig.timer,
         speechRate: difficultyConfig.speechRate,
         fallSpeed: difficultyConfig.fallSpeed
       },

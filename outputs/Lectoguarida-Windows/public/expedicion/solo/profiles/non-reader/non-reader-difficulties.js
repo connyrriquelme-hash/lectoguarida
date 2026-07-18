@@ -62,14 +62,23 @@ var NonReaderDifficulty = (function () {
     return !!value && typeof NON_READER_DIFFICULTIES[value] === 'object';
   }
 
+  function cloneDifficulty(obj) {
+    if (typeof JSON !== 'undefined') {
+      try { return JSON.parse(JSON.stringify(obj)); } catch (e) { /* ignore */ }
+    }
+    var copy = {};
+    Object.keys(obj).forEach(function (k) { copy[k] = obj[k]; });
+    return copy;
+  }
+
   function getNonReaderDifficultyConfig(value) {
-    if (isValidNonReaderDifficulty(value)) return NON_READER_DIFFICULTIES[value];
-    return NON_READER_DIFFICULTIES[DEFAULT_DIFFICULTY];
+    if (isValidNonReaderDifficulty(value)) return cloneDifficulty(NON_READER_DIFFICULTIES[value]);
+    return cloneDifficulty(NON_READER_DIFFICULTIES[DEFAULT_DIFFICULTY]);
   }
 
   function getNonReaderDifficultyList() {
     return ['support', 'standard', 'challenge'].map(function (k) {
-      return NON_READER_DIFFICULTIES[k];
+      return cloneDifficulty(NON_READER_DIFFICULTIES[k]);
     });
   }
 
