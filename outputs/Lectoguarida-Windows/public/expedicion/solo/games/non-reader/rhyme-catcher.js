@@ -1,5 +1,5 @@
 /**
- * rim-catcher.js
+ * rhyme-catcher.js
  * Juego 1/4: Atrapa Rimas.
  * Identifica palabras que riman con una palabra objetivo.
  * Template: click_selection (3 opciones por ronda).
@@ -90,7 +90,7 @@
   }
 
   SoloGameAdapter.registerGame({
-    id: 'rim-catcher',
+    id: 'rhyme-catcher',
     title: 'Atrapa Rimas',
     template: 'click_selection',
     profile: 'non_reader',

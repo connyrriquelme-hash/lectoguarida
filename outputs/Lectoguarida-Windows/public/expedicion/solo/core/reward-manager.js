@@ -26,10 +26,13 @@ var RewardManager = (function () {
 
     function awardStars(readerProfile, gameId, stars) {
       if (!repo || !profileId) return;
+      var canonicalId = (typeof GameIdNormalizer !== 'undefined')
+        ? GameIdNormalizer.normalizeGameId(gameId)
+        : gameId;
       var progress = repo.load(profileId);
       if (progress && progress.profiles && progress.profiles[readerProfile]) {
         var p = progress.profiles[readerProfile];
-        p.stars[gameId] = Math.max(p.stars[gameId] || 0, stars);
+        p.stars[canonicalId] = Math.max(p.stars[canonicalId] || 0, stars);
         repo.save(profileId, progress);
       }
     }

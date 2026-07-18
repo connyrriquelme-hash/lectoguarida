@@ -158,6 +158,53 @@ const SoloProgressRepository = (function () {
     save(studentProfileId, progress);
   }
 
+  function migrateLegacyGameProgress(studentProfileId, readerProfile) {
+    var progress = load(studentProfileId);
+    var profileData = progress.profiles[readerProfile];
+    if (!profileData) return;
+
+    var canonical = (typeof GameIdNormalizer !== 'undefined')
+      ? GameIdNormalizer.CANONICAL_RHYME_ID
+      : 'rhyme-catcher';
+    var aliases = (typeof GameIdNormalizer !== 'undefined')
+      ? GameIdNormalizer.getGameIdAliases(canonical)
+      : ['rim-catcher'];
+
+    var changed = false;
+
+    aliases.forEach(function (legacyId) {
+      if (legacyId === canonical) return;
+
+      var hadStars = profileData.stars && Object.prototype.hasOwnProperty.call(profileData.stars, legacyId);
+      var hadSkill = profileData.skillProgress && Object.prototype.hasOwnProperty.call(profileData.skillProgress, legacyId);
+      var legacyCompleted = profileData.completedGames && profileData.completedGames.indexOf(legacyId) !== -1;
+
+      if (hadStars) {
+        profileData.stars[canonical] = Math.max(profileData.stars[canonical] || 0, profileData.stars[legacyId]);
+        delete profileData.stars[legacyId];
+        changed = true;
+      }
+      if (hadSkill) {
+        profileData.skillProgress[canonical] = profileData.skillProgress[legacyId];
+        delete profileData.skillProgress[legacyId];
+        changed = true;
+      }
+      if (legacyCompleted && profileData.completedGames.indexOf(canonical) === -1) {
+        profileData.completedGames.push(canonical);
+        changed = true;
+      }
+      if (profileData.completedGames) {
+        var idx = profileData.completedGames.indexOf(legacyId);
+        if (idx !== -1) {
+          profileData.completedGames.splice(idx, 1);
+          changed = true;
+        }
+      }
+    });
+
+    if (changed) save(studentProfileId, progress);
+  }
+
   function resetAllDevelopmentData(studentProfileId) {
     try {
       localStorage.removeItem(getProgressKey(studentProfileId));
@@ -179,6 +226,7 @@ const SoloProgressRepository = (function () {
     addReward: addReward,
     markGameCompleted: markGameCompleted,
     resetProfile: resetProfile,
+    migrateLegacyGameProgress: migrateLegacyGameProgress,
     createDefaultProgress: createDefaultProgress
   };
 })();

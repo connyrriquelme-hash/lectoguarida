@@ -39,8 +39,9 @@
     'plugins/accessibility-plugin.js',
     'core/solo-game-engine.js',
     'core/solo-game-adapter.js',
+    'core/game-id-normalizer.js',
     'games/vocal-a-game.js',
-    'games/non-reader/rim-catcher.js',
+    'games/non-reader/rhyme-catcher.js',
     'games/non-reader/initial-sound-detector.js',
     'games/non-reader/syllable-counter.js',
     'games/non-reader/final-sound-catcher.js',
@@ -172,9 +173,9 @@
     var games = SoloGameAdapter.listGames('non_reader');
     var container = getOrCreateContainer();
     var cardsHtml = '';
-    var icons = { 'rim-catcher': '🎵', 'initial-sound-detector': '🔤', 'syllable-counter': '🧩', 'final-sound-catcher': '🎯', 'vocal-a': '🅰️' };
+    var icons = { 'rhyme-catcher': '🎵', 'initial-sound-detector': '🔤', 'syllable-counter': '🧩', 'final-sound-catcher': '🎯', 'vocal-a': '🅰️' };
     var descriptions = {
-      'rim-catcher': 'Identifica palabras que riman con una palabra objetivo.',
+      'rhyme-catcher': 'Identifica palabras que riman con una palabra objetivo.',
       'initial-sound-detector': 'Reconoce el sonido con que empieza una palabra.',
       'syllable-counter': 'Toca cada sílaba de la palabra en orden correcto.',
       'final-sound-catcher': 'Atrapa los items que terminan con el sonido indicado.',
@@ -330,6 +331,7 @@
   }
 
   function renderGamePlaceholder(profileId, gameId) {
+    gameId = (typeof GameIdNormalizer !== 'undefined') ? GameIdNormalizer.normalizeGameId(gameId) : gameId;
     var gameDef = SoloGameAdapter.getGameDef(gameId);
     if (gameDef) {
       renderGameArea(profileId, gameId);
@@ -351,6 +353,7 @@
   }
 
   function renderGameArea(profileId, gameId) {
+    gameId = (typeof GameIdNormalizer !== 'undefined') ? GameIdNormalizer.normalizeGameId(gameId) : gameId;
     var container = getOrCreateContainer();
     container.innerHTML = '\
       <div style="padding:16px;">\

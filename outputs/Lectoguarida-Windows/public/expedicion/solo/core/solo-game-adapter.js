@@ -15,7 +15,10 @@ var SoloGameAdapter = (function () {
   }
 
   function getGameDef(gameId) {
-    return GAME_REGISTRY[gameId] || null;
+    var normalized = (typeof GameIdNormalizer !== 'undefined')
+      ? GameIdNormalizer.normalizeGameId(gameId)
+      : gameId;
+    return GAME_REGISTRY[normalized] || null;
   }
 
   function listGames(profile) {
