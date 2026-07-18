@@ -1,4 +1,4 @@
-import test, { after, afterEach } from 'node:test';
+﻿import test, { after, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -47,7 +47,7 @@ function loadAllModules(window) {
     'core/solo-game-engine.js',
     'core/solo-game-adapter.js',
     'games/vocal-a-game.js',
-    'games/non-reader/rim-catcher.js',
+    'games/non-reader/rhyme-catcher.js',
     'games/non-reader/initial-sound-detector.js',
     'games/non-reader/syllable-counter.js',
     'games/non-reader/final-sound-catcher.js'
@@ -76,12 +76,12 @@ function createDom() {
 // ============================================================
 // 1. Los 4 juegos están registrados
 // ============================================================
-test('rim-catcher está registrado', () => {
+test('rhyme-catcher está registrado', () => {
   const dom = createDom();
   loadAllModules(dom.window);
-  const game = dom.window.SoloGameAdapter.getGameDef('rim-catcher');
+  const game = dom.window.SoloGameAdapter.getGameDef('rhyme-catcher');
   assert.ok(game);
-  assert.equal(game.id, 'rim-catcher');
+  assert.equal(game.id, 'rhyme-catcher');
   assert.equal(game.profile, 'non_reader');
 });
 
@@ -123,7 +123,7 @@ test('listGames non_reader retorna 5 juegos', () => {
   const games = dom.window.SoloGameAdapter.listGames('non_reader');
   assert.equal(games.length, 5);
   const ids = games.map(g => g.id);
-  assert.ok(ids.includes('rim-catcher'));
+  assert.ok(ids.includes('rhyme-catcher'));
   assert.ok(ids.includes('initial-sound-detector'));
   assert.ok(ids.includes('syllable-counter'));
   assert.ok(ids.includes('final-sound-catcher'));
@@ -133,10 +133,10 @@ test('listGames non_reader retorna 5 juegos', () => {
 // ============================================================
 // 6-9. Cada juego tiene contenido de 5 rondas
 // ============================================================
-test('rim-catcher tiene 5 rondas', () => {
+test('rhyme-catcher tiene 5 rondas', () => {
   const dom = createDom();
   loadAllModules(dom.window);
-  const game = dom.window.SoloGameAdapter.getGameDef('rim-catcher');
+  const game = dom.window.SoloGameAdapter.getGameDef('rhyme-catcher');
   assert.equal(game.content.length, 5);
 });
 
@@ -164,10 +164,10 @@ test('final-sound-catcher tiene 5 rondas', () => {
 // ============================================================
 // 10-13. Cada juego tiene instrucciones y accessibility
 // ============================================================
-test('rim-catcher tiene instrucciones y accessibility', () => {
+test('rhyme-catcher tiene instrucciones y accessibility', () => {
   const dom = createDom();
   loadAllModules(dom.window);
-  const game = dom.window.SoloGameAdapter.getGameDef('rim-catcher');
+  const game = dom.window.SoloGameAdapter.getGameDef('rhyme-catcher');
   assert.ok(game.instructions);
   assert.ok(game.instructions.text);
   assert.ok(game.accessibility);
@@ -202,10 +202,10 @@ test('final-sound-catcher tiene instrucciones y accessibility', () => {
 // ============================================================
 // 14-17. Cada juego tiene scoring y rewards
 // ============================================================
-test('rim-catcher tiene scoring y rewards', () => {
+test('rhyme-catcher tiene scoring y rewards', () => {
   const dom = createDom();
   loadAllModules(dom.window);
-  const game = dom.window.SoloGameAdapter.getGameDef('rim-catcher');
+  const game = dom.window.SoloGameAdapter.getGameDef('rhyme-catcher');
   assert.ok(game.scoring);
   assert.ok(game.rewards);
   assert.equal(game.rewards.lostPages, 1);
@@ -327,21 +327,21 @@ test('FallingItemsTemplate renderiza zona de items', () => {
 });
 
 // ============================================================
-// 22. createEngine funciona con rim-catcher
+// 22. createEngine funciona con rhyme-catcher
 // ============================================================
-test('createEngine funciona con rim-catcher', () => {
+test('createEngine funciona con rhyme-catcher', () => {
   const dom = createDom();
   loadAllModules(dom.window);
   const container = dom.window.document.getElementById('container');
   const adapter = dom.window.SoloGameAdapter.createEngine({
     studentProfileId: 'test-student',
     container: container,
-    gameId: 'rim-catcher'
+    gameId: 'rhyme-catcher'
   });
   assert.ok(adapter);
   assert.ok(adapter.engine);
   assert.ok(adapter.config);
-  assert.equal(adapter.config.id, 'rim-catcher');
+  assert.equal(adapter.config.id, 'rhyme-catcher');
   assert.equal(typeof adapter.loadAndStart, 'function');
 });
 

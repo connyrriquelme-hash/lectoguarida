@@ -12,6 +12,19 @@
  */
 
 import { JSDOM } from 'jsdom';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+const __normalizerPath = fileURLToPath(new URL('../../public/expedicion/solo/core/game-id-normalizer.js', import.meta.url));
+
+if (typeof globalThis.GameIdNormalizer === 'undefined') {
+  try {
+    const __src = readFileSync(__normalizerPath, 'utf8');
+    globalThis.GameIdNormalizer = new Function(__src + '\n;return GameIdNormalizer;')();
+  } catch (e) {
+    /* normalizer no disponible */
+  }
+}
 
 const doms = new Set();
 const timers = new Set();
@@ -24,7 +37,7 @@ export function createTestDom(options = {}) {
   const dom = new JSDOM(
     options.html || '<!DOCTYPE html><html><body><div id="container"></div></body></html>',
     {
-      url: options.url || 'http://localhost:3000/expedicion/solo/juego/non_reader/rim-catcher',
+      url: options.url || 'http://localhost:3000/expedicion/solo/juego/non_reader/rhyme-catcher',
       pretendToBeVisual: options.pretendToBeVisual !== false
     }
   );

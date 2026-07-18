@@ -1,4 +1,4 @@
-import test, { after } from 'node:test';
+﻿import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -48,7 +48,7 @@ const CORE_FILES = [
   'core/solo-game-engine.js',
   'core/solo-game-adapter.js',
   'games/vocal-a-game.js',
-  'games/non-reader/rim-catcher.js',
+  'games/non-reader/rhyme-catcher.js',
   'games/non-reader/initial-sound-detector.js',
   'games/non-reader/syllable-counter.js',
   'games/non-reader/final-sound-catcher.js',
@@ -298,33 +298,33 @@ test('P7.20 persiste tras "recarga" (nuevo render lee store)', () => {
 // ============================================================
 test('P7.21 Apoyo usa tres opciones', () => {
   const dom = createDom(); const ls = makeLs(); loadAll(dom.window, ls);
-  const a = createEngine(dom.window, ls, 'rim-catcher', 'support');
+  const a = createEngine(dom.window, ls, 'rhyme-catcher', 'support');
   a.config.content.forEach(r => assert.equal(r.options.length, 3));
 });
 
 test('P7.22 Estándar usa cuatro opciones', () => {
   const dom = createDom(); const ls = makeLs(); loadAll(dom.window, ls);
-  const a = createEngine(dom.window, ls, 'rim-catcher', 'standard');
+  const a = createEngine(dom.window, ls, 'rhyme-catcher', 'standard');
   a.config.content.forEach(r => assert.equal(r.options.length, 4));
 });
 
 test('P7.23 Desafío usa hasta cinco opciones', () => {
   const dom = createDom(); const ls = makeLs(); loadAll(dom.window, ls);
-  const a = createEngine(dom.window, ls, 'rim-catcher', 'challenge');
+  const a = createEngine(dom.window, ls, 'rhyme-catcher', 'challenge');
   a.config.content.forEach(r => assert.ok(r.options.length <= 5));
   assert.equal(a.config.content[0].options.length, 5);
 });
 
 test('P7.24 Apoyo usa objetivos grandes', () => {
   const dom = createDom(); const ls = makeLs(); loadAll(dom.window, ls);
-  const a = createEngine(dom.window, ls, 'rim-catcher', 'support');
+  const a = createEngine(dom.window, ls, 'rhyme-catcher', 'support');
   assert.equal(a.config.accessibility.largeTargets, true);
   assert.equal(a.config.difficulty.largeTargets, true);
 });
 
 test('P7.25 Desafío usa distractores próximos', () => {
   const dom = createDom(); const ls = makeLs(); loadAll(dom.window, ls);
-  const a = createEngine(dom.window, ls, 'rim-catcher', 'challenge');
+  const a = createEngine(dom.window, ls, 'rhyme-catcher', 'challenge');
   assert.equal(a.config.difficulty.closeDistractors, true);
 });
 
@@ -437,13 +437,13 @@ test('P7.39 FallingItemsTemplate expose destroy que limpia animación', () => {
 test('P7.40 adapter carga dificultad guardada', () => {
   const dom = createDom(); const ls = makeLs(); loadAll(dom.window, ls);
   dom.window.NonReaderDifficultyStore.setDifficulty('student-test', 'non_reader', 'challenge');
-  const a = createEngine(dom.window, ls, 'rim-catcher', undefined);
+  const a = createEngine(dom.window, ls, 'rhyme-catcher', undefined);
   assert.equal(a.config.difficulty.id, 'challenge');
 });
 
 test('P7.41 engine recibe dificultad', () => {
   const dom = createDom(); const ls = makeLs(); loadAll(dom.window, ls);
-  const a = createEngine(dom.window, ls, 'rim-catcher', 'support');
+  const a = createEngine(dom.window, ls, 'rhyme-catcher', 'support');
   assert.equal(a.config.difficulty.id, 'support');
   assert.equal(a.config.difficulty.label, 'Apoyo');
   assert.ok(a.config.difficulty.speechRate);
@@ -451,19 +451,19 @@ test('P7.41 engine recibe dificultad', () => {
 
 test('P7.42 templates reciben una copia (no mutan el original)', () => {
   const dom = createDom(); const ls = makeLs(); loadAll(dom.window, ls);
-  const orig = dom.window.SoloGameAdapter.getGameDef('rim-catcher').content;
+  const orig = dom.window.SoloGameAdapter.getGameDef('rhyme-catcher').content;
   const before = JSON.stringify(orig);
-  const a = createEngine(dom.window, ls, 'rim-catcher', 'challenge');
-  assert.equal(JSON.stringify(dom.window.SoloGameAdapter.getGameDef('rim-catcher').content), before);
+  const a = createEngine(dom.window, ls, 'rhyme-catcher', 'challenge');
+  assert.equal(JSON.stringify(dom.window.SoloGameAdapter.getGameDef('rhyme-catcher').content), before);
   assert.notEqual(a.config.content, orig);
 });
 
 test('P7.43 cambiar dificultad reinicia solo sesión (no progreso)', () => {
   const dom = createDom(); const ls = makeLs(); loadAll(dom.window, ls);
   dom.window.NonReaderDifficultyStore.setDifficulty('student-test', 'non_reader', 'standard');
-  const a1 = createEngine(dom.window, ls, 'rim-catcher', 'standard');
+  const a1 = createEngine(dom.window, ls, 'rhyme-catcher', 'standard');
   dom.window.NonReaderDifficultyStore.setDifficulty('student-test', 'non_reader', 'challenge');
-  const a2 = createEngine(dom.window, ls, 'rim-catcher', 'challenge');
+  const a2 = createEngine(dom.window, ls, 'rhyme-catcher', 'challenge');
   assert.equal(a2.config.difficulty.id, 'challenge');
   assert.equal(dom.window.NonReaderDifficultyStore.getDifficulty('student-test', 'non_reader'), 'challenge');
   assert.ok(a1.config && a2.config);
@@ -471,34 +471,34 @@ test('P7.43 cambiar dificultad reinicia solo sesión (no progreso)', () => {
 
 test('P7.44 progreso se conserva al cambiar dificultad', () => {
   const dom = createDom(); const ls = makeLs(); loadAll(dom.window, ls);
-  dom.window.SoloProgressRepository.updateProfileProgress('student-test', 'non_reader', { stars: { 'rim-catcher': 3 } });
+  dom.window.SoloProgressRepository.updateProfileProgress('student-test', 'non_reader', { stars: { 'rhyme-catcher': 3 } });
   dom.window.NonReaderDifficultyStore.setDifficulty('student-test', 'non_reader', 'challenge');
   const prog = dom.window.SoloProgressRepository.getProfileProgress('student-test', 'non_reader');
-  assert.equal(prog.stars['rim-catcher'], 3);
+  assert.equal(prog.stars['rhyme-catcher'], 3);
 });
 
 test('P7.45 recompensa no se duplica', () => {
   const dom = createDom(); const ls = makeLs(); loadAll(dom.window, ls);
-  const a = createEngine(dom.window, ls, 'rim-catcher', 'standard');
+  const a = createEngine(dom.window, ls, 'rhyme-catcher', 'standard');
   a.engine.loadGame(a.config);
   a.engine.completeGame({ correctAnswers: 5, totalRounds: 5 });
   const prog = dom.window.SoloProgressRepository.getProfileProgress('student-test', 'non_reader');
-  assert.ok('rim-catcher' in prog.stars);
+  assert.ok('rhyme-catcher' in prog.stars);
   assert.ok(Object.keys(ls.store).some(k => k.indexOf('lectoguarida:solo-progress') === 0));
 });
 
 test('P7.46 audio es-CL se conserva', () => {
   const dom = createDom(); const ls = makeLs(); loadAll(dom.window, ls);
   const am = dom.window.AudioManager;
-  createEngine(dom.window, ls, 'rim-catcher', 'support');
+  createEngine(dom.window, ls, 'rhyme-catcher', 'support');
   assert.equal(am.getDefaultSpeechRate(), 0.78);
-  createEngine(dom.window, ls, 'rim-catcher', 'challenge');
+  createEngine(dom.window, ls, 'rhyme-catcher', 'challenge');
   assert.equal(am.getDefaultSpeechRate(), 0.95);
 });
 
 test('P7.47 assets se conservan (manifiesto no cambia)', () => {
   const dom = createDom(); const ls = makeLs(); loadAll(dom.window, ls);
-  const a = createEngine(dom.window, ls, 'rim-catcher', 'challenge');
+  const a = createEngine(dom.window, ls, 'rhyme-catcher', 'challenge');
   assert.ok(a.config.__assetLoader);
   assert.ok(a.assetsReady);
 });
@@ -508,7 +508,7 @@ test('P7.48 preferencias de accesibilidad tienen prioridad', () => {
   const a = dom.window.SoloGameAdapter.createEngine({
     studentProfileId: 'student-test',
     container: dom.window.document.getElementById('solo-container'),
-    gameId: 'rim-catcher',
+    gameId: 'rhyme-catcher',
     difficulty: 'challenge',
     accessibility: { largeTargets: true, reducedMotion: true }
   });

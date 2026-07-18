@@ -1,4 +1,4 @@
-import test, { after, afterEach } from 'node:test';
+﻿import test, { after, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -28,7 +28,7 @@ function readFile(subpath) {
 }
 
 function createDom() {
-  const dom = createTestDom({ url: 'http://localhost:3000/expedicion/solo/juego/non_reader/rim-catcher' });
+  const dom = createTestDom({ url: 'http://localhost:3000/expedicion/solo/juego/non_reader/rhyme-catcher' });
   __currentDom = dom;
   return dom;
 }
@@ -73,7 +73,7 @@ function loadAllSolo(window) {
     'core/solo-game-engine.js',
     'core/solo-game-adapter.js',
     'games/vocal-a-game.js',
-    'games/non-reader/rim-catcher.js',
+    'games/non-reader/rhyme-catcher.js',
     'games/non-reader/initial-sound-detector.js',
     'games/non-reader/syllable-counter.js',
     'games/non-reader/final-sound-catcher.js'
@@ -100,7 +100,7 @@ test('loadManifest resuelve manifiesto válido', async () => {
   const dom = createDom();
   loadCore(dom.window);
   const manifestJson = JSON.stringify({
-    version: 1, gameId: 'rim-catcher',
+    version: 1, gameId: 'rhyme-catcher',
     assets: [{ id: 'gato', src: '/x/gato.svg', type: 'image/svg+xml', alt: 'Gato', fallback: '🐱', category: 'option' }]
   });
   dom.window.fetch = function () {
@@ -108,7 +108,7 @@ test('loadManifest resuelve manifiesto válido', async () => {
   };
   const loader = dom.window.AssetLoader.create({});
   const m = await loader.loadManifest('/x/manifest.json');
-  assert.equal(m.gameId, 'rim-catcher');
+  assert.equal(m.gameId, 'rhyme-catcher');
   assert.equal(m.assets.length, 1);
 });
 
@@ -390,20 +390,18 @@ test('los SVG creados no contienen script ni enlaces externos', () => {
 // ============================================================
 // 6. Integración en los cuatro juegos
 // ============================================================
-const GAMES = ['rim-catcher', 'initial-sound-detector', 'syllable-counter', 'final-sound-catcher'];
+const GAMES = ['rhyme-catcher', 'initial-sound-detector', 'syllable-counter', 'final-sound-catcher'];
 
-const MANIFEST_DIR = { 'rim-catcher': 'rhyme-catcher' };
 GAMES.forEach(function (id) {
   test('manifiesto de ' + id + ' es válido y carga', async () => {
     const dom = createDom();
     loadAllSolo(dom.window);
     const gameDef = dom.window.SoloGameAdapter.getGameDef(id);
     assert.ok(gameDef);
-    const dir = MANIFEST_DIR[id] || id;
-    const manifestPath = resolve(BASE, 'games/non-reader/' + dir + '/assets-manifest.json');
+    const manifestPath = resolve(BASE, 'games/non-reader/' + id + '/assets-manifest.json');
     const raw = readFileSync(manifestPath, 'utf8').replace(/^﻿/, '');
     const manifest = JSON.parse(raw);
-    assert.equal(manifest.gameId, dir);
+    assert.equal(manifest.gameId, id);
     const loader = dom.window.AssetLoader.create({});
     const r = loader.validateManifest(manifest);
     assert.equal(r.valid, true, r.error);
@@ -415,11 +413,11 @@ test('fallo de un asset no bloquea el juego', async () => {
   loadAllSolo(dom.window);
   const container = dom.window.document.getElementById('container');
   const mockLoader = dom.window.AssetLoader.create({});
-  mockLoader.loadManifest = function () { return Promise.resolve({ version: 1, gameId: 'rim-catcher', assets: [] }); };
+  mockLoader.loadManifest = function () { return Promise.resolve({ version: 1, gameId: 'rhyme-catcher', assets: [] }); };
   mockLoader.preloadAssets = function () { return Promise.resolve([]); };
   mockLoader.getAsset = function () { return null; };
   const adapter = dom.window.SoloGameAdapter.createEngine({
-    studentProfileId: 't', container: container, gameId: 'rim-catcher', assetLoader: mockLoader
+    studentProfileId: 't', container: container, gameId: 'rhyme-catcher', assetLoader: mockLoader
   });
   adapter.loadAndStart();
   assert.ok(container.querySelectorAll('.solo-option').length > 0);
@@ -444,14 +442,14 @@ test('asset cargado se renderiza (mock loader con cache)', async () => {
   loadAllSolo(dom.window);
   const container = dom.window.document.getElementById('container');
   const mockLoader = dom.window.AssetLoader.create({});
-  mockLoader.loadManifest = function () { return Promise.resolve({ version: 1, gameId: 'rim-catcher', assets: [] }); };
+  mockLoader.loadManifest = function () { return Promise.resolve({ version: 1, gameId: 'rhyme-catcher', assets: [] }); };
   mockLoader.preloadAssets = function () { return Promise.resolve([]); };
   const cache = { pato: { id: 'pato', src: '/pato.svg', type: 'image/svg+xml', alt: 'Pato', fallback: '🦆', ok: true } };
   mockLoader.getAsset = function (id) {
     return cache[id] || { id: id, src: '/x.svg', type: 'image/svg+xml', alt: id, fallback: id, ok: true };
   };
   const adapter = dom.window.SoloGameAdapter.createEngine({
-    studentProfileId: 't', container: container, gameId: 'rim-catcher', assetLoader: mockLoader
+    studentProfileId: 't', container: container, gameId: 'rhyme-catcher', assetLoader: mockLoader
   });
   adapter.loadAndStart();
   await adapter.assetsReady;
@@ -489,12 +487,12 @@ test('no precarga assets de otros perfiles', async () => {
   const container = dom.window.document.getElementById('container');
   const calls = [];
   const mockLoader = dom.window.AssetLoader.create({});
-  mockLoader.loadManifest = function (url) { calls.push(url); return Promise.resolve({ version: 1, gameId: 'rim-catcher', assets: [] }); };
+  mockLoader.loadManifest = function (url) { calls.push(url); return Promise.resolve({ version: 1, gameId: 'rhyme-catcher', assets: [] }); };
   mockLoader.preloadAssets = function () { return Promise.resolve([]); };
-  dom.window.SoloGameAdapter.createEngine({ studentProfileId: 't', container: container, gameId: 'rim-catcher', assetLoader: mockLoader });
+  dom.window.SoloGameAdapter.createEngine({ studentProfileId: 't', container: container, gameId: 'rhyme-catcher', assetLoader: mockLoader });
   await new Promise(function (r) { setTimeout(r, 10); });
   assert.equal(calls.length, 1);
-  assert.ok(calls[0].indexOf('/non-reader/rim-catcher/') !== -1);
+  assert.ok(calls[0].indexOf('/non-reader/rhyme-catcher/') !== -1);
 });
 
 test('no modifica AudioManager', () => {
@@ -513,7 +511,7 @@ test('audio es-CL continúa funcionando con assets', () => {
   dom.window.speechSynthesis = { getVoices: () => [{ lang: 'es-CL' }], speak: () => {}, cancel: () => {} };
   dom.window.SpeechSynthesisUtterance = function (t) { this.text = t; };
   const adapter = dom.window.SoloGameAdapter.createEngine({
-    studentProfileId: 't', container: dom.window.document.getElementById('container'), gameId: 'rim-catcher'
+    studentProfileId: 't', container: dom.window.document.getElementById('container'), gameId: 'rhyme-catcher'
   });
   adapter.loadAndStart();
   assert.equal(dom.window.AudioManager.speakWord('Gato'), true);

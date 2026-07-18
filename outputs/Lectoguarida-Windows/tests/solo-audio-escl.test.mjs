@@ -27,7 +27,7 @@ function readFile(subpath) {
  * Permite configurar la lista de voces y registrar las locuciones emitidas.
  */
 function createDomWithSpeech(voices) {
-  const dom = createTestDom({ url: 'http://localhost:3000/expedicion/solo/juego/non_reader/rim-catcher' });
+  const dom = createTestDom({ url: 'http://localhost:3000/expedicion/solo/juego/non_reader/rhyme-catcher' });
 
   const spoken = [];
   const calls = { cancel: 0, speak: 0 };
@@ -380,7 +380,7 @@ function loadAllSolo(window) {
     'core/solo-game-engine.js',
     'core/solo-game-adapter.js',
     'games/vocal-a-game.js',
-    'games/non-reader/rim-catcher.js',
+    'games/non-reader/rhyme-catcher.js',
     'games/non-reader/initial-sound-detector.js',
     'games/non-reader/syllable-counter.js',
     'games/non-reader/final-sound-catcher.js'
@@ -400,7 +400,7 @@ function loadAllSolo(window) {
   }
 }
 
-const GAMES = ['rim-catcher', 'initial-sound-detector', 'syllable-counter', 'final-sound-catcher'];
+const GAMES = ['rhyme-catcher', 'initial-sound-detector', 'syllable-counter', 'final-sound-catcher'];
 
 GAMES.forEach(function (id) {
   test('juego ' + id + ' tiene voiceGuidance activo', () => {
@@ -434,7 +434,7 @@ test('cambio de juego detiene la locución activa', () => {
   const adapter = dom.window.SoloGameAdapter.createEngine({
     studentProfileId: 'test',
     container: container,
-    gameId: 'rim-catcher'
+    gameId: 'rhyme-catcher'
   });
   adapter.loadAndStart();
   dom.window.AudioManager.speakInstruction('Instrucción uno');
@@ -455,7 +455,7 @@ test('retorno al mapa detiene la locución', () => {
   const adapter = dom.window.SoloGameAdapter.createEngine({
     studentProfileId: 'test',
     container: container,
-    gameId: 'rim-catcher'
+    gameId: 'rhyme-catcher'
   });
   adapter.loadAndStart();
   dom.window.AudioManager.speakInstruction('Instrucción');
