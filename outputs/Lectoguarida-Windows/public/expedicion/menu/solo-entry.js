@@ -149,6 +149,63 @@
       </div>';
   }
 
+  function renderDemo(demoId) {
+    var container = getOrCreateContainer();
+    container.innerHTML = '\
+      <div style="text-align:center;padding:24px 16px;">\
+        <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:12px 16px;margin-bottom:20px;max-width:600px;margin-left:auto;margin-right:auto;">\
+          <strong>Demostración técnica</strong> — No es un juego final\
+        </div>\
+        <div id="solo-demo-area" style="max-width:600px;margin:0 auto;"></div>\
+        <a href="/expedicion/solo/" style="display:inline-block;margin-top:24px;color:var(--accent);text-decoration:none;font-weight:600;">← Volver al selector</a>\
+      </div>';
+
+    var demoArea = document.getElementById('solo-demo-area');
+    if (!demoArea) return;
+
+    var session = loadSession();
+    var profileId = session && session.readerProfile ? session.readerProfile : 'non_reader';
+    var studentProfileId = session && session.studentProfileId ? session.studentProfileId : 'demo-student';
+
+    var engine = SoloGameEngine.create({
+      studentProfileId: studentProfileId,
+      container: demoArea
+    });
+
+    var template = null;
+    if (demoId === 'click-selection' && typeof ClickSelectionDemo !== 'undefined') {
+      template = ClickSelectionDemo.create(demoArea, engine);
+    } else if (demoId === 'drag-drop' && typeof DragDropDemo !== 'undefined') {
+      template = DragDropDemo.create(demoArea, engine);
+    } else if (demoId === 'avatar-movement' && typeof AvatarMovementDemo !== 'undefined') {
+      template = AvatarMovementDemo.create(demoArea, engine);
+    } else {
+      demoArea.innerHTML = '<p>Demo no encontrada</p>';
+      return;
+    }
+
+    engine.setTemplate(template);
+    engine.addPlugin(AudioInstructionPlugin.create({ audioManager: AudioManager }));
+    engine.addPlugin(TimerPlugin.create({ accessibility: engine.getAccessibility() }));
+    engine.addPlugin(KeyboardInputPlugin.create({ inputManager: engine.getInputManager() }));
+    engine.addPlugin(RewardPlugin.create({ rewardManager: engine.getRewardManager() }));
+    engine.addPlugin(AccessibilityPlugin.create({ accessibility: engine.getAccessibility() }));
+
+    var demoConfig = null;
+    if (demoId === 'click-selection' && typeof ClickSelectionDemo !== 'undefined') {
+      demoConfig = ClickSelectionDemo.DEMO_CONFIG;
+    } else if (demoId === 'drag-drop' && typeof DragDropDemo !== 'undefined') {
+      demoConfig = DragDropDemo.DEMO_CONFIG;
+    } else if (demoId === 'avatar-movement' && typeof AvatarMovementDemo !== 'undefined') {
+      demoConfig = AvatarMovementDemo.DEMO_CONFIG;
+    }
+
+    if (demoConfig) {
+      engine.loadGame(demoConfig);
+      engine.startGame();
+    }
+  }
+
   function handleSoloRoute() {
     var path = window.location.pathname;
     document.title = 'Lectoguarida Expedición — Modo Individual';
@@ -168,6 +225,12 @@
 
     if (profileMap[path]) {
       renderProfilePlaceholder(profileMap[path]);
+      return;
+    }
+
+    var demoMatch = path.match(/^\/expedicion\/solo\/demo\/([^/]+)$/);
+    if (demoMatch) {
+      renderDemo(demoMatch[1]);
       return;
     }
 
@@ -220,6 +283,7 @@
   window.SoloRouter = {
     handleSoloRoute: handleSoloRoute,
     renderProfileSelector: renderProfileSelector,
-    renderProfilePlaceholder: renderProfilePlaceholder
+    renderProfilePlaceholder: renderProfilePlaceholder,
+    renderDemo: renderDemo
   };
 })();
