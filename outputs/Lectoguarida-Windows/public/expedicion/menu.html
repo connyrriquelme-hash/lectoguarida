@@ -227,7 +227,7 @@
   </style>
 </head>
 <body>
-  <main class="shell">
+  <main class="shell menu-header">
     <section class="hero" aria-label="Portal de acceso de Expedición">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">✦</div>
@@ -243,7 +243,7 @@
       <div class="badge">/expedicion</div>
     </section>
 
-    <section class="grid">
+    <section class="grid menu-grid">
       <article class="card student">
         <p class="eyebrow">Acceso Estudiantes</p>
         <h2>🎒 Portal de Estudiantes</h2>
@@ -283,9 +283,14 @@
       </article>
     </section>
 
-    <p class="footer-note">Diseñado para alojarse en <strong>/expedicion</strong> sin alterar <strong>lectoguarida.cl</strong>.</p>
+    <p class="footer-note footer">Diseñado para alojarse en <strong>/expedicion</strong> sin alterar <strong>lectoguarida.cl</strong>.</p>
   </main>
 
+  <div id="solo-container"></div>
+
+  <script src="./router/game-router.js" defer></script>
+  <script src="./menu/menu.js" defer></script>
+  <script src="./menu/solo-entry.js" defer></script>
   <script src="./auth.js" defer></script>
 </body>
 </html>

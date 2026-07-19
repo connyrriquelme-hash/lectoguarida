@@ -172,16 +172,17 @@
   }
 
   function renderNonReaderMap() {
-    var games = SoloGameAdapter.listGames('non_reader');
+    var games = SoloGameAdapter.listGames('non_reader').filter(function (game) {
+      return game.id !== 'vocal-a';
+    });
     var container = getOrCreateContainer();
     var cardsHtml = '';
-    var icons = { 'rhyme-catcher': '🎵', 'initial-sound-detector': '🔤', 'syllable-counter': '🧩', 'final-sound-catcher': '🎯', 'vocal-a': '🅰️' };
+    var icons = { 'rhyme-catcher': '🎵', 'initial-sound-detector': '🔤', 'syllable-counter': '🧩', 'final-sound-catcher': '🎯' };
     var descriptions = {
       'rhyme-catcher': 'Identifica palabras que riman con una palabra objetivo.',
       'initial-sound-detector': 'Reconoce el sonido con que empieza una palabra.',
       'syllable-counter': 'Toca cada sílaba de la palabra en orden correcto.',
-      'final-sound-catcher': 'Atrapa los items que terminan con el sonido indicado.',
-      'vocal-a': 'Selecciona la vocal correcta.'
+      'final-sound-catcher': 'Atrapa los items que terminan con el sonido indicado.'
     };
 
     games.forEach(function (game) {
