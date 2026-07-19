@@ -10,8 +10,7 @@ export function createCaptionController(container) {
   var currentText = '';
   var currentSpeaker = '';
   var captionMode = 'always';
-  var boundarySupported = false;
-  var onBoundary = null;
+  var audioPlaying = false;
 
   function mount() {
     if (root) return;
@@ -40,6 +39,11 @@ export function createCaptionController(container) {
     mount();
     currentText = text || '';
     currentSpeaker = speaker || '';
+    if (captionMode === 'with-audio' && !audioPlaying) {
+      active = false;
+      if (root) root.style.opacity = '0';
+      return;
+    }
     active = true;
     var speakerEl = root.querySelector('.adv-caption-speaker');
     var textEl = root.querySelector('.adv-caption-text');
@@ -67,6 +71,19 @@ export function createCaptionController(container) {
   function setCaptionMode(mode) {
     captionMode = mode;
     if (mode === 'hidden') hide();
+    if (mode === 'with-audio' && !audioPlaying) hide();
+    if (mode === 'always' && currentText) show(currentText, currentSpeaker);
+  }
+
+  function setAudioPlaying(playing) {
+    audioPlaying = playing;
+    if (captionMode === 'with-audio') {
+      if (playing && currentText) {
+        show(currentText, currentSpeaker);
+      } else if (!playing) {
+        hide();
+      }
+    }
   }
 
   function getCaptionMode() { return captionMode; }
@@ -85,6 +102,7 @@ export function createCaptionController(container) {
     hide: hide,
     updateText: updateText,
     setCaptionMode: setCaptionMode,
+    setAudioPlaying: setAudioPlaying,
     getCaptionMode: getCaptionMode,
     isActive: isActive,
     getCurrentText: getCurrentText,
