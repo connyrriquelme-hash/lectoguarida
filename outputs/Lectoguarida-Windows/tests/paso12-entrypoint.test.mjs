@@ -148,9 +148,10 @@ test('flujo Soy estudiante llega al perfil No Lectores', () => {
   // El HTML del portal debe contener las tarjetas de acceso (estudiante/docente).
   assert.ok(dom.window.document.getElementById('studentForm'));
   assert.ok(dom.window.document.getElementById('teacherForm'));
-  // Y debe cargar los scripts del modo individual.
+  // Y debe cargar los scripts del modo individual con rutas absolutas
+  // (requerido para que se resuelvan correctamente en /expedicion/solo/*).
   const scripts = Array.from(dom.window.document.querySelectorAll('script[src]')).map((s) => s.getAttribute('src'));
-  assert.ok(scripts.includes('./menu/solo-entry.js'));
+  assert.ok(scripts.includes('/expedicion/menu/solo-entry.js'));
 });
 
 // ============================================================

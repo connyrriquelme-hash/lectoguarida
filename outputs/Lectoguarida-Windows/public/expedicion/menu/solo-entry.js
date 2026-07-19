@@ -49,6 +49,7 @@
     'games/non-reader/final-sound-catcher.js',
     'profiles/non-reader/non-reader-difficulties.js',
     'profiles/non-reader/non-reader-difficulty-store.js',
+    '../router/session-manager.js',
     '../menu/menu.js',
     '../menu/solo-entry.js'
   ];
@@ -107,6 +108,26 @@
 
   function isSoloRoute() {
     return window.location.pathname.startsWith('/expedicion/solo');
+  }
+
+  function resolveSoloProfileFromPath(pathname) {
+    if (typeof pathname !== 'string') return null;
+    var path = pathname.replace(/\/+$/, '');
+    var profileMap = {
+      '/expedicion/solo/no-lectores': 'non_reader',
+      '/expedicion/solo/principiantes': 'beginner',
+      '/expedicion/solo/avanzados': 'advanced'
+    };
+    if (profileMap[path]) return profileMap[path];
+    var gameMatch = path.match(/^\/expedicion\/solo\/juego\/([^/]+)\/[^/]+$/);
+    if (gameMatch) {
+      var raw = gameMatch[1].toLowerCase();
+      if (raw === 'no-lectores' || raw === 'non-reader' || raw === 'non_reader') return 'non_reader';
+      if (raw === 'principiantes' || raw === 'beginner') return 'beginner';
+      if (raw === 'avanzados' || raw === 'advanced') return 'advanced';
+    }
+    if (path === '/expedicion/solo' || path === '/expedicion/solo/') return null;
+    return null;
   }
 
   function hideMenuContent() {
@@ -613,6 +634,7 @@
     renderProfilePlaceholder: renderProfilePlaceholder,
     renderNonReaderMap: renderNonReaderMap,
     renderDifficultySelector: renderDifficultySelector,
-    renderDemo: renderDemo
+    renderDemo: renderDemo,
+    resolveSoloProfileFromPath: resolveSoloProfileFromPath
   };
 })();
