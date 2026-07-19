@@ -445,18 +445,32 @@ export function createAdventureEngine(options) {
       var cur = dialogue.current();
       if (cur) {
         if (a11ySettings && !a11ySettings.get('audioEnabled')) return;
-        audio.speak(cur.text);
+        if (captionController) captionController.setAudioPlaying(true);
+        var spoke = audio.speak(cur.text, {
+          onend: function () { if (captionController) captionController.setAudioPlaying(false); }
+        });
+        if (!spoke) {
+          if (captionController) captionController.setAudioPlaying(false);
+        }
         if (captionController) captionController.show(cur.text, cur.speaker);
       }
     });
     narrativePanel.setOnRepeat(function () {
       var cur = dialogue.current();
       if (cur) {
-        audio.repeat(cur.text);
+        if (captionController) captionController.setAudioPlaying(true);
+        var spoke = audio.repeat(cur.text, {
+          onend: function () { if (captionController) captionController.setAudioPlaying(false); }
+        });
+        if (!spoke) {
+          if (captionController) captionController.setAudioPlaying(false);
+        }
         if (captionController) captionController.show(cur.text, cur.speaker);
       }
     });
     narrativePanel.setOnAdvance(function () {
+      audio.cancel();
+      if (captionController) captionController.setAudioPlaying(false);
       dialogue.next();
     });
 
@@ -691,6 +705,7 @@ export function createAdventureEngine(options) {
       if (world) world.pause();
       stateMachine.transition(AdventureState.PAUSED);
       audio.cancel();
+      if (captionController) captionController.setAudioPlaying(false);
     }
   }
 

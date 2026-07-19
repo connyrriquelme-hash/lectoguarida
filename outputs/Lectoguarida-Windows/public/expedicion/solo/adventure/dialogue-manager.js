@@ -27,7 +27,10 @@ export function createDialogueManager(deps) {
     if (onChange) onChange({ speaker: speaker, text: line, index: index, total: queue.length }, false);
     if (audio) {
       if (onAudioStart) onAudioStart();
-      audio.speak(line);
+      var spoke = audio.speak(line, {
+        onend: function () { if (onAudioEnd) onAudioEnd(); }
+      });
+      if (!spoke && onAudioEnd) onAudioEnd();
     }
   }
 
