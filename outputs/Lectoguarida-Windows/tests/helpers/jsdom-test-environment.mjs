@@ -33,6 +33,19 @@ const abortControllers = new Set();
 const engines = new Set();
 const restoredGlobals = [];
 
+let __fatalHandlerInstalled = false;
+function installFatalDiagnostics() {
+  if (__fatalHandlerInstalled) return;
+  __fatalHandlerInstalled = true;
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('[TEST-HARNESS] unhandledRejection:', reason && reason.stack ? reason.stack : reason);
+  });
+  process.on('uncaughtException', (err, origin) => {
+    console.error('[TEST-HARNESS] uncaughtException:', err && err.stack ? err.stack : err, 'origin=', origin);
+  });
+}
+installFatalDiagnostics();
+
 export function createTestDom(options = {}) {
   const dom = new JSDOM(
     options.html || '<!DOCTYPE html><html><body><div id="container"></div></body></html>',
@@ -193,8 +206,14 @@ export function cleanupTestEnvironment() {
       console.error('[JT] active requests before sweep:', reqs.length, reqs.map(r => r && r.constructor && r.constructor.name).join(','));
     }
     for (const h of handles) {
-      try { if (typeof h.close === 'function') h.close(); } catch (e) { /* ignore */ }
-      try { if (typeof h.destroy === 'function') h.destroy(); } catch (e) { /* ignore */ }
+      try {
+        if (h === process.stdout || h === process.stderr || h === process.stdin) continue;
+        if (typeof h.close === 'function') h.close();
+      } catch (e) { /* ignore */ }
+      try {
+        if (h === process.stdout || h === process.stderr || h === process.stdin) continue;
+        if (typeof h.destroy === 'function') h.destroy();
+      } catch (e) { /* ignore */ }
       try { if (typeof h.unref === 'function') h.unref(); } catch (e) { /* ignore */ }
     }
   } catch (e) { /* ignore */ }
