@@ -23,7 +23,7 @@ const UI = resolve(ADV, 'ui');
 
 function imp(p) { return import(pathToFileURL(p).href); }
 
-const { CAMERA_PRESETS, resolveCameraPreset, applyPreset, createCameraController } =
+const { CAMERA_PRESETS, resolveCameraPreset, createCameraController, DEFAULT_YAW, DEFAULT_PITCH, DEFAULT_DISTANCE, MIN_DISTANCE, MAX_DISTANCE, MIN_PITCH, MAX_PITCH, LOOK_AT_OFFSET_Y, CAMERA_MODE_FOLLOW, CAMERA_MODE_FOCUS, CAMERA_MODE_OVERVIEW } =
   await imp(resolve(ADV, 'camera-controller.js'));
 const { createUIRoot } = await imp(resolve(UI, 'ui-root.js'));
 const { createAccessibilityController } = await imp(resolve(ADV, 'accessibility-controller.js'));
@@ -94,15 +94,15 @@ test('todos los presets tienen FOV en rango 30-55', () => {
   });
 });
 
-test('todos los presets tienen zoom > 0 (no cero ni negativo)', () => {
+test('todos los presets tienen near > 0', () => {
   Object.values(CAMERA_PRESETS).forEach(p => {
-    assert.ok(p.zoom > 0, `zoom=${p.zoom} debe ser > 0`);
+    assert.ok(p.near > 0, `near=${p.near} debe ser > 0`);
   });
 });
 
-test('todos los presets tienen zoom >= 1.0 para acercar', () => {
+test('todos los presets tienen far >= 200', () => {
   Object.values(CAMERA_PRESETS).forEach(p => {
-    assert.ok(p.zoom >= 1.0, `zoom=${p.zoom} debe ser >= 1.0`);
+    assert.ok(p.far >= 200, `far=${p.far} debe ser >= 200`);
   });
 });
 
@@ -169,11 +169,11 @@ test('resize handler no se registra dos veces en el controller', () => {
   assert.equal(cam.fov, CAMERA_PRESETS.DESKTOP_COMPACT.fov, '800x600 resolves to DESKTOP_COMPACT');
 });
 
-test('destroy en cameraController resetea zoom y offset', () => {
+test('destroy en cameraController resetea estado', () => {
   const cam = fakeCamera();
   const ctrl = createCameraController(cam, null);
   ctrl.applyViewportPreset(390, 844);
-  ctrl.resetZoom();
+  ctrl.recenter();
   assert.equal(cam.fov, CAMERA_PRESETS.MOBILE_PORTRAIT.fov);
 });
 
@@ -332,14 +332,14 @@ test('CAMERA_PRESETS tiene exactamente 5 presets', () => {
 });
 
 /* ══════════════════════════════════════════════════
-   34: todos los presets tienen near/far/lookAtY
+   34: todos los presets tienen fov/near/far
    ══════════════════════════════════════════════════ */
 
-test('todos los presets tienen near, far, lookAtY', () => {
+test('todos los presets tienen fov, near, far', () => {
   Object.entries(CAMERA_PRESETS).forEach(([name, p]) => {
+    assert.ok(typeof p.fov === 'number', `${name} fov is number`);
     assert.ok(typeof p.near === 'number', `${name} near is number`);
     assert.ok(typeof p.far === 'number', `${name} far is number`);
-    assert.ok(typeof p.lookAtY === 'number', `${name} lookAtY is number`);
     assert.ok(p.near < p.far, `${name} near < far`);
   });
 });
@@ -362,14 +362,14 @@ test('selector usa safe-area-inset para móvil', () => {
 });
 
 /* ══════════════════════════════════════════════════
-   37: resetZoom restaura offset por defecto
+   37: recenter restaura posición por defecto
    ══════════════════════════════════════════════════ */
 
-test('resetZoom restaura offset a valores por defecto', () => {
+test('recenter restaura distancia y ángulos a valores por defecto', () => {
   const cam = fakeCamera();
   const ctrl = createCameraController(cam, null);
-  ctrl.applyViewportPreset(390, 844);
-  ctrl.resetZoom();
-  ctrl.applyViewportPreset(1920, 1080);
-  assert.equal(cam.fov, CAMERA_PRESETS.DESKTOP_WIDE.fov);
+  ctrl.zoomBy(-4);
+  ctrl.rotateBy(1.5, 0.3);
+  ctrl.recenter();
+  assert.equal(ctrl.getDistance(), DEFAULT_DISTANCE, 'distance restored to DEFAULT_DISTANCE');
 });
