@@ -143,6 +143,32 @@ export function createAdventureEngine(options) {
     backBtn.addEventListener('click', function () { destroy(); if (deps.onExit) deps.onExit(); });
     root.appendChild(backBtn);
 
+    var recenterBtn = document.createElement('button');
+    recenterBtn.className = 'adv-recenter-btn';
+    recenterBtn.setAttribute('aria-label', 'Centrar cámara');
+    recenterBtn.textContent = '⊙';
+    recenterBtn.addEventListener('click', function () {
+      if (world && world.cameraController) world.cameraController.recenter();
+    });
+    root.appendChild(recenterBtn);
+
+    var camA11y = document.createElement('div');
+    camA11y.className = 'adv-camera-a11y';
+    camA11y.setAttribute('aria-label', 'Controles de cámara');
+    [['↺', 'Girar izquierda', function () { if (world && world.cameraController) world.cameraController.rotateBy(0.3, 0); }],
+     ['↻', 'Girar derecha', function () { if (world && world.cameraController) world.cameraController.rotateBy(-0.3, 0); }],
+     ['+', 'Acercar', function () { if (world && world.cameraController) world.cameraController.zoomBy(-1.5); }],
+     ['−', 'Alejar', function () { if (world && world.cameraController) world.cameraController.zoomBy(1.5); }],
+     ['⊙', 'Centrar', function () { if (world && world.cameraController) world.cameraController.recenter(); }]
+    ].forEach(function (item) {
+      var b = document.createElement('button');
+      b.textContent = item[0];
+      b.setAttribute('aria-label', item[1]);
+      b.addEventListener('click', item[2]);
+      camA11y.appendChild(b);
+    });
+    root.appendChild(camA11y);
+
     hud = {
       header: header, stars: header.querySelector('#adv-stars'),
       missionPanel: missionPanel, title: missionPanel.querySelector('#adv-mission-title'),
@@ -213,6 +239,7 @@ export function createAdventureEngine(options) {
     if (done) {
       hud.dialogue.style.display = 'none';
       stateMachine.transition(AdventureState.EXPLORING);
+      if (world && world.cameraController) world.cameraController.setMode('FOLLOW');
       return;
     }
     if (!current) return;
@@ -220,6 +247,7 @@ export function createAdventureEngine(options) {
     hud.speaker.textContent = current.speaker || '';
     hud.line.textContent = current.text;
     accessibility.announce(hud.live, (current.speaker ? current.speaker + ': ' : '') + current.text);
+    if (world && world.cameraController) world.cameraController.setMode('FOCUS');
   }
 
   function showCharacterSelect() {
@@ -320,17 +348,27 @@ export function createAdventureEngine(options) {
       onKey: onKey,
       onClick: function () {}
     });
+    inputController.setCameraController(world.cameraController);
+    inputController.setCanvas(world.renderer.domElement);
     inputController.attach();
 
     interaction = createInteractionController(world.camera, world.renderer.domElement, world.scene);
     interaction.setInteractables(buildInteractables());
+    interaction.setGroundObjects(world.getGroundObjects());
     interaction.setOnSelect(onInteractableSelected);
+    interaction.setOnGroundClick(function (pos) {
+      if (playerController && stateMachine.is(AdventureState.EXPLORING)) {
+        playerController.setClickDestination(pos);
+      }
+    });
 
     world.renderer.domElement.addEventListener('click', function (e) {
-      interaction.handlePointer(e.clientX, e.clientY);
+      if (stateMachine.is(AdventureState.EXPLORING)) {
+        interaction.handlePointer(e.clientX, e.clientY);
+      }
     });
     world.renderer.domElement.setAttribute('role', 'img');
-    world.renderer.domElement.setAttribute('aria-label', 'Mundo 3D del Humedal de las Palabras. Usa el panel de botones para avanzar.');
+    world.renderer.domElement.setAttribute('aria-label', 'Mundo 3D del Humedal de las Palabras. Usa WASD o clic para moverte, arrastra con botón derecho para rotar cámara.');
 
     if (isTouchDevice()) {
       mobileControls = createMobileControls(root, {
@@ -340,16 +378,27 @@ export function createAdventureEngine(options) {
         onHint: function () { audio.speak(DIALOGUE.rina.hint); },
         onPause: function () { togglePause(); }
       });
+      mobileControls.setCameraController(world.cameraController);
+      mobileControls.setCanvas(world.renderer.domElement);
     }
 
     world.onFrame(function (dt, t) {
-      var dir = inputController.getMoveVector();
+      var dir = inputController.getCameraRelativeVector();
       var joy = mobileControls ? mobileControls.getJoystickVector() : { x: 0, z: 0 };
+      var hasKeyboard = inputController.hasMovementInput();
+      if (hasKeyboard) {
+        playerController.setClickDestination(null);
+      }
       if (dir.x === 0 && dir.z === 0 && (joy.x !== 0 || joy.z !== 0)) {
         dir = { x: joy.x, z: joy.z };
+        playerController.setClickDestination(null);
       }
       if (stateMachine.is(AdventureState.EXPLORING)) {
-        playerController.move(dir, dt);
+        if (dir.x !== 0 || dir.z !== 0) {
+          playerController.move(dir, dt);
+        } else {
+          playerController.moveTowardDestination(dt);
+        }
         var moving = playerController.update(dt);
         playerFactory.animate(player, moving ? 'walk' : 'idle', t);
       }
@@ -387,6 +436,7 @@ export function createAdventureEngine(options) {
     }
     if (key === 'Escape') { togglePause(); }
     if (key === 'r' || key === 'R') { var cur = dialogue.current(); if (cur) audio.repeat(cur.text); }
+    if (key === 'c' || key === 'C') { if (world && world.cameraController) world.cameraController.recenter(); }
   }
 
   function tryInteractNearby() {
@@ -450,6 +500,7 @@ export function createAdventureEngine(options) {
     gameId = gameId || CHAPTER_01.mission.gameId;
     stateMachine.transition(AdventureState.CHALLENGE_LOADING);
     audio.cancel();
+    if (world && world.cameraController) world.cameraController.setMode('OVERVIEW');
     var challengeContainer = document.createElement('div');
     challengeContainer.id = 'adv-challenge';
     challengeContainer.style.cssText = 'position:absolute;inset:0;background:rgba(255,255,255,0.97);z-index:60;overflow:auto;';
@@ -534,6 +585,7 @@ export function createAdventureEngine(options) {
     stateMachine.transition(AdventureState.RETURNING);
     if (playerController) playerController.setEnabled(true);
     if (inputController) inputController.setEnabled(true);
+    if (world && world.cameraController) world.cameraController.setMode('FOLLOW');
     stateMachine.transition(AdventureState.EXPLORING);
   }
 

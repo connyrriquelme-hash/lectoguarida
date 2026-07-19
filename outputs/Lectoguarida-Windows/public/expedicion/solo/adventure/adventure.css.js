@@ -19,8 +19,27 @@ export var ADVENTURE_CSS = `
 .adv-root.hud-active .adv-btn { pointer-events: auto; }
 .adv-world-canvas {
   position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0;
+  pointer-events: auto;
 }
 .adv-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.adv-recenter-btn {
+  position: absolute; top: 14px; right: 14px; z-index: 15;
+  min-width: 44px; min-height: 44px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.85); color: #2d6a4f; font-size: 1.2rem;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  display: flex; align-items: center; justify-content: center;
+}
+.adv-recenter-btn:hover { background: #fff; }
+.adv-camera-a11y {
+  position: absolute; bottom: 80px; right: 14px; z-index: 15;
+  display: flex; flex-direction: column; gap: 6px; pointer-events: auto;
+}
+.adv-camera-a11y button {
+  min-width: 44px; min-height: 44px; border-radius: 10px; border: none;
+  background: rgba(255,255,255,0.85); color: #2d6a4f; font-size: 1rem;
+  cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.adv-camera-a11y button:hover { background: #fff; }
 .adv-hud-header {
   position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between;
   align-items: center; padding: 10px 14px; gap: 10px; pointer-events: none;
