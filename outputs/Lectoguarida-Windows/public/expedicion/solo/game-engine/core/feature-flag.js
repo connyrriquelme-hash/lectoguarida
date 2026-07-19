@@ -7,9 +7,12 @@ export var FEATURE_FLAGS = {
   ENABLE_GAME_ENGINE_V2: false
 };
 
-export function isEngineV2Enabled() {
-  if (typeof window !== 'undefined' && window.location) {
-    var params = new URLSearchParams(window.location.search);
+export function isGameEngineV2Enabled(searchParams) {
+  var params = searchParams;
+  if (!params && typeof window !== 'undefined' && window.location) {
+    params = new URLSearchParams(window.location.search);
+  }
+  if (params) {
     if (params.get('debugEngine') === '1') return true;
     if (params.get('engineV2') === '1') return true;
   }
