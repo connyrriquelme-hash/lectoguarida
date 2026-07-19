@@ -6,6 +6,7 @@
  */
 
 var STORAGE_KEY = 'lectoguarida_a11y_settings';
+var SCHEMA_VERSION = 2;
 
 var DEFAULTS = {
   joystickVisible: true,
@@ -17,7 +18,8 @@ var DEFAULTS = {
   narrativeAdvanceMode: 'manual',
   visualReadingMode: false,
   vibrationEnabled: false,
-  audioEnabled: true
+  audioEnabled: true,
+  _schemaVersion: SCHEMA_VERSION
 };
 
 var TEXT_SIZES = { normal: '0.95rem', large: '1.15rem', xlarge: '1.35rem' };
@@ -35,9 +37,20 @@ export function createAccessibleReadingSettings(studentId) {
       var raw = localStorage.getItem(STORAGE_KEY + '_' + (studentId || 'default'));
       if (raw) {
         var parsed = JSON.parse(raw);
+        var storedVersion = parsed._schemaVersion || 1;
         Object.keys(DEFAULTS).forEach(function (k) {
+          if (k === '_schemaVersion') return;
           if (parsed[k] !== undefined) settings[k] = parsed[k];
         });
+        if (storedVersion < SCHEMA_VERSION) {
+          if (settings.visualReadingMode) {
+            settings.audioEnabled = false;
+          } else if (parsed.audioEnabled === undefined) {
+            settings.audioEnabled = true;
+          }
+          settings._schemaVersion = SCHEMA_VERSION;
+          save();
+        }
       }
     } catch (e) { /* noop */ }
   }
