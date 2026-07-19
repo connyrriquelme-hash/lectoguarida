@@ -99,12 +99,71 @@ export var ADVENTURE_CSS = `
 .adv-character-card .name { font-weight: 800; color: #2d6a4f; margin-top: 8px; }
 .adv-mobile-btn { box-shadow: 0 3px 8px rgba(0,0,0,0.25); }
 .adv-reduced-motion * { animation: none !important; transition: none !important; }
+.adv-joystick {
+  position: absolute; left: 18px; bottom: 18px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(79,209,197,0.12) 0%, rgba(45,106,79,0.18) 100%);
+  border: 3px solid rgba(79,209,197,0.4);
+  touch-action: none; z-index: 14; pointer-events: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25), inset 0 1px 3px rgba(255,255,255,0.2);
+}
+.adv-joystick-knob {
+  position: absolute; left: 40px; top: 40px;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: radial-gradient(circle, #b8f0e8 0%, #4fd1c5 70%, #2d9e8f 100%);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 0 12px rgba(79,209,197,0.4);
+  transition: transform 0.08s ease; pointer-events: none;
+}
+.adv-narrative-panel {
+  position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%);
+  width: min(90vw, 600px); max-height: 35vh;
+  background: linear-gradient(135deg, rgba(255,251,235,0.96), rgba(255,248,225,0.94));
+  border: 2px solid rgba(139,119,73,0.35);
+  border-radius: 16px; padding: 14px 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  z-index: 18; pointer-events: auto;
+  font-family: 'Baloo 2', system-ui, sans-serif;
+  overflow-y: auto; transition: opacity 0.2s ease;
+}
+.adv-caption-bar {
+  position: absolute; bottom: 140px; left: 50%; transform: translateX(-50%);
+  width: min(88vw, 560px);
+  background: rgba(0,0,0,0.78); color: #fff;
+  border-radius: 12px; padding: 10px 16px;
+  font-size: 0.95rem; line-height: 1.5; text-align: center;
+  z-index: 19; pointer-events: none;
+  opacity: 0; transition: opacity 0.2s ease;
+  font-family: 'Baloo 2', system-ui, sans-serif;
+}
+.adv-sound-cue-overlay {
+  position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
+  z-index: 20; pointer-events: none;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.adv-sound-cue {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 12px;
+  font-size: 0.88rem; font-weight: 600; color: #fff;
+  pointer-events: auto; cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+}
+@keyframes advCueFadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.adv-text-large .adv-narrative-panel,
+.adv-text-large .adv-dialogue { font-size: 1.15rem; }
+.adv-text-xlarge .adv-narrative-panel,
+.adv-text-xlarge .adv-dialogue { font-size: 1.35rem; }
+.adv-contrast-high { filter: contrast(1.3) saturate(0.9); }
 @media (max-width: 600px) {
   .adv-character-grid { grid-template-columns: repeat(2, 1fr); }
+  .adv-narrative-panel { width: 95vw; bottom: 80px; max-height: 30vh; }
+  .adv-caption-bar { width: 92vw; bottom: 120px; }
+  .adv-joystick { width: 110px; height: 110px; left: 14px; bottom: 14px; }
+  .adv-joystick-knob { left: 35px; top: 35px; width: 36px; height: 36px; }
 }
 @media (max-width: 480px) {
   .adv-mission-panel { max-width: 60vw; font-size: 0.85rem; }
   .adv-minimap { width: 84px; height: 84px; }
   .adv-character-select { padding: 16px 12px; }
+  .adv-narrative-panel { width: 96vw; max-height: 28vh; padding: 10px 12px; }
 }
 `;

@@ -19,6 +19,10 @@ import { createPlayerController } from './player-controller.js';
 import { createInputController } from './input-controller.js';
 import { createInteractionController } from './interaction-controller.js';
 import { createMobileControls } from './mobile-controls.js';
+import { createNarrativePanel } from './ui/narrative-panel.js';
+import { createCaptionController } from './ui/caption-controller.js';
+import { createSoundCueOverlay } from './ui/sound-cue-overlay.js';
+import { createAccessibleReadingSettings } from './ui/accessible-reading-settings.js';
 import { createAccessibilityController } from './accessibility-controller.js';
 import { createDialogueManager } from './dialogue-manager.js';
 import { createQuestManager } from './quest-manager.js';
@@ -71,6 +75,10 @@ export function createAdventureEngine(options) {
   var inputController = null;
   var interaction = null;
   var mobileControls = null;
+  var narrativePanel = null;
+  var captionController = null;
+  var soundCueOverlay = null;
+  var a11ySettings = null;
   var accessibility = createAccessibilityController({});
   var questManager = createQuestManager(CHAPTER_01.mission);
   var dialogue = createDialogueManager({ audio: audio, onChange: onDialogueChange });
@@ -238,6 +246,8 @@ export function createAdventureEngine(options) {
   function onDialogueChange(current, done) {
     if (done) {
       hud.dialogue.style.display = 'none';
+      if (narrativePanel) narrativePanel.hide();
+      if (captionController) captionController.hide();
       stateMachine.transition(AdventureState.EXPLORING);
       if (world && world.cameraController) world.cameraController.setMode('FOLLOW');
       return;
@@ -248,6 +258,31 @@ export function createAdventureEngine(options) {
     hud.line.textContent = current.text;
     accessibility.announce(hud.live, (current.speaker ? current.speaker + ': ' : '') + current.text);
     if (world && world.cameraController) world.cameraController.setMode('FOCUS');
+    if (narrativePanel && a11ySettings && a11ySettings.get('visualReadingMode')) {
+      narrativePanel.show(current.speaker, [current.text]);
+    }
+    if (captionController && a11ySettings && a11ySettings.get('audioEnabled')) {
+      captionController.show(current.text, current.speaker);
+    }
+  }
+
+  function applyA11ySettings() {
+    if (!a11ySettings) return;
+    if (mobileControls) mobileControls.setSensitivity(a11ySettings.get('joystickSensitivity'));
+    if (mobileControls) mobileControls.setJoystickVisible(a11ySettings.get('joystickVisible'));
+    if (captionController) captionController.setCaptionMode(a11ySettings.get('captionsMode'));
+    if (soundCueOverlay) soundCueOverlay.setShowAmbient(a11ySettings.get('soundDescriptions'));
+    var textSize = a11ySettings.get('textSize');
+    if (root) {
+      root.classList.remove('adv-text-large', 'adv-text-xlarge');
+      if (textSize === 'large') root.classList.add('adv-text-large');
+      else if (textSize === 'xlarge') root.classList.add('adv-text-xlarge');
+    }
+    var contrast = a11ySettings.get('contrastMode');
+    if (root) {
+      root.classList.remove('adv-contrast-high');
+      if (contrast === 'high') root.classList.add('adv-contrast-high');
+    }
   }
 
   function showCharacterSelect() {
@@ -370,27 +405,55 @@ export function createAdventureEngine(options) {
     world.renderer.domElement.setAttribute('role', 'img');
     world.renderer.domElement.setAttribute('aria-label', 'Mundo 3D del Humedal de las Palabras. Usa WASD o clic para moverte, arrastra con botón derecho para rotar cámara.');
 
-    if (isTouchDevice()) {
-      mobileControls = createMobileControls(root, {
-        onInteract: function () { tryInteractNearby(); },
-        onListen: function () { var cur = dialogue.current(); if (cur) audio.speak(cur.text); },
-        onRepeat: function () { var cur = dialogue.current(); if (cur) audio.repeat(cur.text); },
-        onHint: function () { audio.speak(DIALOGUE.rina.hint); },
-        onPause: function () { togglePause(); }
-      });
-      mobileControls.setCameraController(world.cameraController);
-      mobileControls.setCanvas(world.renderer.domElement);
-    }
+    mobileControls = createMobileControls(root, {
+      onInteract: function () { tryInteractNearby(); },
+      onListen: function () { var cur = dialogue.current(); if (cur) audio.speak(cur.text); },
+      onRepeat: function () { var cur = dialogue.current(); if (cur) audio.repeat(cur.text); },
+      onHint: function () { audio.speak(DIALOGUE.rina.hint); },
+      onPause: function () { togglePause(); }
+    });
+    mobileControls.setCameraController(world.cameraController);
+    mobileControls.setCanvas(world.renderer.domElement);
+
+    a11ySettings = createAccessibleReadingSettings(studentProfileId);
+    narrativePanel = createNarrativePanel(root);
+    captionController = createCaptionController(root);
+    soundCueOverlay = createSoundCueOverlay(root);
+
+    applyA11ySettings();
+    a11ySettings.onChange(function () { applyA11ySettings(); });
+
+    narrativePanel.setOnListen(function () {
+      var cur = dialogue.current();
+      if (cur) {
+        if (a11ySettings && !a11ySettings.get('audioEnabled')) return;
+        audio.speak(cur.text);
+        if (captionController) captionController.show(cur.text, cur.speaker);
+      }
+    });
+    narrativePanel.setOnRepeat(function () {
+      var cur = dialogue.current();
+      if (cur) {
+        audio.repeat(cur.text);
+        if (captionController) captionController.show(cur.text, cur.speaker);
+      }
+    });
+    narrativePanel.setOnAdvance(function () {
+      dialogue.next();
+    });
 
     world.onFrame(function (dt, t) {
       var dir = inputController.getCameraRelativeVector();
       var joy = mobileControls ? mobileControls.getJoystickVector() : { x: 0, z: 0 };
       var hasKeyboard = inputController.hasMovementInput();
+      var hasJoystick = joy.x !== 0 || joy.z !== 0;
       if (hasKeyboard) {
         playerController.setClickDestination(null);
       }
-      if (dir.x === 0 && dir.z === 0 && (joy.x !== 0 || joy.z !== 0)) {
-        dir = { x: joy.x, z: joy.z };
+      if (dir.x === 0 && dir.z === 0 && hasJoystick) {
+        var camFwd = world.cameraController.getForwardDir();
+        var camRight = world.cameraController.getRightDir();
+        dir = { x: camRight.x * joy.x + camFwd.x * joy.z, z: camRight.z * joy.x + camFwd.z * joy.z };
         playerController.setClickDestination(null);
       }
       if (stateMachine.is(AdventureState.EXPLORING)) {
@@ -470,7 +533,9 @@ export function createAdventureEngine(options) {
     obj.userData.collected = true;
     obj.visible = false;
     progress.markCollectible(obj.userData.collectibleId);
-    audio.speak('¡Encontraste una campana!');
+    audio.speak('\u00a1Encontraste una campana!');
+    if (soundCueOverlay) soundCueOverlay.showCue('bell_found');
+    if (a11ySettings) a11ySettings.vibrate([100]);
     updateProgressHud();
     interaction.setInteractables(buildInteractables());
     if (questManager.isComplete() && !stateMachine.is(AdventureState.MISSION_COMPLETE)) {
@@ -532,12 +597,16 @@ export function createAdventureEngine(options) {
       var gained = 3;
       progress.addStars(gained);
       progress.completeMission(res.missionId);
-      audio.speak('¡Muy bien! Recuperaste una página del Gran Libro.');
+      audio.speak('\u00a1Muy bien! Recuperaste una p\u00e1gina del Gran Libro.');
+      if (soundCueOverlay) soundCueOverlay.showCue('mission_complete');
+      if (captionController) captionController.show('\u00a1Muy bien! Recuperaste una p\u00e1gina del Gran Libro.', 'Rina');
+      if (a11ySettings) a11ySettings.vibrate([100, 50, 100]);
       updateStarsHud();
       missionManager.onCollectibleFound('__challenge__');
       onMissionComplete();
     } else {
       audio.speak('Probemos nuevamente. Escucha otra vez.');
+      if (soundCueOverlay) soundCueOverlay.showCue('word_wrong');
     }
     resumeAfterChallenge();
   }
@@ -646,6 +715,10 @@ export function createAdventureEngine(options) {
     if (dialogue) dialogue.stop();
     if (inputController) inputController.detach();
     if (mobileControls) mobileControls.destroy();
+    if (narrativePanel) narrativePanel.destroy();
+    if (captionController) captionController.destroy();
+    if (soundCueOverlay) soundCueOverlay.destroy();
+    if (a11ySettings) a11ySettings.destroy();
     if (world) world.dispose();
     if (fallback) fallback.destroy();
     if (root && root.parentNode) root.parentNode.removeChild(root);
