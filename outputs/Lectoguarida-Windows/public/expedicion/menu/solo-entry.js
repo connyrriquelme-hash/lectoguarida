@@ -588,6 +588,11 @@
       return;
     }
 
+    if (path === '/expedicion/solo/aventura' || path === '/expedicion/solo/aventura/') {
+      renderAdventureRoute();
+      return;
+    }
+
     var guardianMatch = path.match(/^\/expedicion\/solo\/guardian-codice\/([^/]+)$/);
     if (guardianMatch) {
       renderGuardianPlaceholder(guardianMatch[1]);
@@ -602,11 +607,33 @@
     window.location.href = '/expedicion/';
   }
 
+  function renderAdventureRoute() {
+    var container = getOrCreateContainer();
+    container.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;margin:0;max-width:none;';
+    container.innerHTML = '';
+    hideMenuContent();
+
+    if (typeof window.LectoguaridaAdventure === 'undefined') {
+      import('/expedicion/solo/adventure/adventure-entry.js')
+        .then(function (mod) {
+          if (mod && mod.mountAdventure) mod.mountAdventure(container);
+        })
+        .catch(function (err) {
+          container.innerHTML = '<div style="padding:40px;text-align:center;"><h2>Aventura no disponible</h2><p>' + (err && err.message ? err.message : '') + '</p><a href="/expedicion/solo/no-lectores" style="color:var(--accent);">← Volver</a></div>';
+        });
+    } else if (window.LectoguaridaAdventure.mountAdventure) {
+      window.LectoguaridaAdventure.mountAdventure(container);
+    }
+  }
+
   function bindSoloLinks(container) {
     container.querySelectorAll('a[href]').forEach(function (link) {
       link.addEventListener('click', function (e) {
         e.preventDefault();
         var href = link.getAttribute('href');
+        if (typeof window.LectoguaridaAdventure !== 'undefined' && window.LectoguaridaAdventure.destroyAdventure) {
+          try { window.LectoguaridaAdventure.destroyAdventure(); } catch (err) {}
+        }
         window.history.pushState({}, '', href);
         handleSoloRoute();
       });
@@ -614,6 +641,9 @@
   }
 
   window.addEventListener('popstate', function () {
+    if (typeof window.LectoguaridaAdventure !== 'undefined' && window.LectoguaridaAdventure.destroyAdventure) {
+      try { window.LectoguaridaAdventure.destroyAdventure(); } catch (err) {}
+    }
     if (isSoloRoute()) {
       handleSoloRoute();
     } else {
