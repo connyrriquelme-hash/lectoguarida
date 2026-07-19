@@ -21,9 +21,14 @@ export function createPrefabRegistry() {
     if (!prefab) return null;
     if (overrides) {
       for (var key in overrides) {
-        if (key === 'transform' && prefab.transform) {
+        if (key === 'transform' && prefab.components && prefab.components.transform) {
           for (var tk in overrides.transform) {
-            prefab.transform[tk] = overrides.transform[tk];
+            prefab.components.transform[tk] = overrides.transform[tk];
+          }
+        } else if (prefab.components && prefab.components[key]) {
+          // Override component properties
+          for (var pk in overrides[key]) {
+            prefab.components[key][pk] = overrides[key][pk];
           }
         } else {
           prefab[key] = overrides[key];

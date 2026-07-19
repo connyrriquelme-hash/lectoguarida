@@ -10,7 +10,7 @@ import { createInteractionSystem } from '../systems/systems.js';
 import { createAnimationSystem } from '../systems/systems.js';
 import { createCameraSystem } from '../systems/systems.js';
 import { createNarrativeSystem } from '../systems/systems.js';
-import { createQuestSystem } from '../systems/systems.js';
+import { createQuestSystem } from '../systems/quest-system.js';
 import { createAudioSystem } from '../systems/audio-system.js';
 import { createSaveSystem } from '../systems/save-system.js';
 import { createRenderingSystem } from '../systems/rendering-system.js';
