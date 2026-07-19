@@ -7,6 +7,7 @@
 export function createAccessibilityController(options) {
   options = options || {};
   var reducedMotion = false;
+  var labelsOn = false;
   try {
     reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   } catch (e) { /* noop */ }
@@ -31,6 +32,8 @@ export function createAccessibilityController(options) {
     announce: announce,
     applyReducedMotion: applyReducedMotion,
     ensureFocusable: ensureFocusable,
-    setReducedMotion: function (v) { reducedMotion = v; }
+    setReducedMotion: function (v) { reducedMotion = v; },
+    setLabels: function (on) { labelsOn = !!on; },
+    getLabels: function () { return labelsOn; }
   };
 }

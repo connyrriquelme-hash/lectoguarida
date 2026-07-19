@@ -12,6 +12,7 @@ import { createWorldScene } from './world-scene.js';
 import { createPlayerFactory } from './player-factory.js';
 import { createGuardianFactory } from './guardian-factory.js';
 import { createCompanionFactory } from './companion-factory.js';
+import { createNeblinController } from './neblin-controller.js';
 import { createCollectibleFactory } from './collectible-factory.js';
 import { createPortalFactory } from './portal-factory.js';
 import { createPlayerController } from './player-controller.js';
@@ -27,7 +28,8 @@ import { createProgressAdapter } from './progress-adapter.js';
 import { createAudioAdapter } from './audio-adapter.js';
 import { createFallback2D } from './fallback-2d.js';
 import { ADVENTURE_CSS } from './adventure.css.js';
-import { CHAPTER_01, ZONES, GUARDIANS, COMPANION } from './adventure-config.js';
+import { createUIRoot } from './ui/ui-root.js';
+import { CHAPTER_01, ZONES, GUARDIANS, COMPANION, WORLD_REGIONS, REFINED_CHARACTERS, BACKPACK_SLOTS, ADVENTURE_REWARDS } from './adventure-config.js';
 import { MISSION_COLLECTIBLES } from './data/collectibles.js';
 import { DIALOGUE } from './data/dialogue-es-cl.js';
 
@@ -63,6 +65,7 @@ export function createAdventureEngine(options) {
   var playerController = null;
   var guardian = null;
   var companion = null;
+  var neblinController = null;
   var collectibles = [];
   var portals = [];
   var inputController = null;
@@ -80,6 +83,7 @@ export function createAdventureEngine(options) {
   var fallback = null;
 
   var hud = {};
+  var uiRoot = null;
   var lastT = 0;
   var destroyed = false;
 
@@ -156,6 +160,52 @@ export function createAdventureEngine(options) {
     hud.next.addEventListener('click', function () {
       dialogue.next();
     });
+
+    // Archipiélago UI: action bar, minimap, world map, backpack, reward, character, pause
+    var saved = progress.loadAdventure();
+    var regionStates = WORLD_REGIONS.map(function (r) {
+      var st = progress.getRegionState(r.id) || r.state;
+      return { id: r.id, name: r.name, state: st, discovered: st === 'DISCOVERED' || st === 'ACTIVE' };
+    });
+    uiRoot = createUIRoot({
+      container: root,
+      regions: regionStates,
+      characters: REFINED_CHARACTERS.map(function (c) {
+        return { id: c.id, name: c.name, motif: c.motif, tagline: c.tagline };
+      }),
+      backpackItems: (saved.backpack || []).map(mapBackpackItem).slice(0, BACKPACK_SLOTS),
+      maxSlots: BACKPACK_SLOTS,
+      callbacks: {
+        onAction: function (id) {
+          if (id === 'escuchar') { var cur = dialogue.current(); if (cur) audio.repeat(cur.text); }
+          else if (id === 'repetir') { var cur2 = dialogue.current(); if (cur2) audio.repeat(cur2.text); }
+          else if (id === 'pista') { onActionHint(); }
+          else if (id === 'interactuar') { if (interaction) interaction.triggerNearest(); }
+        },
+        onRegionSelect: function (id) { selectRegion(id); },
+        onCharacterSelect: function (id) { progress.saveAdventure({ characterId: id }); },
+        onToggleLabels: function (on) { accessibility.setLabels(on); },
+        onRestartZone: function () { restartZone(); },
+        onPanelOpen: function (name) { if (name === 'world') progress.recordMetric('world_map_opened'); else if (name === 'backpack') progress.recordMetric('backpack_opened'); }
+      }
+    });
+  }
+
+  function onActionHint() {
+    var hint = questManager.currentHint ? questManager.currentHint() : null;
+    if (hint) accessibility.announce(hud.live, hint);
+  }
+
+  function selectRegion(id) {
+    var reg = null;
+    for (var i = 0; i < WORLD_REGIONS.length; i++) if (WORLD_REGIONS[i].id === id) reg = WORLD_REGIONS[i];
+    if (!reg || (reg.state !== 'ACTIVE' && reg.state !== 'DISCOVERED')) return;
+    progress.recordMetric('region_selected');
+  }
+
+  function restartZone() {
+    if (missionManager) missionManager.restart();
+    stateMachine.transition(AdventureState.EXPLORING);
   }
 
   function onDialogueChange(current, done) {
@@ -239,6 +289,11 @@ export function createAdventureEngine(options) {
     companion.position.set(2, 1.8, 2);
     world.add(companion);
 
+    neblinController = createNeblinController(THREE_);
+    var neblinState = progress.getNeblin() || 'NEBLIN_DENSE';
+    neblinController.setState(neblinState);
+    world.add(neblinController.root);
+
     var portalFactory = createPortalFactory();
     ZONES.forEach(function (z) {
       if (z.portal) {
@@ -300,6 +355,7 @@ export function createAdventureEngine(options) {
       if (playerFactory) playerFactory.animate(player, stateMachine.is(AdventureState.EXPLORING) ? (playerController.getVelocity().x || playerController.getVelocity().z ? 'walk' : 'idle') : 'idle', t);
       if (guardianFactory && guardian) guardian.rotation.y = Math.sin(t) * 0.1;
       if (companionFactory && companion) companionFactory.animate(companion, t, player ? player.position : null);
+      if (neblinController) neblinController.animate(t);
       collectibles.forEach(function (c) { if (!c.userData.collected) collectibleFactory.animate(c, t); });
       portals.forEach(function (p) { portalFactory.animate(p, t); });
       if (stateMachine.is(AdventureState.MISSION_COMPLETE)) playerFactory.celebrate(player, t);
@@ -427,10 +483,50 @@ export function createAdventureEngine(options) {
       audio.speak('¡Muy bien! Recuperaste una página del Gran Libro.');
       updateStarsHud();
       missionManager.onCollectibleFound('__challenge__');
+      onMissionComplete();
     } else {
       audio.speak('Probemos nuevamente. Escucha otra vez.');
     }
     resumeAfterChallenge();
+  }
+
+  function onMissionComplete() {
+    // Descubrir Península de Llolleo y despejar la Neblín de la zona inicial
+    var llolleo = findRegion('peninsula-llolleo');
+    if (llolleo && llolleo.state !== 'DISCOVERED') {
+      llolleo.state = 'DISCOVERED';
+      progress.saveRegionState('peninsula-llolleo', 'DISCOVERED');
+      progress.recordMetric('region_discovered');
+      if (uiRoot) uiRoot.setRegions(WORLD_REGIONS.map(function (r) { return { id: r.id, name: r.name, state: r.state }; }));
+    }
+    if (progress.getNeblin() !== 'NEBLIN_FRIENDLY') {
+      progress.setNeblin('NEBLIN_FRIENDLY');
+      progress.recordMetric('fog_cleared');
+      if (neblinController) neblinController.setState('NEBLIN_FRIENDLY');
+    }
+    // Broche de Rina (cosmético, no repetible)
+    var broche = progress.getRewardById('broche-rina');
+    if (broche && progress.addReward('broche-rina') && uiRoot) {
+      uiRoot.showReward(broche);
+      progress.recordMetric('reward_viewed');
+    }
+    // Mochila: añadir página del capítulo 1
+    var backpack = progress.getBackpack();
+    if (backpack.length < BACKPACK_SLOTS && backpack.indexOf('pagina-capitulo-01') < 0) {
+      backpack.push('pagina-capitulo-01');
+      progress.setBackpack(backpack);
+      if (uiRoot) uiRoot.setBackpack(backpack.map(mapBackpackItem));
+    }
+  }
+
+  function mapBackpackItem(id) {
+    var reward = progress.getRewardById(id);
+    return reward ? { id: id, name: reward.name, icon: reward.icon } : { id: id, name: id, icon: '★' };
+  }
+
+  function findRegion(id) {
+    for (var i = 0; i < WORLD_REGIONS.length; i++) if (WORLD_REGIONS[i].id === id) return WORLD_REGIONS[i];
+    return null;
   }
 
   function resumeAfterChallenge() {
