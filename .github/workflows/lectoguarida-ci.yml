@@ -1,0 +1,148 @@
+name: Lectoguarida CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - "feature/**"
+      - "fix/**"
+      - "ci/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lectoguarida-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROJECT_DIR: outputs/Lectoguarida-Windows
+  BASE_PROTECTED_COMMIT: 34b8e9a643fcb15ac51452cb79819aa971e17ae3
+  EXPECTED_BUNDLE_SHA256: 4790A11A7D437A12B0CCF5AAAF83BE6C72C0C43E52AAC41DFCC327DAF531D40A
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: outputs/Lectoguarida-Windows/package-lock.json
+
+      - name: Prepare artifacts directory
+        working-directory: outputs/Lectoguarida-Windows
+        shell: bash
+        run: mkdir -p artifacts
+
+      - name: Install dependencies (reproducible)
+        working-directory: outputs/Lectoguarida-Windows
+        shell: bash
+        run: |
+          set -o pipefail
+          npm ci 2>&1 | tee artifacts/ci-install.log
+          git diff --exit-code -- package.json package-lock.json
+
+      - name: Run tests
+        working-directory: outputs/Lectoguarida-Windows
+        shell: bash
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee artifacts/test.log
+
+      - name: Build world3d bundle
+        working-directory: outputs/Lectoguarida-Windows
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build:world3d 2>&1 | tee artifacts/build.log
+
+      - name: Verify bundle integrity
+        working-directory: outputs/Lectoguarida-Windows
+        shell: bash
+        run: |
+          if [ ! -f public/world3d.bundle.js ]; then
+            echo "Bundle missing"
+            exit 1
+          fi
+          ACTUAL_HASH="$(sha256sum public/world3d.bundle.js | awk '{print tolower($1)}')"
+          EXPECTED="$(echo "$EXPECTED_BUNDLE_SHA256" | awk '{print tolower($0)}')"
+          echo "Bundle SHA-256: $ACTUAL_HASH" | tee artifacts/bundle-hash.txt
+          if [ "$ACTUAL_HASH" != "$EXPECTED" ]; then
+            echo "Bundle hash mismatch"
+            exit 1
+          fi
+
+      - name: Verify protected collaborative files
+        shell: bash
+        run: |
+          git cat-file -e "${BASE_PROTECTED_COMMIT}^{commit}"
+          git diff --exit-code "$BASE_PROTECTED_COMMIT" HEAD -- \
+            outputs/Lectoguarida-Windows/public/expedicion/game.js \
+            outputs/Lectoguarida-Windows/public/expedicion/juego.html \
+            outputs/Lectoguarida-Windows/public/expedicion/juego-v2.html \
+            outputs/Lectoguarida-Windows/public/expedicion/environment-v2.js \
+            outputs/Lectoguarida-Windows/public/expedicion/environment-v2.css \
+            outputs/Lectoguarida-Windows/public/expedicion/auth.js \
+            outputs/Lectoguarida-Windows/public/expedicion/index.html \
+            outputs/Lectoguarida-Windows/public/expedicion/dashboard.html
+          echo "Protected collaborative files unchanged." | tee outputs/Lectoguarida-Windows/artifacts/protected-files.txt
+
+      - name: Write CI summary
+        working-directory: outputs/Lectoguarida-Windows
+        shell: bash
+        run: |
+          {
+            echo "commit_sha: ${GITHUB_SHA}"
+            echo "ref: ${GITHUB_REF}"
+            echo "node_version: 24"
+            echo "npm_version: $(npm --version)"
+            echo "tests: done (see artifacts/test.log)"
+            echo "build: done (see artifacts/build.log)"
+            echo "bundle_sha256: $(sha256sum public/world3d.bundle.js | awk '{print tolower($1)}')"
+            echo "protected_files: unchanged"
+            echo "date_utc: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          } > artifacts/ci-summary.txt
+          cat artifacts/ci-summary.txt
+
+      - name: Step summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Lectoguarida CI"
+            echo ""
+            echo "- Commit: \`${GITHUB_SHA}\`"
+            echo "- Ref: \`${GITHUB_REF}\`"
+            echo "- Node: 24"
+            echo "- Tests: executed (artifacts/test.log)"
+            echo "- Build: executed (artifacts/build.log)"
+            echo "- Bundle SHA-256: \`$(sha256sum outputs/Lectoguarida-Windows/public/world3d.bundle.js | awk '{print tolower($1)}')\`"
+            echo "- Protected files: unchanged"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lectoguarida-ci-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            outputs/Lectoguarida-Windows/artifacts/test.log
+            outputs/Lectoguarida-Windows/artifacts/build.log
+            outputs/Lectoguarida-Windows/artifacts/bundle-hash.txt
+            outputs/Lectoguarida-Windows/artifacts/protected-files.txt
+            outputs/Lectoguarida-Windows/artifacts/ci-summary.txt
+            outputs/Lectoguarida-Windows/public/world3d.bundle.js
