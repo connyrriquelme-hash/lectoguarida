@@ -10,6 +10,7 @@ export function createNarrativePanel(container) {
   var collapsed = false;
   var currentSpeaker = null;
   var currentText = '';
+  var currentSceneId = null;
   var lines = [];
   var lineIndex = 0;
   var onAdvance = null;
@@ -22,6 +23,7 @@ export function createNarrativePanel(container) {
     root.className = 'adv-narrative-panel';
     root.setAttribute('role', 'region');
     root.setAttribute('aria-label', 'Panel narrativo');
+    root.dataset.sceneId = '';
     root.style.cssText = 'position:absolute;bottom:70px;left:50%;transform:translateX(-50%);width:min(90vw,600px);max-height:35vh;background:linear-gradient(135deg,rgba(255,251,235,0.96),rgba(255,248,225,0.94));border:2px solid rgba(139,119,73,0.35);border-radius:16px;padding:14px 16px;box-shadow:0 4px 16px rgba(0,0,0,0.2);z-index:18;pointer-events:auto;font-family:\'Baloo 2\',system-ui,sans-serif;overflow-y:auto;transition:opacity 0.2s ease;';
 
     var header = document.createElement('div');
@@ -137,15 +139,17 @@ export function createNarrativePanel(container) {
     currentText = lines[lineIndex];
   }
 
-  function show(speaker, textLines) {
+  function show(speaker, textLines, sceneId) {
     mount();
     currentSpeaker = speaker || '';
+    currentSceneId = sceneId || null;
     lines = Array.isArray(textLines) ? textLines : [textLines || ''];
     lineIndex = 0;
     visible = true;
     collapsed = false;
     root.style.display = '';
     root.style.opacity = '1';
+    root.dataset.sceneId = currentSceneId || '';
     var body = root.querySelector('.adv-narrative-body');
     var controls = root.querySelector('.adv-narrative-controls');
     if (body) body.style.display = '';
@@ -201,6 +205,7 @@ export function createNarrativePanel(container) {
     getCurrentText: getCurrentText,
     getLineIndex: getLineIndex,
     getLineCount: getLineCount,
+    getSceneId: function () { return currentSceneId; },
     setOnAdvance: function (fn) { onAdvance = fn; },
     setOnRepeat: function (fn) { onRepeat = fn; },
     setOnListen: function (fn) { onListen = fn; },
