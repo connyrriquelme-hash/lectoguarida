@@ -6,6 +6,8 @@
 export function createDialogueManager(deps) {
   var audio = deps.audio;
   var onChange = deps.onChange;
+  var onAudioStart = deps.onAudioStart || null;
+  var onAudioEnd = deps.onAudioEnd || null;
   var queue = [];
   var index = 0;
   var speaker = null;
@@ -23,7 +25,10 @@ export function createDialogueManager(deps) {
     if (index >= queue.length) { active = false; if (onChange) onChange(null, true); return; }
     var line = queue[index];
     if (onChange) onChange({ speaker: speaker, text: line, index: index, total: queue.length }, false);
-    if (audio) audio.speak(line);
+    if (audio) {
+      if (onAudioStart) onAudioStart();
+      audio.speak(line);
+    }
   }
 
   function next() {
@@ -44,6 +49,8 @@ export function createDialogueManager(deps) {
     next: next,
     isActive: isActive,
     current: current,
-    stop: function () { active = false; queue = []; index = 0; if (audio) audio.cancel(); }
+    setOnAudioStart: function (fn) { onAudioStart = fn; },
+    setOnAudioEnd: function (fn) { onAudioEnd = fn; },
+    stop: function () { active = false; queue = []; index = 0; if (audio) audio.cancel(); if (onAudioEnd) onAudioEnd(); }
   };
 }

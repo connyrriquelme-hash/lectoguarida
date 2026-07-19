@@ -35,7 +35,7 @@ import { ADVENTURE_CSS } from './adventure.css.js';
 import { createUIRoot } from './ui/ui-root.js';
 import { CHAPTER_01, ZONES, GUARDIANS, COMPANION, WORLD_REGIONS, REFINED_CHARACTERS, BACKPACK_SLOTS, ADVENTURE_REWARDS } from './adventure-config.js';
 import { MISSION_COLLECTIBLES } from './data/collectibles.js';
-import { DIALOGUE } from './data/dialogue-es-cl.js';
+import { DIALOGUE, SCENES, SCENE_MAP } from './data/dialogue-es-cl.js';
 
 export function createAdventureEngine(options) {
   options = options || {};
@@ -81,7 +81,10 @@ export function createAdventureEngine(options) {
   var a11ySettings = null;
   var accessibility = createAccessibilityController({});
   var questManager = createQuestManager(CHAPTER_01.mission);
-  var dialogue = createDialogueManager({ audio: audio, onChange: onDialogueChange });
+  var dialogue = createDialogueManager({ audio: audio, onChange: onDialogueChange,
+    onAudioStart: function () { if (captionController) captionController.setAudioPlaying(true); },
+    onAudioEnd: function () { if (captionController) captionController.setAudioPlaying(false); }
+  });
   var missionManager = null;
   var challenge = createChallengeAdapter({
     SoloGameAdapter: deps.SoloGameAdapter,
@@ -94,6 +97,7 @@ export function createAdventureEngine(options) {
   var uiRoot = null;
   var lastT = 0;
   var destroyed = false;
+  var activeSceneId = null;
 
   function injectRoot() {
     injectCss();
@@ -248,6 +252,13 @@ export function createAdventureEngine(options) {
       hud.dialogue.style.display = 'none';
       if (narrativePanel) narrativePanel.hide();
       if (captionController) captionController.hide();
+      if (captionController) captionController.setAudioPlaying(false);
+      var finishedScene = activeSceneId ? SCENE_MAP[activeSceneId] : null;
+      activeSceneId = null;
+      if (finishedScene && finishedScene.nextSceneId) {
+        showScene(finishedScene.nextSceneId);
+        return;
+      }
       stateMachine.transition(AdventureState.EXPLORING);
       if (world && world.cameraController) world.cameraController.setMode('FOLLOW');
       return;
@@ -258,11 +269,18 @@ export function createAdventureEngine(options) {
     hud.line.textContent = current.text;
     accessibility.announce(hud.live, (current.speaker ? current.speaker + ': ' : '') + current.text);
     if (world && world.cameraController) world.cameraController.setMode('FOCUS');
-    if (narrativePanel && a11ySettings && a11ySettings.get('visualReadingMode')) {
-      narrativePanel.show(current.speaker, [current.text]);
+    var sceneId = activeSceneId || null;
+    if (narrativePanel) {
+      narrativePanel.show(current.speaker, [current.text], sceneId);
     }
-    if (captionController && a11ySettings && a11ySettings.get('audioEnabled')) {
-      captionController.show(current.text, current.speaker);
+    var capsMode = a11ySettings ? a11ySettings.get('captionsMode') : 'always';
+    if (captionController) {
+      captionController.setCaptionMode(capsMode);
+      if (capsMode === 'always') {
+        captionController.show(current.text, current.speaker);
+      } else if (capsMode === 'with-audio') {
+        captionController.show(current.text, current.speaker);
+      }
     }
   }
 
@@ -442,6 +460,17 @@ export function createAdventureEngine(options) {
       dialogue.next();
     });
 
+    function showScene(sceneId) {
+      var scene = SCENE_MAP[sceneId];
+      if (!scene) return;
+      activeSceneId = sceneId;
+      dialogue.start([scene.text], scene.speaker);
+      if (scene.blocking) {
+        if (world && world.cameraController) world.cameraController.setMode('FOCUS');
+      }
+      if (scene.soundCue && soundCueOverlay) soundCueOverlay.showCue(scene.soundCue);
+    }
+
     world.onFrame(function (dt, t) {
       var dir = inputController.getCameraRelativeVector();
       var joy = mobileControls ? mobileControls.getJoystickVector() : { x: 0, z: 0 };
@@ -488,8 +517,7 @@ export function createAdventureEngine(options) {
   }
 
   function startIntro() {
-    var lines = DIALOGUE.intro.lumiercoles;
-    dialogue.start(lines, 'Lumiércoles');
+    showScene('intro-plaza-vaguada');
   }
 
   function onKey(key, e) {
@@ -533,9 +561,9 @@ export function createAdventureEngine(options) {
     obj.userData.collected = true;
     obj.visible = false;
     progress.markCollectible(obj.userData.collectibleId);
-    audio.speak('\u00a1Encontraste una campana!');
     if (soundCueOverlay) soundCueOverlay.showCue('bell_found');
     if (a11ySettings) a11ySettings.vibrate([100]);
+    showScene('campana-encontrada');
     updateProgressHud();
     interaction.setInteractables(buildInteractables());
     if (questManager.isComplete() && !stateMachine.is(AdventureState.MISSION_COMPLETE)) {
@@ -545,10 +573,10 @@ export function createAdventureEngine(options) {
 
   function talkToGuardian(guardianId) {
     if (stateMachine.is(AdventureState.MISSION_COMPLETE)) {
-      audio.speak(DIALOGUE.rina.missionComplete[0]);
+      showScene('primera-pagina');
       return;
     }
-    missionManager.startMission();
+    showScene('encuentro-rina');
   }
 
   function openZonePortal(portal) {
@@ -597,15 +625,12 @@ export function createAdventureEngine(options) {
       var gained = 3;
       progress.addStars(gained);
       progress.completeMission(res.missionId);
-      audio.speak('\u00a1Muy bien! Recuperaste una p\u00e1gina del Gran Libro.');
       if (soundCueOverlay) soundCueOverlay.showCue('mission_complete');
-      if (captionController) captionController.show('\u00a1Muy bien! Recuperaste una p\u00e1gina del Gran Libro.', 'Rina');
       if (a11ySettings) a11ySettings.vibrate([100, 50, 100]);
       updateStarsHud();
       missionManager.onCollectibleFound('__challenge__');
       onMissionComplete();
     } else {
-      audio.speak('Probemos nuevamente. Escucha otra vez.');
       if (soundCueOverlay) soundCueOverlay.showCue('word_wrong');
     }
     resumeAfterChallenge();
@@ -730,6 +755,9 @@ export function createAdventureEngine(options) {
     destroy: destroy,
     getState: function () { return stateMachine.getState(); },
     isDestroyed: function () { return destroyed; },
+    showScene: showScene,
+    getActiveSceneId: function () { return activeSceneId; },
+    getScenes: function () { return SCENES; },
     engine: { stateMachine: stateMachine }
   };
 }
