@@ -69,7 +69,8 @@
       });
     });
 
-    document.dispatchEvent(new CustomEvent('menu:ready', {
+    const EventCtor = (document.defaultView && document.defaultView.CustomEvent) || CustomEvent;
+    document.dispatchEvent(new EventCtor('menu:ready', {
       detail: { session, featureFlags: FEATURE_FLAGS }
     }));
   }
