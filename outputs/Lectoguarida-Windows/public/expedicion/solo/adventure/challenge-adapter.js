@@ -23,7 +23,7 @@ export function createChallengeAdapter(deps) {
     var container = opts.container;
     var returnPath = opts.returnPath || '/expedicion/solo/no-lectores';
 
-    if (typeof AudioManager !== 'undefined' && AudioManager.cancel) AudioManager.cancel();
+    if (typeof AudioManager !== 'undefined' && typeof AudioManager.stopSpeech === 'function') AudioManager.stopSpeech();
 
     var adapter = SoloGameAdapter.createEngine({
       studentProfileId: studentProfileId,
