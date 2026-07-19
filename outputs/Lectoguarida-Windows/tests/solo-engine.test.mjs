@@ -588,6 +588,6 @@ test('feature flag solo engine true permite carga', () => {
 // ============================================================
 test('colaborativo game.js hash unchanged', () => {
   const gameSrc = readFileSync(resolve(__dirname, '../public/expedicion/game.js'), 'utf8');
-  const hash = createHash('sha256').update(gameSrc).digest('hex').substring(0, 8).toUpperCase();
-  assert.equal(hash, '4B86469E');
+    const hash = createHash('sha256').update(gameSrc.replace(/\r\n/g, '\n')).digest('hex').substring(0, 8).toUpperCase();
+    assert.equal(hash, 'C19F1841');
 });

@@ -473,8 +473,8 @@ test('contenido del juego vocal-a tiene 5 rondas', () => {
 // ============================================================
 test('hash de index.html no cambio', () => {
   const src = readFileSync(resolve(__dirname, '../public/expedicion/index.html'), 'utf8');
-  const hash = createHash('sha256').update(src).digest('hex').substring(0, 8).toUpperCase();
-  assert.equal(hash, '6953E924');
+    const hash = createHash('sha256').update(src.replace(/\r\n/g, '\n')).digest('hex').substring(0, 8).toUpperCase();
+    assert.equal(hash, '22B1EEDE');
 });
 
 // ============================================================
@@ -482,8 +482,8 @@ test('hash de index.html no cambio', () => {
 // ============================================================
 test('hash de auth.js no cambio', () => {
   const src = readFileSync(resolve(__dirname, '../public/expedicion/auth.js'), 'utf8');
-  const hash = createHash('sha256').update(src).digest('hex').substring(0, 8).toUpperCase();
-  assert.equal(hash, '3426D22B');
+    const hash = createHash('sha256').update(src.replace(/\r\n/g, '\n')).digest('hex').substring(0, 8).toUpperCase();
+    assert.equal(hash, '515A1249');
 });
 
 // ============================================================
@@ -491,8 +491,8 @@ test('hash de auth.js no cambio', () => {
 // ============================================================
 test('hash de dashboard.html no cambio', () => {
   const src = readFileSync(resolve(__dirname, '../public/expedicion/dashboard.html'), 'utf8');
-  const hash = createHash('sha256').update(src).digest('hex').substring(0, 8).toUpperCase();
-  assert.equal(hash, '6A4C1541');
+    const hash = createHash('sha256').update(src.replace(/\r\n/g, '\n')).digest('hex').substring(0, 8).toUpperCase();
+    assert.equal(hash, 'E0D902C5');
 });
 
 // ============================================================
@@ -500,6 +500,6 @@ test('hash de dashboard.html no cambio', () => {
 // ============================================================
 test('hash de game.js no cambio', () => {
   const src = readFileSync(resolve(__dirname, '../public/expedicion/game.js'), 'utf8');
-  const hash = createHash('sha256').update(src).digest('hex').substring(0, 8).toUpperCase();
-  assert.equal(hash, '4B86469E');
+    const hash = createHash('sha256').update(src.replace(/\r\n/g, '\n')).digest('hex').substring(0, 8).toUpperCase();
+    assert.equal(hash, 'C19F1841');
 });

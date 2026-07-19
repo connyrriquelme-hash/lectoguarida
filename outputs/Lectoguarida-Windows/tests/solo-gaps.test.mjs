@@ -187,6 +187,6 @@ test('retorno al mapa desde GAME_COMPLETE', () => {
 // ============================================================
 test('hash de index.html no cambio tras brechas', () => {
   const src = readFileSync(resolve(__dirname, '../public/expedicion/index.html'), 'utf8');
-  const hash = createHash('sha256').update(src).digest('hex').substring(0, 8).toUpperCase();
-  assert.equal(hash, '6953E924');
+    const hash = createHash('sha256').update(src.replace(/\r\n/g, '\n')).digest('hex').substring(0, 8).toUpperCase();
+    assert.equal(hash, '22B1EEDE');
 });

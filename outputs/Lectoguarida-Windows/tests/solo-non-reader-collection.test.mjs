@@ -400,8 +400,8 @@ test('createEngine funciona con final-sound-catcher', () => {
 // ============================================================
 test('game.js hash unchanged after non-reader games', () => {
   const src = readFileSync(resolve(__dirname, '../public/expedicion/game.js'), 'utf8');
-  const hash = createHash('sha256').update(src).digest('hex').substring(0, 8).toUpperCase();
-  assert.equal(hash, '4B86469E');
+    const hash = createHash('sha256').update(src.replace(/\r\n/g, '\n')).digest('hex').substring(0, 8).toUpperCase();
+    assert.equal(hash, 'C19F1841');
 });
 
 // ============================================================
@@ -409,8 +409,8 @@ test('game.js hash unchanged after non-reader games', () => {
 // ============================================================
 test('index.html hash unchanged after non-reader games', () => {
   const src = readFileSync(resolve(__dirname, '../public/expedicion/index.html'), 'utf8');
-  const hash = createHash('sha256').update(src).digest('hex').substring(0, 8).toUpperCase();
-  assert.equal(hash, '6953E924');
+    const hash = createHash('sha256').update(src.replace(/\r\n/g, '\n')).digest('hex').substring(0, 8).toUpperCase();
+    assert.equal(hash, '22B1EEDE');
 });
 
 // ============================================================

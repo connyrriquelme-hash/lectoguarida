@@ -521,20 +521,20 @@ test('audio es-CL continúa funcionando con assets', () => {
 // 7. Hashes colaborativos intactos
 // ============================================================
 const COLLAB = [
-  ['game.js', '4B86469E'],
-  ['juego.html', 'E3F61E41'],
-  ['juego-v2.html', '6B101372'],
-  ['environment-v2.js', '5FE6F1EF'],
-  ['environment-v2.css', '7BD33CBD'],
-  ['auth.js', '3426D22B'],
-  ['index.html', '6953E924'],
-  ['dashboard.html', '6A4C1541']
+  ['game.js', 'C19F1841'],
+  ['juego.html', '7CC05A92'],
+  ['juego-v2.html', '3BAF8F16'],
+  ['environment-v2.js', '584685B3'],
+  ['environment-v2.css', '9E938C7F'],
+  ['auth.js', '515A1249'],
+  ['index.html', '22B1EEDE'],
+  ['dashboard.html', 'E0D902C5']
 ];
 
 COLLAB.forEach(function ([file, expected]) {
   test('hash colaborativo ' + file + ' intacto', () => {
     const src = readFileSync(resolve(__dirname, '../public/expedicion/' + file), 'utf8');
-    const hash = createHash('sha256').update(src).digest('hex').substring(0, 8).toUpperCase();
+    const hash = createHash('sha256').update(src.replace(/\r\n/g, '\n')).digest('hex').substring(0, 8).toUpperCase();
     assert.equal(hash, expected);
   });
 });
