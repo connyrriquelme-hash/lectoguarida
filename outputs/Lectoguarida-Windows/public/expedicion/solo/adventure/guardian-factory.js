@@ -34,13 +34,22 @@ export function createGuardianFactory() {
     pL.position.set(-0.18, 0.7, 0.44);
     var pR = new THREE.Mesh(assets.geo('gu-pupil-g', function () { return new THREE.SphereGeometry(0.05, 6, 4); }), pupil);
     pR.position.set(0.18, 0.7, 0.44);
-    var book = new THREE.Mesh(
-      assets.geo('gu-book', function () { return new THREE.BoxGeometry(0.4, 0.3, 0.08); }),
-      assets.mat('gu-book', palette.accent)
+    // fern leaves on back (costal fusion)
+    var fernMat = assets.mat('gu-rina-fern', 0x2e8b57);
+    var f1 = new THREE.Mesh(assets.geo('gu-rina-fern1', function () { return new THREE.ConeGeometry(0.08, 0.5, 5); }), fernMat);
+    f1.position.set(0, 0.95, -0.3); f1.rotation.x = -0.4;
+    var f2 = new THREE.Mesh(assets.geo('gu-rina-fern2', function () { return new THREE.ConeGeometry(0.06, 0.4, 5); }), fernMat);
+    f2.position.set(-0.12, 0.9, -0.28); f2.rotation.z = 0.3;
+    var f3 = new THREE.Mesh(assets.geo('gu-rina-fern3', function () { return new THREE.ConeGeometry(0.06, 0.4, 5); }), fernMat);
+    f3.position.set(0.12, 0.9, -0.28); f3.rotation.z = -0.3;
+    // big lily pad
+    var pad = new THREE.Mesh(
+      assets.geo('gu-rina-pad', function () { return new THREE.CylinderGeometry(0.55, 0.55, 0.08, 16); }),
+      assets.mat('gu-rina-pad', palette.accent)
     );
-    book.position.set(0, 1.0, 0.1);
-    book.rotation.x = -0.3;
-    g.add(body, scarf, eL, eR, pL, pR, book);
+    pad.position.y = 0.04;
+    g.add(body, scarf, eL, eR, pL, pR, f1, f2, f3, pad);
+    g.userData.fernLeaves = [f1, f2, f3];
     return g;
   }
 
@@ -62,7 +71,11 @@ export function createGuardianFactory() {
       assets.mat('gu-beak', 0xffb300)
     );
     beak.rotation.x = Math.PI / 2; beak.position.set(0, 0.7, 0.45);
-    g.add(body, belly, beak);
+    // copihue petals (fusion)
+    var petalMat = assets.mat('gu-chispa-petal', 0xe53935);
+    var p1 = new THREE.Mesh(assets.geo('gu-chispa-p1', function () { return new THREE.SphereGeometry(0.12, 8, 6); }), petalMat);
+    p1.position.set(0, 0.5, 0.35); p1.scale.set(1, 1.4, 0.4);
+    g.add(body, belly, beak, p1);
     return g;
   }
 
@@ -84,7 +97,11 @@ export function createGuardianFactory() {
       assets.mat('gu-pulo-cape', palette.secondary)
     );
     cape.position.set(0, 0.9, 0);
-    g.add(body, head, cape);
+    // boldo leaves (fusion)
+    var leafMat = assets.mat('gu-pulo-leaf', 0x6fae4f);
+    var l1 = new THREE.Mesh(assets.geo('gu-pulo-l1', function () { return new THREE.SphereGeometry(0.12, 8, 6); }), leafMat);
+    l1.position.set(0, 0.95, 0.05); l1.scale.set(1, 1.3, 0.3);
+    g.add(body, head, cape, l1);
     return g;
   }
 
@@ -106,7 +123,11 @@ export function createGuardianFactory() {
       assets.mat('gu-mimi-head', palette.primary)
     );
     head.position.y = 1.0;
-    g.add(body, tail, head);
+    // quila vine tail (fusion)
+    var vineMat = assets.mat('gu-mimi-vine', 0x7cb342);
+    var vine = new THREE.Mesh(assets.geo('gu-mimi-vine', function () { return new THREE.CylinderGeometry(0.03, 0.03, 0.5, 5); }), vineMat);
+    vine.position.set(-0.35, 0.35, -0.2); vine.rotation.z = 0.6;
+    g.add(body, tail, head, vine);
     return g;
   }
 

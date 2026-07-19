@@ -5,12 +5,12 @@
 
 import * as THREE from './vendor/three.module.js';
 import { createSharedAssets } from './shared-assets.js';
-import { CHARACTERS } from './adventure-config.js';
+import { CHARACTERS, REFINED_CHARACTERS } from './adventure-config.js';
 
 export function createPlayerFactory() {
   var assets = createSharedAssets();
 
-  function buildBody(palette) {
+  function buildBody(palette, motif) {
     var g = new THREE.Group();
 
     var body = new THREE.Mesh(
@@ -39,19 +39,52 @@ export function createPlayerFactory() {
     pack.position.set(0, 0.7, -0.32);
 
     g.add(body, head, eyeL, eyeR, pack);
+
+    // motif accent (territorial identity)
+    if (motif === 'sea-glass') {
+      var glass = new THREE.Mesh(
+        assets.geo('player-glass', function () { return new THREE.IcosahedronGeometry(0.12, 0); }),
+        assets.mat('player-glass', 0x9fe3d6, { transparent: true, opacity: 0.7, roughness: 0.2 })
+      );
+      glass.position.set(0.18, 0.7, 0.32);
+      g.add(glass);
+    } else if (motif === 'sietecolores') {
+      var cap = new THREE.Mesh(
+        assets.geo('player-cap', function () { return new THREE.ConeGeometry(0.22, 0.25, 8); }),
+        assets.mat('player-cap', 0xff8c69)
+      );
+      cap.position.set(0, 1.5, 0);
+      g.add(cap);
+    } else if (motif === 'chagual-totora') {
+      var bag = new THREE.Mesh(
+        assets.geo('player-bag', function () { return new THREE.CylinderGeometry(0.1, 0.14, 0.3, 8); }),
+        assets.mat('player-bag', 0x9ad0f0)
+      );
+      bag.position.set(0.22, 0.7, 0.1);
+      g.add(bag);
+    } else if (motif === 'doca') {
+      var cape = new THREE.Mesh(
+        assets.geo('player-cape', function () { return new THREE.SphereGeometry(0.3, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2); }),
+        assets.mat('player-cape', 0x6fcf97)
+      );
+      cape.position.set(0, 0.8, -0.12);
+      g.add(cape);
+    }
+
     g.userData.parts = { body: body, head: head, pack: pack };
     return g;
   }
 
   function create(characterId) {
     var def = null;
-    for (var i = 0; i < CHARACTERS.length; i++) if (CHARACTERS[i].id === characterId) def = CHARACTERS[i];
-    if (!def) def = CHARACTERS[0];
+    for (var i = 0; i < REFINED_CHARACTERS.length; i++) if (REFINED_CHARACTERS[i].id === characterId) def = REFINED_CHARACTERS[i];
+    if (!def) def = REFINED_CHARACTERS[0];
     var root = new THREE.Group();
     root.name = 'player-' + def.id;
-    var model = buildBody(def.palette);
+    var model = buildBody(def.palette, def.motif);
     root.add(model);
     root.userData.characterId = def.id;
+    root.userData.motif = def.motif;
     root.userData.parts = model.userData.parts;
     root.userData.bobBaseY = 0;
     return root;
