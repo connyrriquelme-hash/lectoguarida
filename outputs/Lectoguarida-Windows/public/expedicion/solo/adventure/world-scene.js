@@ -45,6 +45,8 @@ export function createWorldScene(container, quality) {
 
   var cameraController = createCameraController(camera, null);
   cameraController.setBounds({ minX: -55, maxX: 55, minZ: -55, maxZ: 55 });
+  // Apply initial responsive preset
+  cameraController.applyViewportPreset(container.clientWidth || 800, container.clientHeight || 600);
 
   // luces
   var hemi = new THREE.HemisphereLight(0xffffff, 0x6b8f3a, 0.9);
@@ -123,6 +125,7 @@ export function createWorldScene(container, quality) {
     renderer.setSize(w, h);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    cameraController.applyViewportPreset(w, h);
   }
   var resizeHandler = function () { onResize(); };
   window.addEventListener('resize', resizeHandler);
