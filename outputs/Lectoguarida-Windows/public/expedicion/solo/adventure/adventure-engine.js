@@ -474,17 +474,6 @@ export function createAdventureEngine(options) {
       dialogue.next();
     });
 
-    function showScene(sceneId) {
-      var scene = SCENE_MAP[sceneId];
-      if (!scene) return;
-      activeSceneId = sceneId;
-      dialogue.start([scene.text], scene.speaker);
-      if (scene.blocking) {
-        if (world && world.cameraController) world.cameraController.setMode('FOCUS');
-      }
-      if (scene.soundCue && soundCueOverlay) soundCueOverlay.showCue(scene.soundCue);
-    }
-
     world.onFrame(function (dt, t) {
       var dir = inputController.getCameraRelativeVector();
       var joy = mobileControls ? mobileControls.getJoystickVector() : { x: 0, z: 0 };
@@ -520,6 +509,17 @@ export function createAdventureEngine(options) {
     world.start();
     stateMachine.transition(AdventureState.INTRO);
     startIntro();
+  }
+
+  function showScene(sceneId) {
+    var scene = SCENE_MAP[sceneId];
+    if (!scene) return;
+    activeSceneId = sceneId;
+    dialogue.start([scene.text], scene.speaker);
+    if (scene.blocking) {
+      if (world && world.cameraController) world.cameraController.setMode('FOCUS');
+    }
+    if (scene.soundCue && soundCueOverlay) soundCueOverlay.showCue(scene.soundCue);
   }
 
   function buildInteractables() {
