@@ -93,7 +93,21 @@ var AudioManager = (function () {
       if (typeof speechErrorHandler === 'function') {
         try { speechErrorHandler(err); } catch (e) { /* ignore */ }
       }
+      if (options && typeof options.onend === 'function') {
+        try { options.onend(); } catch (e) { /* ignore */ }
+      }
     };
+    u.onend = function () {
+      activeUtterance = null;
+      if (options && typeof options.onend === 'function') {
+        try { options.onend(); } catch (e) { /* ignore */ }
+      }
+    };
+    if (options && typeof options.onstart === 'function') {
+      u.onstart = function () {
+        try { options.onstart(); } catch (e) { /* ignore */ }
+      };
+    }
     return u;
   }
 
