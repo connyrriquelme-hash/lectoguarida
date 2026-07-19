@@ -4,6 +4,8 @@
  * No crea un sistema de progreso paralelo.
  */
 
+import { ADVENTURE_REWARDS, BACKPACK_SLOTS } from './adventure-config.js';
+
 export function createProgressAdapter(deps) {
   var SoloProgressRepository = deps.SoloProgressRepository;
   var readerProfile = deps.readerProfile || 'non_reader';
@@ -17,7 +19,12 @@ export function createProgressAdapter(deps) {
     rewardIds: [],
     characterId: null,
     difficulty: null,
-    unlockedZones: ['plaza-guarida', 'laguna-rimas']
+    unlockedZones: ['plaza-guarida', 'laguna-rimas'],
+    backpack: [],
+    regions: {},
+    neblin: 'NEBLIN_DENSE',
+    labelsOn: false,
+    metrics: {}
   };
   var memoryActive = false;
 
@@ -39,7 +46,12 @@ export function createProgressAdapter(deps) {
       rewardIds: [],
       characterId: null,
       difficulty: null,
-      unlockedZones: ['plaza-guarida', 'laguna-rimas']
+      unlockedZones: ['plaza-guarida', 'laguna-rimas'],
+      backpack: [],
+      regions: {},
+      neblin: 'NEBLIN_DENSE',
+      labelsOn: false,
+      metrics: {}
     };
   }
 
@@ -103,8 +115,47 @@ export function createProgressAdapter(deps) {
     saveAdventure({
       chapter: null, missionId: null, completedMissions: [], collectiblesFound: [],
       stars: 0, rewardIds: [], characterId: null, difficulty: null,
-      unlockedZones: ['plaza-guarida', 'laguna-rimas']
+      unlockedZones: ['plaza-guarida', 'laguna-rimas'],
+      backpack: [], regions: {}, neblin: 'NEBLIN_DENSE', labelsOn: false, metrics: {}
     });
+  }
+
+  function recordMetric(name) {
+    var a = loadAdventure();
+    var metrics = Object.assign({}, a.metrics || {});
+    metrics[name] = (metrics[name] || 0) + 1;
+    saveAdventure({ metrics: metrics });
+  }
+
+  function setBackpack(items) {
+    var max = Array.isArray(BACKPACK_SLOTS) ? BACKPACK_SLOTS.length : 6;
+    saveAdventure({ backpack: (items || []).slice(0, max) });
+  }
+
+  function getBackpack() {
+    return (loadAdventure().backpack || []).slice();
+  }
+
+  function saveRegionState(id, state) {
+    var a = loadAdventure();
+    var regions = Object.assign({}, a.regions || {});
+    regions[id] = state;
+    saveAdventure({ regions: regions });
+  }
+
+  function getRegionState(id) {
+    var a = loadAdventure();
+    return (a.regions || {})[id] || null;
+  }
+
+  function setNeblin(state) { saveAdventure({ neblin: state }); }
+  function getNeblin() { return loadAdventure().neblin || 'NEBLIN_DENSE'; }
+
+  function setLabels(on) { saveAdventure({ labelsOn: !!on }); }
+  function getLabels() { return !!loadAdventure().labelsOn; }
+
+  function getRewardById(rewardId) {
+    return ADVENTURE_REWARDS[rewardId] || null;
   }
 
   return {
@@ -117,6 +168,16 @@ export function createProgressAdapter(deps) {
     setCharacter: setCharacter,
     setDifficulty: setDifficulty,
     resetAdventure: resetAdventure,
-    getStars: function () { return loadAdventure().stars || 0; }
+    getStars: function () { return loadAdventure().stars || 0; },
+    recordMetric: recordMetric,
+    setBackpack: setBackpack,
+    getBackpack: getBackpack,
+    saveRegionState: saveRegionState,
+    getRegionState: getRegionState,
+    setNeblin: setNeblin,
+    getNeblin: getNeblin,
+    setLabels: setLabels,
+    getLabels: getLabels,
+    getRewardById: getRewardById
   };
 }
