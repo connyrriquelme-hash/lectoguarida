@@ -10,6 +10,9 @@ export var ADVENTURE_CSS = `
   background: linear-gradient(180deg, #bfe8ff 0%, #d9f3e6 100%);
   overflow: hidden;
 }
+.adv-world-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0;
+}
 .adv-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .adv-hud-header {
   position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between;

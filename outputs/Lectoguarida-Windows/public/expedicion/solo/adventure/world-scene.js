@@ -26,6 +26,15 @@ export function createWorldScene(container, quality) {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   disposer.trackDisposable(renderer);
 
+  // Attach canvas to container
+  var canvas = renderer.domElement;
+  canvas.classList.add('adv-world-canvas');
+  canvas.setAttribute('aria-label', 'Mundo de aventura de Lectoguarida');
+  canvas.setAttribute('role', 'img');
+  if (canvas.parentNode !== container) {
+    container.appendChild(canvas);
+  }
+
   var scene = new THREE.Scene();
   scene.background = new THREE.Color(0xbfe8ff);
   scene.fog = new THREE.Fog(0xbfe8ff, 40, 90);
