@@ -1,6 +1,7 @@
 /**
  * world-scene.js
  * Crea renderer, escena, luces y el loop de animación. Libera todo en dispose.
+ * Expone objetos de colisión de cámara y suelo para raycast.
  */
 
 import * as THREE from './vendor/three.module.js';
@@ -26,7 +27,6 @@ export function createWorldScene(container, quality) {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   disposer.trackDisposable(renderer);
 
-  // Attach canvas to container
   var canvas = renderer.domElement;
   canvas.classList.add('adv-world-canvas');
   canvas.setAttribute('aria-label', 'Mundo de aventura de Lectoguarida');
@@ -41,14 +41,12 @@ export function createWorldScene(container, quality) {
   disposer.trackDisposable(scene);
 
   var camera = new THREE.PerspectiveCamera(45, (container.clientWidth || 800) / (container.clientHeight || 600), 0.1, 200);
-  camera.position.set(0, 14, 14);
+  camera.position.set(0, 10, 10);
 
   var cameraController = createCameraController(camera, null);
   cameraController.setBounds({ minX: -55, maxX: 55, minZ: -55, maxZ: 55 });
-  // Apply initial responsive preset
   cameraController.applyViewportPreset(container.clientWidth || 800, container.clientHeight || 600);
 
-  // luces
   var hemi = new THREE.HemisphereLight(0xffffff, 0x6b8f3a, 0.9);
   scene.add(hemi);
   disposer.trackDisposable(hemi);
@@ -72,13 +70,34 @@ export function createWorldScene(container, quality) {
   scene.add(warm1);
   disposer.trackDisposable(warm1);
 
-  // entorno
   var envCache = createEnvironmentFactory(null);
   var environment = envCache.buildEnvironment(quality);
   scene.add(environment);
   disposer.trackDisposable(envCache);
 
-  // vegetación
+  var collisionObjects = [];
+  var groundObjects = [];
+  var occluderObjects = [];
+
+  environment.traverse(function (child) {
+    if (child.isMesh) {
+      if (child.name === 'mountains' || (child.parent && child.parent.name === 'mountains')) {
+        collisionObjects.push(child);
+      }
+      if (child.name === 'kiosco' || (child.parent && child.parent.name === 'kiosco')) {
+        collisionObjects.push(child);
+      }
+      if (child.name === 'plaza' || (child.parent && child.parent.name === 'plaza')) {
+        groundObjects.push(child);
+      }
+    }
+  });
+
+  var groundMesh = scene.children.find(function (c) { return c.isMesh && c.geometry && c.geometry.type === 'PlaneGeometry'; });
+  if (groundMesh) groundObjects.push(groundMesh);
+
+  cameraController.setCollisionObjects(collisionObjects);
+
   var veg = createVegetationFactory(null);
   var vegGroup = new THREE.Group();
   var scale = config.vegitationCount;
@@ -98,7 +117,6 @@ export function createWorldScene(container, quality) {
   scene.add(vegGroup);
   disposer.trackDisposable(veg);
 
-  // efectos
   var effects = createEffectsManager(scene, quality);
   disposer.trackDisposable(effects);
 
@@ -131,9 +149,7 @@ export function createWorldScene(container, quality) {
   window.addEventListener('resize', resizeHandler);
   disposer.trackListener(window, 'resize', resizeHandler);
 
-  var visibilityHandler = function () {
-    paused = document.hidden;
-  };
+  var visibilityHandler = function () { paused = document.hidden; };
   document.addEventListener('visibilitychange', visibilityHandler);
   disposer.trackListener(document, 'visibilitychange', visibilityHandler);
 
@@ -151,12 +167,16 @@ export function createWorldScene(container, quality) {
     pause: function () { paused = true; },
     resume: function () { paused = false; },
     stop: function () { running = false; if (rafId) disposer.cancelRaf(rafId); },
-    setPlayerTarget: function (obj) { cameraController.target = obj; },
+    setPlayerTarget: function (obj) { cameraController.setTarget(obj); },
+    getGroundObjects: function () { return groundObjects; },
+    getCollisionObjects: function () { return collisionObjects; },
+    setOccluderObjects: function (objs) { cameraController.setOccluderObjects(objs); },
     dispose: function () {
       running = false;
       if (rafId) disposer.cancelRaf(rafId);
       window.removeEventListener('resize', resizeHandler);
       document.removeEventListener('visibilitychange', visibilityHandler);
+      cameraController.destroy();
       disposer.disposeAll();
       try { if (renderer.domElement && renderer.domElement.parentNode) renderer.domElement.parentNode.removeChild(renderer.domElement); } catch (e) {}
       try { renderer.dispose(); } catch (e) {}
