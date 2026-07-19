@@ -13,7 +13,8 @@
 
   var SOLO_SCRIPT_BASE = '/expedicion/solo/';
 
-  var SOLO_SCRIPT_LIST = [
+  // Phase 1: Core foundations (must load first)
+  var SOLO_SCRIPT_PHASE_1 = [
     'core/solo-state-machine.js',
     'core/game-config-validator.js',
     'core/input-manager.js',
@@ -27,6 +28,15 @@
     'ui/resilient-game-asset.js',
     'core/accessibility-manager.js',
     'core/error-boundary.js',
+    '../router/session-manager.js',
+    'core/solo-game-engine.js',
+    'core/solo-game-adapter.js',
+    'core/game-id-normalizer.js',
+    'core/metrics-collector.js',
+  ];
+
+  // Phase 2: Templates and plugins (depend on core + solo-game-engine)
+  var SOLO_SCRIPT_PHASE_2 = [
     'templates/click-selection-template.js',
     'templates/drag-drop-template.js',
     'templates/avatar-movement-template.js',
@@ -37,11 +47,11 @@
     'plugins/keyboard-input-plugin.js',
     'plugins/reward-plugin.js',
     'plugins/accessibility-plugin.js',
-    'core/solo-game-engine.js',
-    'core/solo-game-adapter.js',
-    'core/game-id-normalizer.js',
-    'core/metrics-collector.js',
     'plugins/metrics-plugin.js',
+  ];
+
+  // Phase 3: Games and profiles (depend on adapter + templates)
+  var SOLO_SCRIPT_PHASE_3 = [
     'games/vocal-a-game.js',
     'games/non-reader/rhyme-catcher.js',
     'games/non-reader/initial-sound-detector.js',
@@ -49,10 +59,11 @@
     'games/non-reader/final-sound-catcher.js',
     'profiles/non-reader/non-reader-difficulties.js',
     'profiles/non-reader/non-reader-difficulty-store.js',
-    '../router/session-manager.js',
-    '../menu/menu.js',
-    '../menu/solo-entry.js'
+    'core/game-id-normalizer.js', // already in phase 1, but ensure loaded
   ];
+
+  // Combined list for backward compatibility checks
+  var SOLO_SCRIPT_LIST = [].concat(SOLO_SCRIPT_PHASE_1, SOLO_SCRIPT_PHASE_2, SOLO_SCRIPT_PHASE_3);
 
   function loadScript(src) {
     return new Promise(function (resolve, reject) {
@@ -74,33 +85,47 @@
       callback();
       return;
     }
-    var toLoad = [];
-    for (var i = 0; i < SOLO_SCRIPT_LIST.length; i++) {
-      var src = SOLO_SCRIPT_BASE + SOLO_SCRIPT_LIST[i];
-      if (!document.querySelector('script[data-solo-src="' + src + '"]')) {
-        toLoad.push(src);
+
+    function loadPhase(scripts, phaseCallback) {
+      var toLoad = [];
+      for (var i = 0; i < scripts.length; i++) {
+        var src = SOLO_SCRIPT_BASE + scripts[i];
+        if (!document.querySelector('script[data-solo-src="' + src + '"]')) {
+          toLoad.push(src);
+        }
       }
-    }
-    if (toLoad.length === 0) {
-      SOLO_SCRIPTS_LOADED = true;
-      callback();
-      return;
-    }
-    var loaded = 0;
-    toLoad.forEach(function (src) {
-      loadScript(src).then(function () {
-        loaded++;
-        if (loaded === toLoad.length) {
-          SOLO_SCRIPTS_LOADED = true;
-          callback();
-        }
-      }).catch(function () {
-        loaded++;
-        if (loaded === toLoad.length) {
-          callback();
-        }
+      if (toLoad.length === 0) {
+        phaseCallback();
+        return;
+      }
+      var loaded = 0;
+      toLoad.forEach(function (src) {
+        loadScript(src).then(function () {
+          loaded++;
+          if (loaded === toLoad.length) {
+            phaseCallback();
+          }
+        }).catch(function () {
+          loaded++;
+          if (loaded === toLoad.length) {
+            phaseCallback();
+          }
+        });
       });
-    });
+    }
+
+    function loadAllPhases() {
+      loadPhase(SOLO_SCRIPT_PHASE_1, function () {
+        loadPhase(SOLO_SCRIPT_PHASE_2, function () {
+          loadPhase(SOLO_SCRIPT_PHASE_3, function () {
+            SOLO_SCRIPTS_LOADED = true;
+            callback();
+          });
+        });
+      });
+    }
+
+    loadAllPhases();
   }
 
   const SOLO_CONTAINER_ID = 'solo-container';
