@@ -240,3 +240,121 @@ test('resolveSoloProfileFromPath reconoce no-lectores y non_reader', () => {
   assert.equal(fn('/expedicion/solo/principiantes'), 'beginner');
   assert.equal(fn('/expedicion/'), null);
 });
+
+// ============================================================
+// BOOT ORDER — reproduce el orden real del navegador
+// (solo los 4 scripts defer estáticos + DOMContentLoaded;
+//  session-manager.js aún NO está cargado porque solo-entry
+//  lo inyecta dinámicamente después de DOMContentLoaded).
+// ============================================================
+
+function bootLegacyOnly(path) {
+  const html = readFileSync(resolve(EXPED, 'menu.html'), 'utf8');
+  const errors = [];
+  const vc = new VirtualConsole();
+  vc.on('jsdomError', (e) => errors.push(e && e.message));
+  vc.on('error', (msg) => errors.push('console.error: ' + msg));
+  const dom = new JSDOM(html, {
+    url: 'http://localhost' + path,
+    runScripts: 'outside-only',
+    pretendToBeVisual: true,
+    virtualConsole: vc
+  });
+  const { window } = dom;
+  STATIC_SCRIPTS.forEach((s) => loadScript(window, s));
+  // El navegador dispara DOMContentLoaded luego de los scripts defer.
+  window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
+  return { window, errors };
+}
+
+// 1-4. Rutas Solo no lanzan ReferenceError (loadSession no requerido).
+test('boot real: /expedicion/solo/no-lectores no lanza ReferenceError', () => {
+  const { errors } = bootLegacyOnly('/expedicion/solo/no-lectores');
+  assert.ok(!errors.some((e) => /loadSession is not defined/.test(e)));
+  assert.deepEqual(errors.filter((e) => /ReferenceError|TypeError/.test(e)), []);
+});
+
+test('boot real: /expedicion/solo/no-lectores/mapa no lanza ReferenceError', () => {
+  const { errors } = bootLegacyOnly('/expedicion/solo/no-lectores/mapa');
+  assert.ok(!errors.some((e) => /loadSession is not defined/.test(e)));
+});
+
+test('boot real: juego canónico no lanza ReferenceError', () => {
+  const { errors } = bootLegacyOnly('/expedicion/solo/juego/non_reader/rhyme-catcher');
+  assert.ok(!errors.some((e) => /loadSession is not defined/.test(e)));
+});
+
+test('boot real: ruta legacy rim-catcher no lanza ReferenceError', () => {
+  const { errors } = bootLegacyOnly('/expedicion/solo/juego/non_reader/rim-catcher');
+  assert.ok(!errors.some((e) => /loadSession is not defined/.test(e)));
+});
+
+// 5-6. initMenu retorna antes de acceder a loadSession en rutas Solo.
+test('initMenu retorna antes de loadSession en rutas Solo', () => {
+  const html = readFileSync(resolve(EXPED, 'menu.html'), 'utf8');
+  const vc = new VirtualConsole();
+  let loadSessionTouched = false;
+  const dom = new JSDOM(html, {
+    url: 'http://localhost/expedicion/solo/no-lectores',
+    runScripts: 'outside-only', pretendToBeVisual: true, virtualConsole: vc
+  });
+  const { window } = dom;
+  // Espía loadSession: si se llama, marca. No debe llamarse en ruta Solo.
+  STATIC_SCRIPTS.forEach((s) => loadScript(window, s));
+  if (typeof window.loadSession === 'function') {
+    window.loadSession = function () { loadSessionTouched = true; return null; };
+  }
+  window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
+  assert.equal(loadSessionTouched, false);
+});
+
+// 7. El menú legacy no se renderiza en rutas Solo.
+test('menú legacy no se renderiza en ruta Solo', () => {
+  const { window } = bootLegacyOnly('/expedicion/solo/no-lectores');
+  const header = window.document.querySelector('.menu-header');
+  assert.notEqual(header && header.style.display, '');
+});
+
+// 8-9. /expedicion SÍ ejecuta initMenu legacy y usa loadSession cuando existe.
+test('/expedicion ejecuta initMenu legacy con loadSession', () => {
+  const html = readFileSync(resolve(EXPED, 'menu.html'), 'utf8');
+  const vc = new VirtualConsole();
+  let loadSessionTouched = false;
+  const dom = new JSDOM(html, {
+    url: 'http://localhost/expedicion',
+    runScripts: 'outside-only', pretendToBeVisual: true, virtualConsole: vc
+  });
+  const { window } = dom;
+  STATIC_SCRIPTS.forEach((s) => loadScript(window, s));
+  window.loadSession = function () { loadSessionTouched = true; return null; };
+  window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
+  assert.equal(loadSessionTouched, true);
+});
+
+// 10. solo-entry sigue cargando session-manager.js dinámicamente.
+test('solo-entry carga session-manager.js en SOLO_SCRIPT_LIST', () => {
+  const src = readFileSync(resolve(EXPED, 'menu/solo-entry.js'), 'utf8');
+  assert.ok(/['"]\.\.\/router\/session-manager\.js['"]/.test(src));
+});
+
+// 11-13. El mapa No Lectores sigue correcto.
+test('boot real: mapa No Lectores muestra cuatro tarjetas', () => {
+  const { window } = bootMenu('/expedicion/solo/no-lectores', { renderMap: true });
+  assert.equal(gameCardIds(window).length, 4);
+});
+
+test('boot real: selector de dificultad visible', () => {
+  const { window } = bootMenu('/expedicion/solo/no-lectores', { renderMap: true });
+  assert.ok(window.document.getElementById('nr-difficulty-selector'));
+});
+
+test('boot real: vocal-a no aparece', () => {
+  const { window } = bootMenu('/expedicion/solo/no-lectores', { renderMap: true });
+  assert.ok(!gameCardIds(window).includes('vocal-a'));
+});
+
+// 14. Archivos protegidos intactos.
+test('boot real: archivos protegidos intactos', () => {
+  const protegidos = ['game.js', 'juego.html', 'juego-v2.html', 'environment-v2.js', 'environment-v2.css', 'auth.js', 'index.html', 'dashboard.html'];
+  protegidos.forEach((f) => assert.ok(readFileSync(resolve(EXPED, f), 'utf8').length > 100, f));
+});

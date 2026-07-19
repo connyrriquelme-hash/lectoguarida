@@ -15,6 +15,13 @@
   };
 
   function initMenu() {
+    if (
+      window.location.pathname === '/expedicion/solo' ||
+      window.location.pathname.startsWith('/expedicion/solo/')
+    ) {
+      return;
+    }
+
     const session = loadSession();
     if (!isSessionValid(session)) {
       clearSession();
@@ -25,8 +32,6 @@
       window.location.replace('/expedicion/juego');
       return;
     }
-
-    if (window.location.pathname.startsWith('/expedicion/solo')) return;
 
     const cards = document.querySelectorAll('.menu-card');
     cards.forEach(function (card) {
