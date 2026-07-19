@@ -40,6 +40,8 @@
     'core/solo-game-engine.js',
     'core/solo-game-adapter.js',
     'core/game-id-normalizer.js',
+    'core/metrics-collector.js',
+    'plugins/metrics-plugin.js',
     'games/vocal-a-game.js',
     'games/non-reader/rhyme-catcher.js',
     'games/non-reader/initial-sound-detector.js',

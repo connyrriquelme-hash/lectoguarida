@@ -146,6 +146,17 @@ var ClickSelectionTemplate = (function () {
         engine.getStateMachine().transitionTo('FEEDBACK', 'click-answer');
       }
 
+      if (engine && typeof engine.emit === 'function') {
+        try {
+          var roundInfo = config.content[state.currentRound] || {};
+          engine.emit('answerSubmitted', {
+            correct: isCorrect,
+            targetWordId: roundInfo.targetWordId || null,
+            selectedItemId: (round.options && round.options[index] && round.options[index].id) ? round.options[index].id : null
+          });
+        } catch (e) { /* noop */ }
+      }
+
       setTimeout(function () {
         state.answered = false;
         state.currentRound++;
@@ -158,6 +169,9 @@ var ClickSelectionTemplate = (function () {
     }
 
     function finish() {
+      if (engine && typeof engine.emit === 'function') {
+        try { engine.emit('roundCompleted', { rounds: state.totalRounds, correctAnswers: state.correctInRound }); } catch (e) { /* noop */ }
+      }
       if (engine && engine.completeGame) {
         engine.completeGame({
           correctAnswers: state.correctInRound,

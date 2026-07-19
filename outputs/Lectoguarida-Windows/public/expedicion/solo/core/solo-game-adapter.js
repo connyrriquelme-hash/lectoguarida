@@ -52,6 +52,20 @@ var SoloGameAdapter = (function () {
       ? ('/expedicion/solo/games/non-reader/' + gameDef.id + '/assets-manifest.json')
       : null;
 
+    var normalizedGameId = (typeof GameIdNormalizer !== 'undefined')
+      ? GameIdNormalizer.normalizeGameId(gameId)
+      : gameId;
+
+    var metricsCollector = null;
+    var metricsPlugin = null;
+    try {
+      if (typeof MetricsCollector !== 'undefined') {
+        metricsCollector = MetricsCollector.create({ studentProfileId: studentProfileId, devMode: !!options.devMode });
+      }
+    } catch (e) {
+      metricsCollector = null;
+    }
+
     var assetsReady = Promise.resolve(null);
     if (assetLoader && manifestUrl) {
       assetsReady = assetLoader.loadManifest(manifestUrl).then(function (manifest) {
@@ -89,7 +103,7 @@ var SoloGameAdapter = (function () {
     var template = gameDef.createTemplate(container, content, engine);
 
     engine.setTemplate(template);
-    engine.addPlugin(AudioInstructionPlugin.create({ audioManager: AudioManager }));
+    engine.addPlugin(AudioInstructionPlugin.create({ audioManager: AudioManager, engine: engine }));
     engine.addPlugin(TimerPlugin.create({ accessibility: engine.getAccessibility() }));
     engine.addPlugin(KeyboardInputPlugin.create({ inputManager: engine.getInputManager() }));
     engine.addPlugin(RewardPlugin.create({ rewardManager: engine.getRewardManager() }));
@@ -122,6 +136,21 @@ var SoloGameAdapter = (function () {
       __assetsReady: assetsReady
     };
 
+    try {
+      if (metricsCollector && typeof MetricsPlugin !== 'undefined') {
+        metricsPlugin = MetricsPlugin.create({
+          collector: metricsCollector,
+          engine: engine,
+          gameConfig: config,
+          devMode: !!options.devMode
+        });
+        if (typeof metricsPlugin.setGameConfig === 'function') metricsPlugin.setGameConfig(config);
+        engine.addPlugin(metricsPlugin);
+      }
+    } catch (e) {
+      metricsPlugin = null;
+    }
+
     function startGameSafe() {
       engine.loadGame(config);
       engine.startGame();
@@ -142,6 +171,8 @@ var SoloGameAdapter = (function () {
       assetLoader: assetLoader,
       assetsReady: assetsReady,
       difficulty: config.difficulty,
+      metrics: metricsCollector,
+      metricsPlugin: metricsPlugin,
       loadAndStart: function () {
         startGameSafe();
       }

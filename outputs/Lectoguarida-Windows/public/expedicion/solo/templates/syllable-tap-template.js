@@ -158,6 +158,17 @@ var SyllableTapTemplate = (function () {
 
       if (feedback) feedback.showCorrect();
 
+      if (engine && typeof engine.emit === 'function') {
+        try {
+          engine.emit('answerSubmitted', {
+            correct: true,
+            wordId: (round && round.wordId) ? round.wordId : null,
+            expectedCount: (round && round.syllables) ? round.syllables.length : null,
+            selectedCount: state.taps.length
+          });
+        } catch (e) { /* noop */ }
+      }
+
       if (state.currentSyllableIndex >= syllables.length) {
         state.correctInRound++;
         state.answered = true;
@@ -177,6 +188,9 @@ var SyllableTapTemplate = (function () {
     }
 
     function finish() {
+      if (engine && typeof engine.emit === 'function') {
+        try { engine.emit('roundCompleted', { rounds: state.totalRounds, correctAnswers: state.correctInRound }); } catch (e) { /* noop */ }
+      }
       if (engine && engine.completeGame) {
         engine.completeGame({
           correctAnswers: state.correctInRound,

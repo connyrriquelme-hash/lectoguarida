@@ -33,6 +33,25 @@ var SoloGameEngine = (function () {
     var currentTemplate = null;
     var plugins = [];
     var gameConfig = null;
+    var listeners = {};
+
+    function on(event, cb) {
+      if (typeof cb !== 'function') return function () {};
+      if (!listeners[event]) listeners[event] = [];
+      listeners[event].push(cb);
+      return function off() {
+        if (!listeners[event]) return;
+        var idx = listeners[event].indexOf(cb);
+        if (idx !== -1) listeners[event].splice(idx, 1);
+      };
+    }
+
+    function emit(event, payload) {
+      if (!listeners[event]) return;
+      listeners[event].slice().forEach(function (cb) {
+        try { cb(payload); } catch (e) { /* listener error no debe detener el juego */ }
+      });
+    }
 
     function loadGame(config) {
       var validation = GameConfigValidator.validate(config);
@@ -58,6 +77,7 @@ var SoloGameEngine = (function () {
       scoringEngine.start();
       feedbackManager.clearAll();
       startPlugins();
+      try { emit('sessionStarted', { gameConfig: gameConfig }); } catch (e) { /* noop */ }
       if (currentTemplate && currentTemplate.start) {
         currentTemplate.start();
       }
@@ -93,6 +113,7 @@ var SoloGameEngine = (function () {
       SoloProgressRepository.completeGame(studentProfileId, gameConfig.profile, gameConfig.id, stars);
 
       feedbackManager.showComplete('¡Completado! Estrellas: ' + stars);
+      try { emit('gameCompleted', finalResult); } catch (e) { /* noop */ }
       stopPlugins();
       return finalResult;
     }
@@ -100,6 +121,7 @@ var SoloGameEngine = (function () {
     function failGame(reason) {
       stateMachine.failGame(reason || 'unknown');
       feedbackManager.showError('Juego fallido');
+      try { emit('gameAbandoned', { reason: reason || 'unknown' }); } catch (e) { /* noop */ }
       stopPlugins();
       return false;
     }
@@ -113,6 +135,7 @@ var SoloGameEngine = (function () {
     }
 
     function returnToProfileMap() {
+      try { emit('gameAbandoned', { reason: 'returned-to-map' }); } catch (e) { /* noop */ }
       stopPlugins();
       stateMachine.returnToProfileMap();
     }
@@ -176,6 +199,8 @@ var SoloGameEngine = (function () {
       recoverFromError: recoverFromError,
       setTemplate: setTemplate,
       addPlugin: addPlugin,
+      on: on,
+      emit: emit,
       getState: getState,
       getInput: getInput,
       getScoring: getScoring,

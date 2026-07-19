@@ -335,6 +335,16 @@ var FallingItemsTemplate = (function () {
 
       lowestItem.remove();
 
+      if (engine && typeof engine.emit === 'function') {
+        try {
+          engine.emit('answerSubmitted', {
+            correct: isCorrect,
+            targetEnding: (round && round.targetEnding) ? round.targetEnding : null,
+            selectedItemId: itemId
+          });
+        } catch (e) { /* noop */ }
+      }
+
       var allCorrectCaptured = round.answers ? round.answers.every(function (ai) {
         var opt = (round.options || [])[ai];
         return opt && state.capturedIds.indexOf(opt.id) !== -1;
@@ -358,6 +368,9 @@ var FallingItemsTemplate = (function () {
     function finish() {
       state.running = false;
       if (state.animationFrame) cancelAnimationFrame(state.animationFrame);
+      if (engine && typeof engine.emit === 'function') {
+        try { engine.emit('roundCompleted', { rounds: state.totalRounds, correctAnswers: state.correctInRound }); } catch (e) { /* noop */ }
+      }
       if (engine && engine.completeGame) {
         engine.completeGame({
           correctAnswers: state.correctInRound,
