@@ -1964,8 +1964,10 @@ var worker_default = {
       if (url.pathname === "/expedicion/juego-v2" || url.pathname === "/expedicion/juego-v2/") return serveExpedicionAsset(request, env, "/expedicion/juego-v2");
       if (url.pathname === "/expedicion/dashboard" || url.pathname === "/expedicion/dashboard/") return serveExpedicionAsset(request, env, "/expedicion/dashboard");
       if (url.pathname === "/descargar-apk") return env.ASSETS.fetch(new Request(new URL("/Lectoguarida-debug.apk", request.url), request));
-      if (url.pathname.startsWith("/expedicion/solo")) return serveExpedicionAsset(request, env, "/expedicion/menu.html");
       const response = await env.ASSETS.fetch(request);
+      if (!response.ok && url.pathname.startsWith("/expedicion/solo") && !/\.[a-z0-9]+$/i.test(url.pathname)) {
+        return serveExpedicionAsset(request, env, "/expedicion/menu.html");
+      }
       const headers = new Headers(response.headers);
       const contentType = headers.get("Content-Type") || "";
       if (url.pathname.startsWith("/expedicion/")) {
