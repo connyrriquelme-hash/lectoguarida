@@ -14,8 +14,14 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET' || new URL(event.request.url).pathname.startsWith('/api/')) return;
   event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request).then((response) => {
-    const copy = response.clone();
-    caches.open(CACHE).then((cache) => cache.put(event.request, copy));
+    const requestUrl = new URL(event.request.url);
+    const safeProtocol = requestUrl.protocol === 'http:' || requestUrl.protocol === 'https:';
+    if (safeProtocol && response.status === 200 && response.type === 'basic') {
+      const copy = response.clone();
+      caches.open(CACHE).then((cache) => cache.put(event.request, copy)).catch(() => {});
+    }
     return response;
+  }).catch((error) => {
+    return new Response('', { status: 504, statusText: 'Gateway Timeout' });
   })));
 });

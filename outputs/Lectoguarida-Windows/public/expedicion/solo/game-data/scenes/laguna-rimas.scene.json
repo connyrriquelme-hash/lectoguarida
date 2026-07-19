@@ -1,0 +1,51 @@
+{
+  "id": "laguna-rimas",
+  "version": 1,
+  "name": "Laguna de las Rimas",
+  "environment": "water",
+  "spawnPoints": [
+    {
+      "id": "default",
+      "position": [0, 0, 0]
+    },
+    {
+      "id": "lagoon-entrance",
+      "position": [-10, 0, 0]
+    }
+  ],
+  "entities": [
+    {
+      "prefab": "lagoon-bell",
+      "position": [4, 0, 7],
+      "questId": "bell-01"
+    },
+    {
+      "prefab": "lagoon-bell",
+      "position": [-3, 0, 12],
+      "questId": "bell-02"
+    },
+    {
+      "prefab": "lagoon-bell",
+      "position": [7, 0, -5],
+      "questId": "bell-03"
+    }
+  ],
+  "zones": [
+    {
+      "id": "lagoon-entrance",
+      "state": "UNLOADED"
+    },
+    {
+      "id": "lagoon-center",
+      "state": "UNLOADED"
+    }
+  ],
+  "audio": {
+    "ambient": "lagoon-ambient",
+    "music": "lagoon-music"
+  },
+  "lighting": {
+    "ambient": 0.3,
+    "directional": 0.8
+  }
+}

@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101c3d">
+  <title>Lectoguarida Expedición | Acceso</title>
+  <style>
+    :root {
+      --bg: #0f1a3a;
+      --panel: rgba(16, 28, 61, 0.88);
+      --panel-soft: rgba(30, 50, 102, 0.72);
+      --accent: #68e7ff;
+      --accent-2: #ffd45f;
+      --text: #f7fbff;
+      --muted: #d8e6ff;
+      --line: rgba(255, 255, 255, 0.12);
+      --shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(104, 231, 255, 0.18), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(255, 212, 95, 0.15), transparent 24%),
+        linear-gradient(180deg, #13224d 0%, #0b132d 100%);
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 20px 10px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #ff8fbd, #68e7ff);
+      color: #091126;
+      font-size: 30px;
+      box-shadow: var(--shadow);
+      flex: 0 0 auto;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 2.2vw, 2.4rem);
+      line-height: 1.05;
+    }
+
+    .hero p {
+      margin: 4px 0 0;
+      color: var(--muted);
+    }
+
+    .badge {
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .demo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .demo-badge.student {
+      background: linear-gradient(135deg, rgba(104, 231, 255, 0.16), rgba(138, 255, 198, 0.14));
+      color: #f5ffff;
+    }
+
+    .demo-badge.teacher {
+      background: linear-gradient(135deg, rgba(255, 212, 95, 0.16), rgba(255, 159, 118, 0.14));
+      color: #fff8e8;
+    }
+
+    .grid {
+      display: flex;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .card {
+      flex: 1 1 0;
+      min-width: 0;
+      border-radius: 28px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, var(--panel), rgba(16, 28, 61, 0.72));
+      backdrop-filter: blur(14px);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 26px 70px rgba(0, 0, 0, 0.42);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .card.student {
+      background:
+        radial-gradient(circle at top right, rgba(104, 231, 255, 0.12), transparent 30%),
+        linear-gradient(180deg, rgba(18, 32, 74, 0.95), rgba(12, 21, 49, 0.95));
+    }
+
+    .card.teacher {
+      background:
+        radial-gradient(circle at top left, rgba(255, 212, 95, 0.12), transparent 28%),
+        linear-gradient(180deg, rgba(26, 33, 60, 0.95), rgba(13, 17, 32, 0.95));
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #9ec9ff;
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: clamp(1.35rem, 2vw, 1.9rem);
+    }
+
+    .card p {
+      margin: 0 0 20px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      font-size: 0.95rem;
+      color: #eef5ff;
+    }
+
+    .field input {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 15px 16px;
+      background: rgba(255,255,255,0.07);
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .field input::placeholder { color: rgba(232, 240, 255, 0.55); }
+    .field input:focus {
+      border-color: rgba(104, 231, 255, 0.65);
+      box-shadow: 0 0 0 4px rgba(104, 231, 255, 0.12);
+    }
+
+    .button {
+      border: 0;
+      border-radius: 18px;
+      padding: 15px 18px;
+      font-size: 1rem;
+      font-weight: 800;
+      color: #091126;
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+      box-shadow: 0 14px 0 rgba(0, 0, 0, 0.18), 0 16px 34px rgba(0, 0, 0, 0.25);
+    }
+
+    .button:hover { filter: brightness(1.04) saturate(1.02); transform: translateY(-1px); }
+    .button:active { transform: translateY(3px); box-shadow: 0 10px 0 rgba(0, 0, 0, 0.16), 0 10px 24px rgba(0, 0, 0, 0.25); }
+    .button.student { background: linear-gradient(135deg, #68e7ff, #8affc6); }
+    .button.teacher { background: linear-gradient(135deg, #ffd45f, #ff9f76); }
+
+    .footer-note {
+      margin-top: 18px;
+      color: rgba(232, 240, 255, 0.72);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .hero, .grid { flex-direction: column; }
+      .badge { align-self: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell menu-header">
+    <section class="hero" aria-label="Portal de acceso de Expedición">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">✦</div>
+        <div>
+          <h1>Lectoguarida Expedición</h1>
+          <p>Portal aislado para estudiantes y docentes, sin tocar el sitio principal.</p>
+          <div class="demo-badge" aria-label="Proyecto de innovación pedagógica">
+            <span aria-hidden="true">✨</span>
+            Proyecto de Innovación Pedagógica - Experiencia interactiva con Inteligencia Artificial
+          </div>
+        </div>
+      </div>
+      <div class="badge">/expedicion</div>
+    </section>
+
+    <section class="grid menu-grid">
+      <article class="card student">
+        <p class="eyebrow">Acceso Estudiantes</p>
+        <h2>🎒 Portal de Estudiantes</h2>
+        <p>Ingresa el código de tu curso para entrar a la expedición y comenzar el juego.</p>
+        <form class="form" id="studentForm">
+          <div class="field">
+            <label for="studentCode">Código de Curso</label>
+            <input id="studentCode" name="studentCode" type="text" autocomplete="off" inputmode="text" placeholder="Ej.: KINDER" required>
+          </div>
+          <button class="button student" type="submit">Entrar a la Expedición</button>
+        </form>
+        <div class="demo-badge student">
+          <span aria-hidden="true">🧩</span>
+          Pista para la demo: Escribe KINDER, SEGUNDO o SEXTO
+        </div>
+      </article>
+
+      <article class="card teacher">
+        <p class="eyebrow">Acceso Docentes</p>
+        <h2>📊 Portal Docente</h2>
+        <p>Usa tus credenciales para revisar métricas, avances y panel de control.</p>
+        <form class="form" id="teacherForm">
+          <div class="field">
+            <label for="teacherUser">Usuario</label>
+            <input id="teacherUser" name="teacherUser" type="text" autocomplete="username" placeholder="profesora" required>
+          </div>
+          <div class="field">
+            <label for="teacherPass">Contraseña</label>
+            <input id="teacherPass" name="teacherPass" type="password" autocomplete="current-password" placeholder="admin123" required>
+          </div>
+          <button class="button teacher" type="submit">Ingresar</button>
+        </form>
+        <div class="demo-badge teacher">
+          <span aria-hidden="true">👩‍🏫</span>
+          Credenciales de prueba -> Usuario: profesora | Clave: admin123
+        </div>
+      </article>
+    </section>
+
+    <p class="footer-note footer">Diseñado para alojarse en <strong>/expedicion</strong> sin alterar <strong>lectoguarida.cl</strong>.</p>
+  </main>
+
+  <div id="solo-container"></div>
+
+  <script src="/expedicion/router/game-router.js" defer></script>
+  <script src="/expedicion/menu/menu.js" defer></script>
+  <script src="/expedicion/menu/solo-entry.js" defer></script>
+  <script src="/expedicion/auth.js" defer></script>
+</body>
+</html>

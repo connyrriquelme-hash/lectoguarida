@@ -28,3 +28,5 @@ outputs/*/.env
 
 .DS_Store
 Thumbs.db
+# CI artifacts (not versioned)
+outputs/*/artifacts/

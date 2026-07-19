@@ -1,0 +1,40 @@
+{
+  "id": "lectoguarida-adventure",
+  "type": "adventure-bundle",
+  "purpose": "Aventura 3D isométrica Lectoguarida Aventuras",
+  "license": "project-owned",
+  "assets": [
+    {
+      "id": "three-module",
+      "type": "library",
+      "path": "/expedicion/solo/adventure/vendor/three.module.js",
+      "origin": "vendored-three-r184",
+      "license": "MIT",
+      "purpose": "Render 3D WebGL"
+    },
+    {
+      "id": "three-core",
+      "type": "library",
+      "path": "/expedicion/solo/adventure/vendor/three.core.js",
+      "origin": "vendored-three-r184",
+      "license": "MIT",
+      "purpose": "Render 3D WebGL (núcleo)"
+    },
+    {
+      "id": "adventure-engine",
+      "type": "module",
+      "path": "/expedicion/solo/adventure/adventure-engine.js",
+      "origin": "original-project-asset",
+      "license": "project-owned",
+      "purpose": "Motor de aventura"
+    },
+    {
+      "id": "adventure-entry",
+      "type": "module",
+      "path": "/expedicion/solo/adventure/adventure-entry.js",
+      "origin": "original-project-asset",
+      "license": "project-owned",
+      "purpose": "Entrada de la aventura"
+    }
+  ]
+}

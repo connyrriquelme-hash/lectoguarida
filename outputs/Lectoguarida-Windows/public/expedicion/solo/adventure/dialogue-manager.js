@@ -1,0 +1,59 @@
+/**
+ * dialogue-manager.js
+ * Reproduce líneas de diálogo una a una con audio opcional.
+ */
+
+export function createDialogueManager(deps) {
+  var audio = deps.audio;
+  var onChange = deps.onChange;
+  var onAudioStart = deps.onAudioStart || null;
+  var onAudioEnd = deps.onAudioEnd || null;
+  var queue = [];
+  var index = 0;
+  var speaker = null;
+  var active = false;
+
+  function start(lines, speakerName) {
+    queue = lines || [];
+    index = 0;
+    speaker = speakerName || null;
+    active = queue.length > 0;
+    showCurrent();
+  }
+
+  function showCurrent() {
+    if (index >= queue.length) { active = false; if (onChange) onChange(null, true); return; }
+    var line = queue[index];
+    if (onChange) onChange({ speaker: speaker, text: line, index: index, total: queue.length }, false);
+    if (audio) {
+      if (onAudioStart) onAudioStart();
+      var spoke = audio.speak(line, {
+        onend: function () { if (onAudioEnd) onAudioEnd(); }
+      });
+      if (!spoke && onAudioEnd) onAudioEnd();
+    }
+  }
+
+  function next() {
+    if (!active) return;
+    index++;
+    showCurrent();
+  }
+
+  function isActive() { return active; }
+
+  function current() {
+    if (index >= queue.length) return null;
+    return { speaker: speaker, text: queue[index], index: index, total: queue.length };
+  }
+
+  return {
+    start: start,
+    next: next,
+    isActive: isActive,
+    current: current,
+    setOnAudioStart: function (fn) { onAudioStart = fn; },
+    setOnAudioEnd: function (fn) { onAudioEnd = fn; },
+    stop: function () { active = false; queue = []; index = 0; if (audio) audio.cancel(); if (onAudioEnd) onAudioEnd(); }
+  };
+}

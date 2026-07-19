@@ -1,0 +1,5 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="vaso">
+  <title>vaso</title>
+  <rect x="0" y="0" width="100" height="100" rx="14" fill="#ffffff" stroke="#cfd8dc" stroke-width="2"/>
+  <path d="M36 28 h28 l-4 48 a8 8 0 0 1 -8 8 h-8 a8 8 0 0 1 -8 -8 z" fill="#b3e5fc" stroke="#4fc3f7" stroke-width="3"/><rect x="40" y="40" width="20" height="4" fill="#0288d1"/>
+</svg>

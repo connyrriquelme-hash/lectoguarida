@@ -1,0 +1,25 @@
+{
+  "demos": [
+    {
+      "id": "demo-click-selection",
+      "title": "Selecciona la vocal",
+      "template": "click_selection",
+      "profile": "non_reader",
+      "description": "Demostración técnica de la plantilla de selección por clic"
+    },
+    {
+      "id": "demo-drag-drop",
+      "title": "Arrastra la figura",
+      "template": "drag_drop",
+      "profile": "beginner",
+      "description": "Demostración técnica de la plantilla de arrastrar y soltar"
+    },
+    {
+      "id": "demo-avatar-movement",
+      "title": "Mueve el explorador",
+      "template": "avatar_movement",
+      "profile": "advanced",
+      "description": "Demostración técnica de la plantilla de movimiento de avatar"
+    }
+  ]
+}

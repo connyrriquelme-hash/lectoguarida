@@ -1,0 +1,5 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="luna">
+  <title>luna</title>
+  <rect x="0" y="0" width="100" height="100" rx="14" fill="#ffffff" stroke="#cfd8dc" stroke-width="2"/>
+  <path d="M62 20 a30 30 0 1 0 0 60 a24 24 0 0 1 0 -60 z" fill="#fff59d" stroke="#fbc02d" stroke-width="1"/>
+</svg>

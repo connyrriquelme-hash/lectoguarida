@@ -1,0 +1,5 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="casa">
+  <title>casa</title>
+  <rect x="0" y="0" width="100" height="100" rx="14" fill="#ffffff" stroke="#cfd8dc" stroke-width="2"/>
+  <polygon points="50,24 78,48 22,48" fill="#ef5350"/><rect x="32" y="48" width="36" height="28" fill="#ffcc80"/><rect x="46" y="58" width="10" height="18" fill="#8d6e63"/>
+</svg>

@@ -1,0 +1,48 @@
+{
+  "id": "plaza-guarida",
+  "version": 1,
+  "name": "Plaza de la Guarida",
+  "environment": "outdoor",
+  "spawnPoints": [
+    {
+      "id": "default",
+      "position": [0, 0, 0]
+    }
+  ],
+  "entities": [
+    {
+      "prefab": "plaza-kiosk",
+      "position": [0, 0, -4]
+    },
+    {
+      "prefab": "rina-guardian",
+      "position": [8, 0, 12]
+    },
+    {
+      "prefab": "lumiercoles-companion",
+      "position": [2, 1.8, 2]
+    },
+    {
+      "prefab": "plaza-tree",
+      "position": [-5, 0, -8]
+    }
+  ],
+  "zones": [
+    {
+      "id": "plaza-center",
+      "state": "ACTIVE"
+    },
+    {
+      "id": "plaza-forest-edge",
+      "state": "UNLOADED"
+    }
+  ],
+  "audio": {
+    "ambient": "plaza-ambient",
+    "music": "plaza-music"
+  },
+  "lighting": {
+    "ambient": 0.4,
+    "directional": 1.0
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "gameId": "initial-sound-detector",
+  "assets": [
+    { "id": "foca", "src": "/expedicion/solo/assets/non-reader/initial-sounds/foca.svg", "type": "image/svg+xml", "alt": "Foca", "fallback": "🦭", "category": "option" },
+    { "id": "farol", "src": "/expedicion/solo/assets/non-reader/initial-sounds/farol.svg", "type": "image/svg+xml", "alt": "Farol", "fallback": "🏮", "category": "option" },
+    { "id": "flor", "src": "/expedicion/solo/assets/non-reader/initial-sounds/flor.svg", "type": "image/svg+xml", "alt": "Flor", "fallback": "🌸", "category": "option" },
+    { "id": "mono", "src": "/expedicion/solo/assets/non-reader/initial-sounds/mono.svg", "type": "image/svg+xml", "alt": "Mono", "fallback": "🐵", "category": "option" },
+    { "id": "mesa", "src": "/expedicion/solo/assets/non-reader/initial-sounds/mesa.svg", "type": "image/svg+xml", "alt": "Mesa", "fallback": "🪑", "category": "option" },
+    { "id": "mariposa", "src": "/expedicion/solo/assets/non-reader/initial-sounds/mariposa.svg", "type": "image/svg+xml", "alt": "Mariposa", "fallback": "🦋", "category": "option" },
+    { "id": "pato", "src": "/expedicion/solo/assets/non-reader/initial-sounds/pato.svg", "type": "image/svg+xml", "alt": "Pato", "fallback": "🦆", "category": "option" },
+    { "id": "pan", "src": "/expedicion/solo/assets/non-reader/initial-sounds/pan.svg", "type": "image/svg+xml", "alt": "Pan", "fallback": "🍞", "category": "option" },
+    { "id": "pelota", "src": "/expedicion/solo/assets/non-reader/initial-sounds/pelota.svg", "type": "image/svg+xml", "alt": "Pelota", "fallback": "⚽", "category": "option" },
+    { "id": "sapo", "src": "/expedicion/solo/assets/non-reader/initial-sounds/sapo.svg", "type": "image/svg+xml", "alt": "Sapo", "fallback": "🐸", "category": "option" },
+    { "id": "sol", "src": "/expedicion/solo/assets/non-reader/initial-sounds/sol.svg", "type": "image/svg+xml", "alt": "Sol", "fallback": "☀️", "category": "option" },
+    { "id": "silla", "src": "/expedicion/solo/assets/non-reader/initial-sounds/silla.svg", "type": "image/svg+xml", "alt": "Silla", "fallback": "🪑", "category": "option" },
+    { "id": "luna", "src": "/expedicion/solo/assets/non-reader/initial-sounds/luna.svg", "type": "image/svg+xml", "alt": "Luna", "fallback": "🌙", "category": "option" },
+    { "id": "lapiz", "src": "/expedicion/solo/assets/non-reader/initial-sounds/lapiz.svg", "type": "image/svg+xml", "alt": "Lápiz", "fallback": "✏️", "category": "option" },
+    { "id": "leon", "src": "/expedicion/solo/assets/non-reader/initial-sounds/leon.svg", "type": "image/svg+xml", "alt": "León", "fallback": "🦁", "category": "option" },
+    { "id": "taza", "src": "/expedicion/solo/assets/non-reader/initial-sounds/taza.svg", "type": "image/svg+xml", "alt": "Taza", "fallback": "☕", "category": "option" },
+    { "id": "tomate", "src": "/expedicion/solo/assets/non-reader/initial-sounds/tomate.svg", "type": "image/svg+xml", "alt": "Tomate", "fallback": "🍅", "category": "option" },
+    { "id": "tortuga", "src": "/expedicion/solo/assets/non-reader/initial-sounds/tortuga.svg", "type": "image/svg+xml", "alt": "Tortuga", "fallback": "🐢", "category": "option" }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "gameId": "rhyme-catcher",
+  "assets": [
+    { "id": "raton", "src": "/expedicion/solo/assets/non-reader/rhyme/raton.svg", "type": "image/svg+xml", "alt": "Ratón", "fallback": "🐭", "category": "option" },
+    { "id": "boton", "src": "/expedicion/solo/assets/non-reader/rhyme/boton.svg", "type": "image/svg+xml", "alt": "Botón", "fallback": "🔘", "category": "option" },
+    { "id": "gato", "src": "/expedicion/solo/assets/non-reader/rhyme/gato.svg", "type": "image/svg+xml", "alt": "Gato", "fallback": "🐱", "category": "option" },
+    { "id": "pato", "src": "/expedicion/solo/assets/non-reader/rhyme/pato.svg", "type": "image/svg+xml", "alt": "Pato", "fallback": "🦆", "category": "option" },
+    { "id": "estrella", "src": "/expedicion/solo/assets/non-reader/rhyme/estrella.svg", "type": "image/svg+xml", "alt": "Estrella", "fallback": "⭐", "category": "option" },
+    { "id": "botella", "src": "/expedicion/solo/assets/non-reader/rhyme/botella.svg", "type": "image/svg+xml", "alt": "Botella", "fallback": "🍶", "category": "option" },
+    { "id": "campana", "src": "/expedicion/solo/assets/non-reader/rhyme/campana.svg", "type": "image/svg+xml", "alt": "Campana", "fallback": "🔔", "category": "option" },
+    { "id": "ventana", "src": "/expedicion/solo/assets/non-reader/rhyme/ventana.svg", "type": "image/svg+xml", "alt": "Ventana", "fallback": "🪟", "category": "option" },
+    { "id": "zapato", "src": "/expedicion/solo/assets/non-reader/rhyme/zapato.svg", "type": "image/svg+xml", "alt": "Zapato", "fallback": "👞", "category": "option" },
+    { "id": "retrato", "src": "/expedicion/solo/assets/non-reader/rhyme/retrato.svg", "type": "image/svg+xml", "alt": "Retrato", "fallback": "🖼️", "category": "option" },
+    { "id": "caracol", "src": "/expedicion/solo/assets/non-reader/rhyme/caracol.svg", "type": "image/svg+xml", "alt": "Caracol", "fallback": "🐌", "category": "option" },
+    { "id": "girasol", "src": "/expedicion/solo/assets/non-reader/rhyme/girasol.svg", "type": "image/svg+xml", "alt": "Girasol", "fallback": "🌻", "category": "option" }
+  ]
+}
