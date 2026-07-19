@@ -98,6 +98,7 @@ export function createAdventureEngine(options) {
   }
 
   function buildHud() {
+    root.classList.add('hud-active');
     var header = document.createElement('div');
     header.className = 'adv-hud-header';
     header.innerHTML = '<div class="adv-logo">Lectoguarida Aventuras</div>' +
