@@ -40,7 +40,7 @@ const { createPrefabRegistry } = await imp(resolve(ENGINE, 'core/prefab-registry
 const { createResourceManager } = await imp(resolve(ENGINE, 'core/resource-manager.js'));
 const { COMPONENTS, createTransformComponent, createMovementComponent, createColliderComponent, createInteractionComponent, createAnimationComponent } = await imp(resolve(ENGINE, 'components/components.js'));
 const { createMovementSystem, createCollisionSystem, createInteractionSystem, createAnimationSystem, createInputSystem, createSaveSystem, SYSTEM_PRIORITIES } = await imp(resolve(ENGINE, 'systems/systems.js'));
-const { isEngineV2Enabled, setEngineV2Enabled } = await imp(resolve(ENGINE, 'core/feature-flag.js'));
+const { isGameEngineV2Enabled, setEngineV2Enabled } = await imp(resolve(ENGINE, 'core/feature-flag.js'));
 const { createDebugOverlay } = await imp(resolve(ENGINE, 'debug/debug-overlay.js'));
 
 /* ── 1-10: GameEngine lifecycle ──────────────────────────── */
@@ -411,12 +411,12 @@ test('40. AnimationSystem cambia IDLE/WALK', () => {
 
 test('41. feature flag default es false', () => {
   setEngineV2Enabled(false);
-  assert.equal(isEngineV2Enabled(), false);
+  assert.equal(isGameEngineV2Enabled(), false);
 });
 
 test('42. feature flag se puede activar', () => {
   setEngineV2Enabled(true);
-  assert.equal(isEngineV2Enabled(), true);
+  assert.equal(isGameEngineV2Enabled(), true);
   setEngineV2Enabled(false);
 });
 
