@@ -9,6 +9,7 @@
 import { createAdventureEngine } from './adventure-engine.js';
 import { isGameEngineV2Enabled } from '../game-engine/core/feature-flag.js';
 import { createGameEngineV2 } from '../game-engine/engine-v2-entry.js';
+import { createQualityManager } from './quality-manager.js';
 
 var ADVENTURE_INSTANCE = null;
 var V2_ENGINE_INSTANCE = null;
@@ -82,6 +83,12 @@ async function startEngineV2(container, studentProfileId, difficulty, deps, debu
     var questManagerModule = await import('./quest-manager.js');
     var missionManagerModule = await import('./mission-manager.js');
 
+    var quality = createQualityManager({ force: 'high' });
+    var worldScene = worldModule.createWorldScene(container, quality);
+    if (worldScene.error) {
+      throw new Error('WebGL error: ' + worldScene.error);
+    }
+
     V2_ENGINE_INSTANCE = createGameEngineV2({
       container: container,
       studentProfileId: studentProfileId,
@@ -89,24 +96,19 @@ async function startEngineV2(container, studentProfileId, difficulty, deps, debu
       searchParams: new URLSearchParams(window.location.search),
       debug: debug,
       deps: {
-        THREE: (await import('./vendor/three.module.js')).default,
+        THREE: worldScene.getThree(),
         AudioManager: deps.AudioManager,
         SoloProgressRepository: deps.SoloProgressRepository,
         SoloGameAdapter: deps.SoloGameAdapter,
         joystick: null,
         wasd: null,
         clickToMove: null,
-        world: null,
+        world: worldScene,
         narrativePanel: null,
         captionController: null,
         dialogueManager: null
       }
     });
-
-    var worldScene = worldModule.createWorldScene(container, { force: 'high' });
-    if (worldScene.error) {
-      throw new Error('WebGL error: ' + worldScene.error);
-    }
 
     var playerFactory = playerFactoryModule.createPlayerFactory();
     var guardianFactory = guardianFactoryModule.createGuardianFactory();
@@ -148,6 +150,8 @@ async function startEngineV2(container, studentProfileId, difficulty, deps, debu
 
     var started = V2_ENGINE_INSTANCE.start();
     if (!started) throw new Error('V2 Engine failed to start');
+
+    worldScene.start();
 
     if (debug) {
       var debugOverlayModule = await import('../game-engine/debug/debug-overlay.js');

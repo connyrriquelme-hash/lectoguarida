@@ -1,0 +1,54 @@
+{
+  "version": "1.0.0",
+  "updatedAt": "2026-07-20T10:00:00Z",
+  "missions": [
+    {
+      "id": "puerto-initial-m-01",
+      "status": "pilot",
+      "order": 1,
+      "worldId": "puerto_gigantes",
+      "skillId": "phonological_initial_sound_identification",
+      "description": "Identificación de sonido inicial /m/"
+    },
+    {
+      "id": "puerto-initial-m-02",
+      "status": "draft",
+      "order": 2,
+      "worldId": "puerto_gigantes",
+      "skillId": "phonological_initial_sound_identification",
+      "description": "Consolidación de sonido inicial /m/"
+    },
+    {
+      "id": "puerto-initial-m-03",
+      "status": "draft",
+      "order": 3,
+      "worldId": "puerto_gigantes",
+      "skillId": "phonological_initial_sound_identification",
+      "description": "Transferencia de sonido inicial /m/"
+    },
+    {
+      "id": "puerto-phonological-vowel-01",
+      "status": "draft",
+      "order": 4,
+      "worldId": "puerto_gigantes",
+      "skillId": "phonological_rhyme",
+      "description": "Rimas en el Puerto"
+    },
+    {
+      "id": "puerto-phonological-syllable-01",
+      "status": "draft",
+      "order": 5,
+      "worldId": "puerto_gigantes",
+      "skillId": "phonological_syllable",
+      "description": "Conteo de sílabas"
+    },
+    {
+      "id": "puerto-phonological-final-01",
+      "status": "draft",
+      "order": 6,
+      "worldId": "puerto_gigantes",
+      "skillId": "phonological_final_sound_identification",
+      "description": "Identificación de sonido final"
+    }
+  ]
+}

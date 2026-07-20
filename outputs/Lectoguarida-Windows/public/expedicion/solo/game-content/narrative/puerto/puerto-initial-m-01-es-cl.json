@@ -1,0 +1,62 @@
+{
+  "version": "1.0.0",
+  "missionId": "puerto-initial-m-01",
+  "language": "es-CL",
+  "updatedAt": "2026-07-20T10:00:00Z",
+  "scenes": {
+    "intro": {
+      "id": "puerto-initial-m-01-intro",
+      "speaker": "chispa",
+      "text": "¡Hola! Soy Chispa, el chucao del Puerto de los Gigantes. Los contenedores están dormidos. ¡Ayúdame a encontrar las palabras que empiezan con el sonido /m/ para activar la grúa!",
+      "emotion": "excited"
+    },
+    "instruction": {
+      "id": "puerto-initial-m-01-instruction",
+      "speaker": "chispa",
+      "text": "Escucha cada palabra con atención. Toca la imagen de la palabra que empieza con /m/. ¡Tú puedes!",
+      "emotion": "encouraging"
+    },
+    "first_success": {
+      "id": "puerto-initial-m-01-first-success",
+      "speaker": "chispa",
+      "text": "¡Muy bien! Esa palabra empieza con el sonido /m/. ¡Sigue así!",
+      "emotion": "happy"
+    },
+    "first_error": {
+      "id": "puerto-initial-m-01-first-error",
+      "speaker": "chispa",
+      "text": "¡Casi! Esa no empieza con /m/. Escucha el sonido otra vez y elige otra palabra.",
+      "emotion": "gentle"
+    },
+    "repeated_error": {
+      "id": "puerto-initial-m-01-repeated-error",
+      "speaker": "chispa",
+      "text": "No te preocupes. Vamos a escuchar el sonido /m/ de nuevo. ¡Tú lograslo!",
+      "emotion": "encouraging"
+    },
+    "support": {
+      "id": "puerto-initial-m-01-support",
+      "speaker": "chispa",
+      "text": "Mira las opciones con cuidado. Piensa: ¿cuál de estas palabras empieza como mamá o mesa?",
+      "emotion": "helpful"
+    },
+    "mastery": {
+      "id": "puerto-initial-m-01-mastery",
+      "speaker": "chispa",
+      "text": "¡Fantástico! Encontraste todas las palabras con /m/. ¡La grúa del Puerto está lista para mover los contenedores!",
+      "emotion": "celebrating"
+    },
+    "retry": {
+      "id": "puerto-initial-m-01-retry",
+      "speaker": "chispa",
+      "text": "¿Quieres intentar otra vez? ¡No pasa nada! Cada vez lo haces mejor.",
+      "emotion": "encouraging"
+    },
+    "return_to_world": {
+      "id": "puerto-initial-m-01-return",
+      "speaker": "chispa",
+      "text": "¡Volvamos al Puerto! Los contenedores te están esperando.",
+      "emotion": "happy"
+    }
+  }
+}

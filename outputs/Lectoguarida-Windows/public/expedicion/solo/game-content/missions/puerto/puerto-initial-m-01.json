@@ -1,0 +1,79 @@
+{
+  "id": "puerto-initial-m-01",
+  "version": "1.0.0",
+  "type": "main_story",
+  "title": "Los contenedores de la M",
+  "description": "Chispa te invita a explorar el Puerto de los Gigantes. Ayuda a encontrar las palabras que empiezan con el sonido /m/ para activar la grúa y mover los contenedores.",
+  "targetSkillIds": ["phonological_initial_sound_identification"],
+  "worldId": "puerto_gigantes",
+  "regionId": "bosque-sonido",
+  "narrativeAnchorId": "puerto-initial-m-01-intro",
+  "difficulty": "estandar",
+  "prerequisiteMissionIds": [],
+  "objectives": [
+    {
+      "id": "obj_identify_m_initial",
+      "description": "Identificar correctamente palabras que comienzan con /m/",
+      "skillId": "phonological_initial_sound_identification",
+      "evidenceType": "image_selection",
+      "successCriteria": {
+        "minAccuracy": 0.8,
+        "minAttempts": 8,
+        "maxHints": 3,
+        "maxTimeSeconds": 600
+      },
+      "order": 1
+    }
+  ],
+  "masteryRequirements": {
+    "overallAccuracy": 0.8,
+    "minSessions": 1,
+    "transferTasksRequired": 1,
+    "retentionCheckDays": 7,
+    "transferContextsRequired": 1,
+    "ruleId": "mastery_80_3_consecutive",
+    "minimumAttempts": 8,
+    "consecutiveCorrectRequired": 3,
+    "minimumIndependentAccuracy": 0.7,
+    "maximumHintRate": 0.35
+  },
+  "feedbackRules": {
+    "onError": {
+      "message": "¡Casi! Escucha el sonido otra vez y elige la palabra que empieza con /m/.",
+      "audioCue": "gentle",
+      "showModel": true,
+      "reduceOptions": false
+    },
+    "onSuccess": {
+      "message": "¡Muy bien! Esa palabra empieza con el sonido /m/.",
+      "audioCue": "celebration",
+      "showProgress": true
+    },
+    "onHint": {
+      "message": "Escucha con atención: ¿qué sonido tiene al principio esta palabra?",
+      "audioCue": "encouraging",
+      "reduceOptions": true
+    },
+    "onMastery": {
+      "message": "¡Fantástico! Encontraste todas las palabras con /m/. La grúa del Puerto está lista.",
+      "reward": {
+        "type": "badge",
+        "id": "insignia-puerto-sonido-m"
+      }
+    }
+  },
+  "estimatedDurationMinutes": 10,
+  "supportedProfiles": ["non_reader", "emergent_reader"],
+  "accessibility": {
+    "audioInstructions": true,
+    "visualSupport": true,
+    "keyboardNavigation": true,
+    "touchNavigation": true,
+    "captionsMode": false,
+    "reducedMotion": false
+  },
+  "createdAt": "2026-07-20T10:00:00Z",
+  "updatedAt": "2026-07-20T10:00:00Z",
+  "tags": ["puerto", "phonological", "initial-sound", "pilot"],
+  "verificationStatus": "draft"
+}

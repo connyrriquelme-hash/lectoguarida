@@ -9,9 +9,12 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import { JSDOM } from 'jsdom';
+import { createFakeAnimationFrame } from './helpers/fake-animation-frame.mjs';
 
 const require = createRequire(import.meta.url);
 const fs = require('fs');
+
+const raf = createFakeAnimationFrame();
 
 const dom = new JSDOM('<!DOCTYPE html><html><head></head><body></body></html>', {
   pretendToBeVisual: true,
@@ -20,7 +23,7 @@ const dom = new JSDOM('<!DOCTYPE html><html><head></head><body></body></html>', 
 global.window = dom.window;
 global.document = dom.window.document;
 global.localStorage = dom.window.localStorage;
-global.performance = { now: function () { return Date.now(); } };
+raf.install();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
