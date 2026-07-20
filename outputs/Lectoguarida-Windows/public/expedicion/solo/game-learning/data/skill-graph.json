@@ -1,0 +1,630 @@
+{
+  "version": "1.0.0",
+  "createdAt": "2026-07-19",
+  "description": "Grafo de dependencias de habilidades lectoras — DAG acíclico para progresión adaptativa",
+  "nodes": [
+    {
+      "id": "oral_vocabulario_basico",
+      "domainId": "oral_language",
+      "order": 0,
+      "prerequisites": [],
+      "unlocks": [
+        "oral_comprension_instrucciones",
+        "oral_estructura_narrativa"
+      ]
+    },
+    {
+      "id": "oral_comprension_instrucciones",
+      "domainId": "oral_language",
+      "order": 1,
+      "prerequisites": [
+        "oral_vocabulario_basico"
+      ],
+      "unlocks": [
+        "oral_estructura_narrativa"
+      ]
+    },
+    {
+      "id": "oral_estructura_narrativa",
+      "domainId": "oral_language",
+      "order": 2,
+      "prerequisites": [
+        "oral_vocabulario_basico",
+        "oral_comprension_instrucciones"
+      ],
+      "unlocks": [
+        "writing_gramatica_basica"
+      ]
+    },
+    {
+      "id": "phonological_rhyme_identification",
+      "domainId": "phonological_awareness",
+      "order": 0,
+      "prerequisites": [],
+      "unlocks": [
+        "phonological_rhyme_production"
+      ]
+    },
+    {
+      "id": "phonological_rhyme_production",
+      "domainId": "phonological_awareness",
+      "order": 1,
+      "prerequisites": [
+        "phonological_rhyme_identification"
+      ],
+      "unlocks": []
+    },
+    {
+      "id": "phonological_syllable_segmentation",
+      "domainId": "phonological_awareness",
+      "order": 2,
+      "prerequisites": [],
+      "unlocks": [
+        "phonological_syllable_blending"
+      ]
+    },
+    {
+      "id": "phonological_syllable_blending",
+      "domainId": "phonological_awareness",
+      "order": 3,
+      "prerequisites": [
+        "phonological_syllable_segmentation"
+      ],
+      "unlocks": []
+    },
+    {
+      "id": "phonological_initial_sound_identification",
+      "domainId": "phonological_awareness",
+      "order": 4,
+      "prerequisites": [],
+      "unlocks": [
+        "phonological_final_sound_identification"
+      ]
+    },
+    {
+      "id": "phonological_final_sound_identification",
+      "domainId": "phonological_awareness",
+      "order": 5,
+      "prerequisites": [
+        "phonological_initial_sound_identification"
+      ],
+      "unlocks": [
+        "phonological_phoneme_segmentation"
+      ]
+    },
+    {
+      "id": "phonological_phoneme_segmentation",
+      "domainId": "phonological_awareness",
+      "order": 6,
+      "prerequisites": [
+        "phonological_final_sound_identification"
+      ],
+      "unlocks": [
+        "phonological_phoneme_blending"
+      ]
+    },
+    {
+      "id": "phonological_phoneme_blending",
+      "domainId": "phonological_awareness",
+      "order": 7,
+      "prerequisites": [
+        "phonological_phoneme_segmentation"
+      ],
+      "unlocks": [
+        "phonological_manipulation"
+      ]
+    },
+    {
+      "id": "phonological_manipulation",
+      "domainId": "phonological_awareness",
+      "order": 8,
+      "prerequisites": [
+        "phonological_phoneme_blending"
+      ],
+      "unlocks": [
+        "alphabetic_letter_sound_correspondence"
+      ]
+    },
+    {
+      "id": "alphabetic_letter_recognition",
+      "domainId": "alphabetic_principle",
+      "order": 0,
+      "prerequisites": [],
+      "unlocks": [
+        "alphabetic_letter_sound_correspondence",
+        "alphabetic_letter_formation"
+      ]
+    },
+    {
+      "id": "alphabetic_letter_sound_correspondence",
+      "domainId": "alphabetic_principle",
+      "order": 1,
+      "prerequisites": [
+        "alphabetic_letter_recognition"
+      ],
+      "unlocks": [
+        "alphabetic_letter_formation",
+        "decoding_direct_syllables"
+      ]
+    },
+    {
+      "id": "alphabetic_letter_formation",
+      "domainId": "alphabetic_principle",
+      "order": 2,
+      "prerequisites": [
+        "alphabetic_letter_recognition"
+      ],
+      "unlocks": [
+        "writing_ortografia_fonetica"
+      ]
+    },
+    {
+      "id": "decoding_direct_syllables",
+      "domainId": "decoding",
+      "order": 0,
+      "prerequisites": [
+        "alphabetic_letter_sound_correspondence"
+      ],
+      "unlocks": [
+        "decoding_inverse_syllables",
+        "writing_ortografia_fonetica"
+      ]
+    },
+    {
+      "id": "decoding_inverse_syllables",
+      "domainId": "decoding",
+      "order": 1,
+      "prerequisites": [
+        "decoding_direct_syllables"
+      ],
+      "unlocks": [
+        "decoding_mixed_syllables"
+      ]
+    },
+    {
+      "id": "decoding_mixed_syllables",
+      "domainId": "decoding",
+      "order": 2,
+      "prerequisites": [
+        "decoding_inverse_syllables"
+      ],
+      "unlocks": [
+        "decoding_digraphs"
+      ]
+    },
+    {
+      "id": "decoding_digraphs",
+      "domainId": "decoding",
+      "order": 3,
+      "prerequisites": [
+        "decoding_mixed_syllables"
+      ],
+      "unlocks": [
+        "decoding_consonant_clusters"
+      ]
+    },
+    {
+      "id": "decoding_consonant_clusters",
+      "domainId": "decoding",
+      "order": 4,
+      "prerequisites": [
+        "decoding_digraphs"
+      ],
+      "unlocks": [
+        "fluency_accuracy"
+      ]
+    },
+    {
+      "id": "fluency_accuracy",
+      "domainId": "fluency",
+      "order": 0,
+      "prerequisites": [
+        "decoding_direct_syllables"
+      ],
+      "unlocks": [
+        "fluency_speed"
+      ]
+    },
+    {
+      "id": "fluency_speed",
+      "domainId": "fluency",
+      "order": 1,
+      "prerequisites": [
+        "fluency_accuracy"
+      ],
+      "unlocks": [
+        "fluency_prosody"
+      ]
+    },
+    {
+      "id": "fluency_prosody",
+      "domainId": "fluency",
+      "order": 2,
+      "prerequisites": [
+        "fluency_speed"
+      ],
+      "unlocks": [
+        "fluency_self_correction"
+      ]
+    },
+    {
+      "id": "fluency_self_correction",
+      "domainId": "fluency",
+      "order": 3,
+      "prerequisites": [
+        "fluency_prosody"
+      ],
+      "unlocks": []
+    },
+    {
+      "id": "vocab_significado_palabras",
+      "domainId": "vocabulary",
+      "order": 0,
+      "prerequisites": [
+        "oral_vocabulario_basico"
+      ],
+      "unlocks": [
+        "vocab_relaciones_semanticas"
+      ]
+    },
+    {
+      "id": "vocab_relaciones_semanticas",
+      "domainId": "vocabulary",
+      "order": 1,
+      "prerequisites": [
+        "vocab_significado_palabras"
+      ],
+      "unlocks": [
+        "vocab_morfologia_basica"
+      ]
+    },
+    {
+      "id": "vocab_morfologia_basica",
+      "domainId": "vocabulary",
+      "order": 1,
+      "prerequisites": [
+        "vocab_relaciones_semanticas"
+      ],
+      "unlocks": [
+        "vocab_estrategias_inferencia"
+      ]
+    },
+    {
+      "id": "vocab_estrategias_inferencia",
+      "domainId": "vocabulary",
+      "order": 2,
+      "prerequisites": [
+        "vocab_morfologia_basica"
+      ],
+      "unlocks": [
+        "vocab_vocabulario_academico"
+      ]
+    },
+    {
+      "id": "vocab_vocabulario_academico",
+      "domainId": "vocabulary",
+      "order": 3,
+      "prerequisites": [
+        "vocab_estrategias_inferencia"
+      ],
+      "unlocks": []
+    },
+    {
+      "id": "comprehension_literal",
+      "domainId": "reading_comprehension",
+      "order": 0,
+      "prerequisites": [
+        "decoding_direct_syllables",
+        "oral_comprension_instrucciones"
+      ],
+      "unlocks": [
+        "comprehension_inferential_simple"
+      ]
+    },
+    {
+      "id": "comprehension_inferential_simple",
+      "domainId": "reading_comprehension",
+      "order": 1,
+      "prerequisites": [
+        "comprehension_literal"
+      ],
+      "unlocks": [
+        "comprehension_inferential_complex"
+      ]
+    },
+    {
+      "id": "comprehension_inferential_complex",
+      "domainId": "reading_comprehension",
+      "order": 2,
+      "prerequisites": [
+        "comprehension_inferential_simple"
+      ],
+      "unlocks": [
+        "comprehension_critical"
+      ]
+    },
+    {
+      "id": "comprehension_critical",
+      "domainId": "reading_comprehension",
+      "order": 3,
+      "prerequisites": [
+        "comprehension_inferential_complex"
+      ],
+      "unlocks": [
+        "comprehension_metacognitive"
+      ]
+    },
+    {
+      "id": "comprehension_metacognitive",
+      "domainId": "reading_comprehension",
+      "order": 4,
+      "prerequisites": [
+        "comprehension_critical"
+      ],
+      "unlocks": [
+        "comprehension_text_structure"
+      ]
+    },
+    {
+      "id": "comprehension_text_structure",
+      "domainId": "reading_comprehension",
+      "order": 5,
+      "prerequisites": [
+        "comprehension_metacognitive"
+      ],
+      "unlocks": [
+        "comprehension_strategies"
+      ]
+    },
+    {
+      "id": "comprehension_strategies",
+      "domainId": "reading_comprehension",
+      "order": 6,
+      "prerequisites": [
+        "comprehension_text_structure"
+      ],
+      "unlocks": []
+    },
+    {
+      "id": "writing_ortografia_fonetica",
+      "domainId": "writing",
+      "order": 0,
+      "prerequisites": [
+        "decoding_direct_syllables"
+      ],
+      "unlocks": [
+        "writing_ortografia_lexica"
+      ]
+    },
+    {
+      "id": "writing_ortografia_lexica",
+      "domainId": "writing",
+      "order": 1,
+      "prerequisites": [
+        "writing_ortografia_fonetica"
+      ],
+      "unlocks": [
+        "orthography_reglas_foneticas"
+      ]
+    },
+    {
+      "id": "writing_gramatica_basica",
+      "domainId": "writing",
+      "order": 2,
+      "prerequisites": [
+        "oral_estructura_narrativa"
+      ],
+      "unlocks": [
+        "writing_composicion"
+      ]
+    },
+    {
+      "id": "writing_composicion",
+      "domainId": "writing",
+      "order": 3,
+      "prerequisites": [
+        "writing_gramatica_basica"
+      ],
+      "unlocks": [
+        "writing_revision"
+      ]
+    },
+    {
+      "id": "writing_revision",
+      "domainId": "writing",
+      "order": 4,
+      "prerequisites": [
+        "writing_composicion"
+      ],
+      "unlocks": [
+        "writing_generos_textuales"
+      ]
+    },
+    {
+      "id": "writing_generos_textuales",
+      "domainId": "writing",
+      "order": 5,
+      "prerequisites": [
+        "writing_revision"
+      ],
+      "unlocks": []
+    },
+    {
+      "id": "orthography_reglas_foneticas",
+      "domainId": "orthography",
+      "order": 0,
+      "prerequisites": [
+        "writing_ortografia_lexica",
+        "decoding_digraphs"
+      ],
+      "unlocks": [
+        "orthography_reglas_lexicas"
+      ]
+    },
+    {
+      "id": "orthography_reglas_lexicas",
+      "domainId": "orthography",
+      "order": 1,
+      "prerequisites": [
+        "orthography_reglas_foneticas"
+      ],
+      "unlocks": [
+        "orthography_acentuacion"
+      ]
+    },
+    {
+      "id": "orthography_acentuacion",
+      "domainId": "orthography",
+      "order": 2,
+      "prerequisites": [
+        "orthography_reglas_lexicas"
+      ],
+      "unlocks": [
+        "orthography_puntuacion"
+      ]
+    },
+    {
+      "id": "orthography_puntuacion",
+      "domainId": "orthography",
+      "order": 3,
+      "prerequisites": [
+        "orthography_acentuacion"
+      ],
+      "unlocks": [
+        "orthography_mayusculas"
+      ]
+    },
+    {
+      "id": "orthography_mayusculas",
+      "domainId": "orthography",
+      "order": 4,
+      "prerequisites": [
+        "orthography_puntuacion"
+      ],
+      "unlocks": []
+    }
+  ],
+  "edges": [],
+  "crossDomainLinks": [
+    {
+      "from": "phonological_manipulation",
+      "to": "alphabetic_letter_sound_correspondence",
+      "type": "enables",
+      "description": "Manipulación fonológica permite correspondencia grafema-fonema"
+    },
+    {
+      "from": "decoding_direct_syllables",
+      "to": "writing_ortografia_fonetica",
+      "type": "enables",
+      "description": "Decodificación permite escritura fonética"
+    },
+    {
+      "from": "oral_estructura_narrativa",
+      "to": "writing_gramatica_basica",
+      "type": "enables",
+      "description": "Estructura narrativa oral precede gramática escrita"
+    },
+    {
+      "from": "decoding_digraphs",
+      "to": "orthography_reglas_foneticas",
+      "type": "enables",
+      "description": "Decodificación dígrafos precede reglas ortográficas fonéticas"
+    },
+    {
+      "from": "comprehension_literal",
+      "to": "comprehension_inferential_simple",
+      "type": "sequential",
+      "description": "Comprensión literal precede inferencial"
+    }
+  ],
+  "milestones": [
+    {
+      "id": "milestone_ready_to_read",
+      "name": "Listo para Leer",
+      "description": "Conciencia fonológica + principio alfabético consolidados",
+      "requiredSkills": [
+        "phonological_manipulation",
+        "alphabetic_letter_sound_correspondence"
+      ],
+      "unlocksProfile": "non_reader"
+    },
+    {
+      "id": "milestone_emergent_reader",
+      "name": "Lector Emergente",
+      "description": "Decodifica sílabas directas e inversas, lee primeras palabras",
+      "requiredSkills": [
+        "decoding_direct_syllables",
+        "decoding_inverse_syllables",
+        "decoding_mixed_syllables"
+      ],
+      "unlocksProfile": "emergent_reader"
+    },
+    {
+      "id": "milestone_initial_decoder",
+      "name": "Decodificador Inicial",
+      "description": "Lee sílabas mixtas, dígrafos y palabras bisílabas/trisílabas",
+      "requiredSkills": [
+        "decoding_mixed_syllables",
+        "decoding_digraphs"
+      ],
+      "unlocksProfile": "initial_decoder"
+    },
+    {
+      "id": "milestone_advanced_decoder",
+      "name": "Decodificador Avanzado",
+      "description": "Grupos consonánticos, fluidez inicial, autocorrección",
+      "requiredSkills": [
+        "decoding_consonant_clusters",
+        "fluency_self_correction"
+      ],
+      "unlocksProfile": "advanced_decoder"
+    },
+    {
+      "id": "milestone_fluent_reader",
+      "name": "Lector Fluido",
+      "description": "90+ ppm, prosodia, autocorrección, vocabulario en expansión",
+      "requiredSkills": [
+        "fluency_self_correction",
+        "vocab_estrategias_inferencia"
+      ],
+      "unlocksProfile": "developing_fluency"
+    },
+    {
+      "id": "milestone_comprehending",
+      "name": "Lector Comprensivo",
+      "description": "Inferencias, vocabulario académico, escritura estructurada",
+      "requiredSkills": [
+        "comprehension_inferential_complex",
+        "vocab_vocabulario_academico",
+        "writing_composicion"
+      ],
+      "unlocksProfile": "comprehending_reader"
+    },
+    {
+      "id": "milestone_author",
+      "name": "Autor de Historias",
+      "description": "Autonomía creativa, investigación, escritura extensa, metacognición",
+      "requiredSkills": [
+        "comprehension_metacognitive",
+        "writing_generos_textuales",
+        "vocab_vocabulario_academico"
+      ],
+      "unlocksProfile": "story_author"
+    }
+  ],
+  "adaptiveRules": {
+    "spacedRepetitionIntervals": [
+      1,
+      3,
+      7,
+      14,
+      30
+    ],
+    "masteryThreshold": 0.8,
+    "consecutiveSuccessRequired": 3,
+    "maxAttemptsBeforeScaffold": 2,
+    "scaffoldReductionRate": 0.25,
+    "errorFeedbackDelayMs": 500,
+    "celebrationThreshold": 3
+  }
+}

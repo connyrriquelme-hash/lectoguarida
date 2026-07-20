@@ -14,7 +14,8 @@
     "cloudflare:prepare": "npm run build:world3d && node tools/export-content.mjs && node tools/prepare-cloudflare.mjs",
     "cloudflare:db:local": "wrangler d1 execute lectoguarida-db --local --file cloudflare/schema.sql",
     "cloudflare:dev": "wrangler dev --local --persist-to .wrangler/state",
-    "cloudflare:deploy": "npm run cloudflare:prepare && wrangler deploy"
+    "cloudflare:deploy": "npm run cloudflare:prepare && wrangler deploy",
+    "validate:learning": "node public/expedicion/solo/game-learning/validators/validate-learning-data.js"
   },
   "devDependencies": {
     "jsdom": "^29.1.1",
@@ -22,6 +23,7 @@
   },
   "dependencies": {
     "@react-three/fiber": "^9.6.1",
+    "ajv": "^8.20.0",
     "esbuild": "^0.28.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
