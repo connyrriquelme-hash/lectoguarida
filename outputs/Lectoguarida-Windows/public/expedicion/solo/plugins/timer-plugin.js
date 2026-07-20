@@ -19,8 +19,8 @@ var TimerPlugin = (function () {
       elapsed = 0;
       interval = setInterval(function () { elapsed++; }, 1000);
     }
-    function pause() { if (interval) clearInterval(interval); }
-    function resume() { interval = setInterval(function () { elapsed++; }, 1000); }
+    function pause() { if (interval) clearInterval(interval); interval = null; }
+    function resume() { if (interval) clearInterval(interval); interval = setInterval(function () { elapsed++; }, 1000); }
     function destroy() { if (interval) clearInterval(interval); }
     function getElapsed() { return elapsed; }
     function isExtended() { return extended; }

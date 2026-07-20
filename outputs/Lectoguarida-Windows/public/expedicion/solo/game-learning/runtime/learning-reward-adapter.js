@@ -20,7 +20,7 @@ export function createLearningRewardAdapter(options) {
 
     if (RewardManager && RewardManager.awardBadge) {
       try {
-        RewardManager.awardBadge(studentId, readerProfile, rewardId);
+        RewardManager.awardBadge(readerProfile, rewardId);
       } catch (e) {
         // swallow
       }

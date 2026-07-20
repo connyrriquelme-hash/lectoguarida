@@ -39,9 +39,12 @@ var RewardManager = (function () {
 
     function getStars(readerProfile, gameId) {
       if (!repo || !profileId) return 0;
+      var canonicalId = (typeof GameIdNormalizer !== 'undefined')
+        ? GameIdNormalizer.normalizeGameId(gameId)
+        : gameId;
       var progress = repo.load(profileId);
       if (progress && progress.profiles && progress.profiles[readerProfile]) {
-        return progress.profiles[readerProfile].stars[gameId] || 0;
+        return progress.profiles[readerProfile].stars[canonicalId] || 0;
       }
       return 0;
     }
