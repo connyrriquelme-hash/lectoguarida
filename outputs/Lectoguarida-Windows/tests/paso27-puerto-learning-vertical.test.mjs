@@ -10,11 +10,9 @@ import { readFileSync } from 'fs';
 import { join as pathJoin } from 'path';
 import { pathToFileURL } from 'url';
 
-const SOLO = 'C:/Users/conny/Documents/Codex/Lectoguarida-Adventure-Isometric/outputs/Lectoguarida-Windows/public/expedicion/solo';
-const TESTS = 'C:/Users/conny/Documents/Codex/Lectoguarida-Adventure-Isometric/tests';
+const SOLO = pathJoin(process.cwd(), 'public', 'expedicion', 'solo');
 
 function mp(rel) { return pathToFileURL(pathJoin(SOLO, rel)).href; }
-function tp(rel) { return pathToFileURL(pathJoin(TESTS, rel)).href; }
 
 function createMockStorage() {
   const data = {};
