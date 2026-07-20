@@ -50,6 +50,7 @@ export function createGameEngineV2(options) {
       container: container,
       THREE: deps.THREE,
       AudioManager: deps.AudioManager,
+      world: deps.world,
       progress: deps.SoloProgressRepository ? createProgressAdapter(deps.SoloProgressRepository, studentProfileId) : null,
       debug: debug
     });

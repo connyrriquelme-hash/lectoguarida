@@ -78,4 +78,58 @@ describe('adventure-entry quality manager integration', () => {
       'adventure-entry.js must NOT pass plain { force: ... } to createWorldScene'
     );
   });
+
+  it('adventure-entry.js creates worldScene BEFORE createGameEngineV2', async () => {
+    const src = readFileSync(pathJoin(SOLO, 'adventure', 'adventure-entry.js'), 'utf8');
+    var worldSceneIdx = src.indexOf('createWorldScene(container, quality)');
+    var engineIdx = src.indexOf('createGameEngineV2({');
+    assert.ok(worldSceneIdx > 0, 'worldScene creation must exist');
+    assert.ok(engineIdx > 0, 'createGameEngineV2 call must exist');
+    assert.ok(worldSceneIdx < engineIdx, 'worldScene must be created BEFORE createGameEngineV2');
+  });
+
+  it('adventure-entry.js passes worldScene as deps.world to createGameEngineV2', async () => {
+    const src = readFileSync(pathJoin(SOLO, 'adventure', 'adventure-entry.js'), 'utf8');
+    assert.ok(
+      src.includes('world: worldScene'),
+      'adventure-entry.js must pass worldScene as deps.world'
+    );
+  });
+
+  it('adventure-entry.js uses worldScene.getThree() instead of dynamic import .default', async () => {
+    const src = readFileSync(pathJoin(SOLO, 'adventure', 'adventure-entry.js'), 'utf8');
+    assert.ok(
+      src.includes('worldScene.getThree()'),
+      'adventure-entry.js must use worldScene.getThree()'
+    );
+    assert.ok(
+      !src.includes(".default"),
+      'adventure-entry.js must NOT use .default from dynamic import (Three.js has no default export)'
+    );
+  });
+
+  it('adventure-entry.js calls worldScene.start() after engine starts', async () => {
+    const src = readFileSync(pathJoin(SOLO, 'adventure', 'adventure-entry.js'), 'utf8');
+    var startEngineIdx = src.indexOf('V2_ENGINE_INSTANCE.start()');
+    var worldStartIdx = src.indexOf('worldScene.start()');
+    assert.ok(startEngineIdx > 0, 'engine start must exist');
+    assert.ok(worldStartIdx > 0, 'worldScene.start() must exist');
+    assert.ok(worldStartIdx > startEngineIdx, 'worldScene.start() must be called AFTER engine start');
+  });
+
+  it('engine-v2-entry.js passes deps.world to createGameEngine', async () => {
+    const src = readFileSync(pathJoin(SOLO, 'game-engine', 'engine-v2-entry.js'), 'utf8');
+    assert.ok(
+      src.includes('world: deps.world'),
+      'engine-v2-entry.js must pass deps.world to createGameEngine'
+    );
+  });
+
+  it('engine-v2-entry.js does NOT use options.world (was always undefined)', async () => {
+    const src = readFileSync(pathJoin(SOLO, 'game-engine', 'engine-v2-entry.js'), 'utf8');
+    assert.ok(
+      !src.includes('options.world'),
+      'engine-v2-entry.js must NOT reference options.world'
+    );
+  });
 });
