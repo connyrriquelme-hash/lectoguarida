@@ -5,15 +5,23 @@
  * No persiste en localStorage, sessionStorage ni cookies.
  */
 
+function normalizeSearchParams(input) {
+  if (input instanceof URLSearchParams) return input;
+  if (input && typeof input === 'object' && input.searchParams instanceof URLSearchParams) return input.searchParams;
+  if (typeof input === 'string') return new URLSearchParams(input);
+  if (input && typeof input === 'object' && typeof input.search === 'string') return new URLSearchParams(input.search);
+  return new URLSearchParams();
+}
+
 export function isLearningV1Enabled(searchParams) {
-  if (!searchParams) return false;
-  var engineV2 = searchParams.get('engineV2');
-  var learningV1 = searchParams.get('learningV1');
+  var params = normalizeSearchParams(searchParams);
+  var engineV2 = params.get('engineV2');
+  var learningV1 = params.get('learningV1');
   return engineV2 === '1' && learningV1 === '1';
 }
 
 export function isDebugLearningEnabled(searchParams) {
-  if (!searchParams) return false;
-  var debug = searchParams.get('debugLearning');
+  var params = normalizeSearchParams(searchParams);
+  var debug = params.get('debugLearning');
   return debug === '1';
 }
