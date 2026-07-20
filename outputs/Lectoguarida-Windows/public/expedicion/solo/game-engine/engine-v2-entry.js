@@ -13,6 +13,8 @@ import { createLegacyNarrativeAdapter } from './adapters/legacy-narrative-adapte
 import { createLegacyAudioAdapter } from './adapters/legacy-audio-adapter.js';
 import { createLegacyChallengeAdapter } from './adapters/legacy-challenge-adapter.js';
 import { createLegacyProgressAdapter } from './adapters/legacy-progress-adapter.js';
+import { isLearningV1Enabled } from '../game-learning/runtime/learning-feature-flag.js';
+import { createLearningRuntime } from '../game-learning/runtime/learning-runtime.js';
 import { registerComponents } from './core/component-registration.js';
 import { registerSystems } from './core/system-registration.js';
 import { registerPrefabs } from './core/prefab-registration.js';
@@ -38,6 +40,7 @@ export function createGameEngineV2(options) {
     challenge: null,
     progress: null
   };
+  var learningRuntime = null;
   var destroyed = false;
 
   function initialize() {
@@ -103,25 +106,44 @@ export function createGameEngineV2(options) {
       AudioManager: deps.AudioManager
     });
 
-    legacyAdapters.challenge = createLegacyChallengeAdapter({
-      context: context,
-      SoloGameAdapter: deps.SoloGameAdapter,
-      AudioManager: deps.AudioManager,
-      studentProfileId: studentProfileId,
-      difficulty: difficulty,
-      container: container,
-      onComplete: function (result) {
-        if (result && result.completed) {
-          context.eventBus.emit('quest:challenge-complete', result);
-        }
-      }
-    });
+    var learningV1 = isLearningV1Enabled(searchParams);
 
-    legacyAdapters.progress = createLegacyProgressAdapter({
-      context: context,
-      SoloProgressRepository: deps.SoloProgressRepository,
-      studentProfileId: studentProfileId
-    });
+    if (learningV1) {
+      try {
+        learningRuntime = createLearningRuntime({
+          searchParams: searchParams,
+          studentId: studentProfileId,
+          eventBus: context.eventBus,
+          SoloProgressRepository: deps.SoloProgressRepository,
+          RewardManager: deps.RewardManager,
+          missionData: deps.missionData || null
+        });
+      } catch (e) {
+        learningRuntime = null;
+      }
+    }
+
+    if (!learningRuntime) {
+      legacyAdapters.challenge = createLegacyChallengeAdapter({
+        context: context,
+        SoloGameAdapter: deps.SoloGameAdapter,
+        AudioManager: deps.AudioManager,
+        studentProfileId: studentProfileId,
+        difficulty: difficulty,
+        container: container,
+        onComplete: function (result) {
+          if (result && result.completed) {
+            context.eventBus.emit('quest:challenge-complete', result);
+          }
+        }
+      });
+
+      legacyAdapters.progress = createLegacyProgressAdapter({
+        context: context,
+        SoloProgressRepository: deps.SoloProgressRepository,
+        studentProfileId: studentProfileId
+      });
+    }
 
     spawnPlayerAndEntities();
   }
@@ -179,6 +201,10 @@ export function createGameEngineV2(options) {
     if (destroyed) return;
     destroyed = true;
 
+    if (learningRuntime && learningRuntime.destroy) {
+      learningRuntime.destroy();
+    }
+
     Object.keys(legacyAdapters).forEach(function (key) {
       if (legacyAdapters[key] && legacyAdapters[key].destroy) {
         legacyAdapters[key].destroy();
@@ -191,6 +217,7 @@ export function createGameEngineV2(options) {
 
   function getEngine() { return engine; }
   function getContext() { return context; }
+  function getLearningRuntime() { return learningRuntime; }
 
   return {
     initialize: initialize,
@@ -199,7 +226,8 @@ export function createGameEngineV2(options) {
     resume: resume,
     destroy: destroy,
     getEngine: getEngine,
-    getContext: getContext
+    getContext: getContext,
+    getLearningRuntime: getLearningRuntime
   };
 }
 
