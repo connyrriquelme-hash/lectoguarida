@@ -1,0 +1,43 @@
+{
+  "version": "1.0.0",
+  "id": "initial-sound-m-basic",
+  "skillId": "phonological_initial_sound_identification",
+  "targetInitialSound": "m",
+  "createdAt": "2026-07-20T10:00:00Z",
+  "targets": [
+    { "wordId": "pal_001_mama", "initialSound": "m" },
+    { "wordId": "pal_005_madre", "initialSound": "m" },
+    { "wordId": "pal_022_mesa", "initialSound": "m" },
+    { "wordId": "pal_042_mano", "initialSound": "m" },
+    { "wordId": "pal_070_manzana", "initialSound": "m" },
+    { "wordId": "pal_085_muneca", "initialSound": "m" },
+    { "wordId": "pal_108_mirar", "initialSound": "m" },
+    { "wordId": "pal_118_morado", "initialSound": "m" },
+    { "wordId": "pal_127_montana", "initialSound": "m" },
+    { "wordId": "pal_134_mar", "initialSound": "m" }
+  ],
+  "distractors": [
+    { "wordId": "pal_002_papa", "initialSound": "p" },
+    { "wordId": "pal_003_familia", "initialSound": "f" },
+    { "wordId": "pal_004_padre", "initialSound": "p" },
+    { "wordId": "pal_006_hermano", "initialSound": "h" },
+    { "wordId": "pal_007_hermana", "initialSound": "h" },
+    { "wordId": "pal_008_abuelo", "initialSound": "a" },
+    { "wordId": "pal_009_abuela", "initialSound": "a" },
+    { "wordId": "pal_010_hijo", "initialSound": "h" },
+    { "wordId": "pal_011_hija", "initialSound": "h" },
+    { "wordId": "pal_012_tio", "initialSound": "t" },
+    { "wordId": "pal_013_tia", "initialSound": "t" },
+    { "wordId": "pal_014_primo", "initialSound": "p" },
+    { "wordId": "pal_015_prima", "initialSound": "p" },
+    { "wordId": "pal_016_bebe", "initialSound": "b" }
+  ],
+  "constraints": {
+    "minTargets": 8,
+    "minDistractors": 12,
+    "allImageable": true,
+    "allAgeAppropriate": true,
+    "allHaveAudioId": true,
+    "noDistractorStartsWithTargetSound": true
+  }
+}
