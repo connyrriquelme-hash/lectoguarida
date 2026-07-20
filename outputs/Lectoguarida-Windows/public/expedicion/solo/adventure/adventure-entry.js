@@ -9,6 +9,7 @@
 import { createAdventureEngine } from './adventure-engine.js';
 import { isGameEngineV2Enabled } from '../game-engine/core/feature-flag.js';
 import { createGameEngineV2 } from '../game-engine/engine-v2-entry.js';
+import { createQualityManager } from './quality-manager.js';
 
 var ADVENTURE_INSTANCE = null;
 var V2_ENGINE_INSTANCE = null;
@@ -103,7 +104,8 @@ async function startEngineV2(container, studentProfileId, difficulty, deps, debu
       }
     });
 
-    var worldScene = worldModule.createWorldScene(container, { force: 'high' });
+    var quality = createQualityManager({ force: 'high' });
+    var worldScene = worldModule.createWorldScene(container, quality);
     if (worldScene.error) {
       throw new Error('WebGL error: ' + worldScene.error);
     }
