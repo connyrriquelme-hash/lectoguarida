@@ -494,8 +494,7 @@ export function createAdventureEngine(options) {
         } else {
           playerController.moveTowardDestination(dt);
         }
-        var moving = playerController.update(dt);
-        playerFactory.animate(player, moving ? 'walk' : 'idle', t);
+        playerController.update(dt);
       }
       if (playerFactory) playerFactory.animate(player, stateMachine.is(AdventureState.EXPLORING) ? (playerController.getVelocity().x || playerController.getVelocity().z ? 'walk' : 'idle') : 'idle', t);
       if (guardianFactory && guardian) guardian.rotation.y = Math.sin(t) * 0.1;

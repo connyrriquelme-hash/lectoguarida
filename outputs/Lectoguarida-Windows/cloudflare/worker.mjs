@@ -1501,6 +1501,9 @@ async function getReadings(env, request) {
     readingsPromise = env.ASSETS.fetch(new Request(new URL("/content.json", request.url))).then(async (response) => {
       if (!response.ok) throw new Error("No fue posible cargar el contenido lector.");
       return (await response.json()).readings;
+    }).catch(function (err) {
+      readingsPromise = null;
+      throw err;
     });
   }
   return readingsPromise;
