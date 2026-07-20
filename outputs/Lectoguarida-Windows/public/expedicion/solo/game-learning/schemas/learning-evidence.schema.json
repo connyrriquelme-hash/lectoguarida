@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lectoguarida.cl/schemas/learning-evidence.schema.json",
+  "title": "Learning Evidence",
+  "description": "Esquema estándar de evidencia de aprendizaje para Lectoguarida",
+  "type": "object",
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "eventId": { "type": "string", "format": "uuid" },
+    "studentId": { "type": "string", "pattern": "^[a-zA-Z0-9_-]{3,64}$" },
+    "sessionId": { "type": "string", "format": "uuid" },
+    "skillId": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$" },
+    "missionId": { "type": "string" },
+    "challengeId": { "type": "string" },
+    "evidenceType": {
+      "type": "string",
+      "enum": [
+        "choice_response",
+        "audio_response",
+        "drag_classification",
+        "syllable_tap",
+        "word_build",
+        "reading_attempt",
+        "writing_attempt",
+        "narrative_response",
+        "world_interaction",
+        "transfer_task",
+        "retention_check"
+      ]
+    },
+    "stimulusId": { "type": "string" },
+    "responseId": { "type": "string" },
+    "correct": { "type": "boolean" },
+    "independent": { "type": "boolean" },
+    "difficulty": { "type": "integer", "minimum": 1, "maximum": 3 },
+    "responseMs": { "type": "integer", "minimum": 0 },
+    "hintsUsed": { "type": "integer", "minimum": 0 },
+    "audioRepetitions": { "type": "integer", "minimum": 0 },
+    "context": {
+      "type": "object",
+      "properties": {
+        "worldId": { "type": "string" },
+        "deviceType": { "type": "string", "enum": ["desktop", "tablet", "mobile"] },
+        "browser": { "type": "string" },
+        "screenResolution": { "type": "string" }
+      }
+    },
+    "timestamp": { "type": "string", "format": "date-time" }
+  },
+  "required": [
+    "version",
+    "eventId",
+    "studentId",
+    "sessionId",
+    "skillId",
+    "missionId",
+    "challengeId",
+    "evidenceType",
+    "stimulusId",
+    "responseId",
+    "correct",
+    "independent",
+    "difficulty",
+    "responseMs",
+    "hintsUsed",
+    "audioRepetitions",
+    "context",
+    "timestamp"
+  ],
+  "additionalProperties": false
+}

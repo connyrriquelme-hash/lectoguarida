@@ -1,0 +1,215 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lectoguarida.cl/schemas/word-entry.schema.json",
+  "title": "Word Bank Entry",
+  "description": "Esquema para entradas del banco de palabras de Lectoguarida — Estructura normalizada para palabras, sílabas, fonemas y metadatos pedagógicos",
+  "type": "object",
+  "properties": {
+    "version": { "type": "string", "format": "semver" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "description": { "type": "string" },
+    "language": { "type": "string", "enum": ["es-CL"], "default": "es-CL" },
+    "words": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "word", "syllables", "phonemes", "difficulty", "worlds"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$",
+            "description": "ID único, snake_case"
+          },
+          "word": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30,
+            "description": "Palabra en español (sin acentos en ID, con acentos en word)"
+          },
+          "normalized": {
+            "type": "string",
+            "pattern": "^[a-z]+$",
+            "description": "Palabra normalizada (minúsculas, sin acentos, solo a-z)"
+          },
+          "syllables": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 6,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z]+$"
+            },
+            "description": "Sílabas separadas (ej: [\"ma\", \"sa\"])"
+          },
+          "syllableCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          },
+          "phonemes": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 12,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z]+$"
+            },
+            "description": "Fonemas IPA simplificados (ej: [\"m\", \"a\", \"s\", \"a\"])"
+          },
+          "phonemeCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "syllableStructure": {
+            "type": "string",
+            "enum": ["CV", "VC", "CVC", "CVV", "V", "CCV", "CCVC", "CVCC", "CCVCC", "VCC", "CCVCV", "CVCV", "VCV"],
+            "description": "Estructura silábica canónica"
+          },
+          "difficulty": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "1=muy fácil (CV), 2=fácil (VC/CVC), 3=medio (CCV/CCVC), 4=difícil (grupos consonánticos), 5=muy difícil (polisílabos complejos)"
+          },
+          "frequencyRank": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Ranking de frecuencia en corpus infantil chileno (1 = más frecuente)"
+          },
+          "frequencyBand": {
+            "type": "string",
+            "enum": ["high", "medium", "low", "academic"],
+            "description": "Banda de frecuencia: high (1-1000), medium (1001-5000), low (5001+), academic (vocabulario técnico)"
+          },
+          "worlds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "type": "string",
+              "enum": [
+                "plaza_llolleo",
+                "laguna_rimas",
+                "puerto_gigantes",
+                "roquerios_eco",
+                "valle_puentes"
+              ]
+            },
+            "description": "Mundos donde aparece esta palabra"
+          },
+          "semanticCategories": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "items": {
+              "type": "string",
+              "enum": [
+                "animals",
+                "body",
+                "family",
+                "food",
+                "home",
+                "nature",
+                "school",
+                "actions",
+                "feelings",
+                "colors",
+                "shapes",
+                "numbers",
+                "time",
+                "places",
+                "transport",
+                "toys",
+                "clothes",
+                "weather",
+                "chilean_culture"
+              ]
+            },
+            "description": "Categorías semánticas para búsqueda y filtrado"
+          },
+          "phonologicalFeatures": {
+            "type": "object",
+            "properties": {
+              "hasDigraph": { "type": "boolean" },
+              "hasConsonantCluster": { "type": "boolean" },
+              "hasDiphthong": { "type": "boolean" },
+              "hasHiatus": { "type": "boolean" },
+              "hasStressMark": { "type": "boolean" },
+              "initialSound": { "type": "string", "pattern": "^[a-z]$" },
+              "finalSound": { "type": "string", "pattern": "^[a-z]$" },
+              "rhymeFamily": { "type": "string" },
+              "minimalPairs": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          "orthographicFeatures": {
+            "type": "object",
+            "properties": {
+              "hasAccentMark": { "type": "boolean" },
+              "accentType": { "type": "string", "enum": ["aguda", "grave", "esdrujula", "sobreesdrujula", "none"] },
+              "hasDigraph": { "type": "boolean" },
+              "hasSilentH": { "type": "boolean" },
+              "hasBV": { "type": "boolean" },
+              "hasGJ": { "type": "boolean" },
+              "hasCSZ": { "type": "boolean" },
+              "hasYLL": { "type": "boolean" }
+            }
+          },
+          "curriculumMapping": {
+            "type": "object",
+            "properties": {
+              "oaCodes": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Códigos OA MEN Chile (ej: OA13_LE_1B)"
+              },
+              "gradeLevel": {
+                "type": "string",
+                "enum": ["1B", "2B", "3B", "4B"]
+              },
+              "unit": {
+                "type": "string",
+                "description": "Unidad temática del currículo"
+              }
+            }
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL de imagen ilustrativa (opcional)"
+          },
+          "audioUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL de audio de la palabra (es-CL, opcional)"
+          },
+          "difficultyScores": {
+            "type": "object",
+            "properties": {
+              "decoding": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "spelling": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "meaning": { "type": "integer", "minimum": 1, "maximum": 5 }
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "default": []
+          },
+          "status": {
+            "type": "string",
+            "enum": ["draft", "validated", "verified", "deprecated"],
+            "default": "validated"
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "createdBy": { "type": "string" },
+          "verifiedBy": { "type": "string" }
+        },
+        "required": ["id", "word", "syllables", "phonemes", "difficulty", "worlds"]
+      }
+    }
+  },
+  "required": ["version", "updatedAt", "language", "words"]
+}

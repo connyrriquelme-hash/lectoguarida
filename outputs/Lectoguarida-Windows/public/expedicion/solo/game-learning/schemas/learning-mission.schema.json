@@ -1,0 +1,312 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lectoguarida.cl/schemas/learning-mission.schema.json",
+  "title": "Learning Mission",
+  "description": "Esquema estándar para misiones pedagógicas de Lectoguarida",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "type",
+    "title",
+    "description",
+    "targetSkillIds",
+    "worldId",
+    "regionId",
+    "narrativeAnchorId",
+    "difficulty",
+    "prerequisiteMissionIds",
+    "objectives",
+    "masteryRequirements",
+    "feedbackRules",
+    "estimatedDurationMinutes",
+    "supportedProfiles",
+    "accessibility",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(-[a-z][a-z0-9_]*)*$",
+      "description": "ID único de la misión (kebab-case, prefijo opcional de zona)"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "main_story",
+        "side_quest",
+        "daily_challenge",
+        "remediation",
+        "assessment",
+        "exploration",
+        "collection"
+      ],
+      "description": "Tipo de misión"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 80,
+      "description": "Título visible para el estudiante"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Descripción pedagógica de la misión (qué se aprende y por qué)"
+    },
+    "targetSkillIds": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$"
+      },
+      "description": "IDs de habilidades objetivo (1-5 skills principales)"
+    },
+    "worldId": {
+      "type": "string",
+      "description": "ID del mundo (plaza_llolleo, laguna_rimas, puerto_gigantes, roquerios_eco, valle_puentes)"
+    },
+    "regionId": {
+      "type": "string",
+      "description": "ID de la región/zona dentro del mundo"
+    },
+    "narrativeAnchorId": {
+      "type": "string",
+      "description": "ID de escena narrativa ancla (de narrative-scenes.json)"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["apoyo", "estandar", "desafio"],
+      "description": "Dificultad base de la misión"
+    },
+    "prerequisiteMissionIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "IDs de misiones prerrequisito (puede estar vacío)"
+    },
+    "objectives": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "description",
+          "skillId",
+          "evidenceType",
+          "successCriteria",
+          "order"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^obj_[a-z][a-z0-9_]*$"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "skillId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$"
+          },
+          "evidenceType": {
+            "type": "string",
+            "enum": [
+              "choice_response",
+              "drag_classification",
+              "drag_sequence",
+              "text_input",
+              "audio_recording",
+              "image_selection",
+              "drag_and_drop",
+              "sequence_ordering",
+              "free_writing",
+              "oral_reading"
+            ],
+            "description": "Tipo de evidencia esperada"
+          },
+          "successCriteria": {
+            "type": "object",
+            "required": ["minAccuracy", "minAttempts"],
+            "properties": {
+              "minAccuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+              "minAttempts": { "type": "integer", "minimum": 1 },
+              "maxHints": { "type": "integer", "minimum": 0, "default": 3 },
+              "maxTimeSeconds": { "type": "integer", "minimum": 30, "default": 300 }
+            }
+          },
+          "order": { "type": "integer", "minimum": 1 },
+          "isOptional": { "type": "boolean", "default": false },
+          "feedbackOnSuccess": { "type": "string", "maxLength": 300 },
+          "feedbackOnError": { "type": "string", "maxLength": 300 }
+        }
+      },
+      "description": "Objetivos pedagógicos de la misión (1-5)"
+    },
+    "masteryRequirements": {
+      "type": "object",
+      "required": [
+        "overallAccuracy",
+        "minSessions",
+        "transferTasksRequired"
+      ],
+      "properties": {
+        "overallAccuracy": {
+          "type": "number",
+          "minimum": 0.7,
+          "maximum": 1,
+          "default": 0.8
+        },
+        "minSessions": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 2
+        },
+        "transferTasksRequired": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "retentionCheckDays": {
+          "type": "integer",
+          "default": 7,
+          "description": "Días para verificación de retención"
+        },
+        "transferContextsRequired": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1,
+          "description": "Número de contextos distintos donde debe demostrar la habilidad"
+        }
+      },
+      "description": "Requisitos para considerar la misión completada pedagógicamente"
+    },
+    "feedbackRules": {
+      "type": "object",
+      "required": ["onError", "onSuccess", "onHint", "onMastery"],
+      "properties": {
+        "onError": {
+          "type": "object",
+          "required": ["message", "audioCue"],
+          "properties": {
+            "message": { "type": "string", "maxLength": 200 },
+            "audioCue": { "type": "string", "enum": ["gentle", "encouraging", "specific"] },
+            "showModel": { "type": "boolean", "default": true },
+            "reduceOptions": { "type": "boolean", "default": false }
+          }
+        },
+        "onSuccess": {
+          "type": "object",
+          "required": ["message", "audioCue"],
+          "properties": {
+            "message": { "type": "string", "maxLength": 200 },
+            "audioCue": { "type": "string", "enum": ["celebration", "gentle", "specific"] },
+            "showProgress": { "type": "boolean", "default": true }
+          }
+        },
+        "onHint": {
+          "type": "object",
+          "required": ["message", "audioCue"],
+          "properties": {
+            "message": { "type": "string", "maxLength": 200 },
+            "audioCue": { "type": "string", "enum": ["gentle", "encouraging"] },
+            "reduceOptions": { "type": "boolean", "default": true }
+          }
+        },
+        "onMastery": {
+          "type": "object",
+          "required": ["message", "reward"],
+          "properties": {
+            "message": { "type": "string", "maxLength": 300 },
+            "reward": {
+              "type": "object",
+              "required": ["type", "id"],
+              "properties": {
+                "type": { "type": "string", "enum": ["sticker", "badge", "page", "cosmetic"] },
+                "id": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "estimatedDurationMinutes": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 60,
+      "description": "Duración estimada en minutos (5-60)"
+    },
+    "supportedProfiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "oral_explorer",
+          "non_reader",
+          "emergent_reader",
+          "initial_decoder",
+          "advanced_decoder",
+          "developing_fluency",
+          "comprehending_reader",
+          "story_author"
+        ]
+      },
+      "description": "Perfiles lectores compatibles"
+    },
+    "accessibility": {
+      "type": "object",
+      "required": [
+        "audioInstructions",
+        "visualSupport",
+        "keyboardNavigation",
+        "touchNavigation",
+        "captionsMode",
+        "reducedMotion"
+      ],
+      "properties": {
+        "audioInstructions": { "type": "boolean", "default": true },
+        "visualSupport": { "type": "boolean", "default": true },
+        "keyboardNavigation": { "type": "boolean", "default": true },
+        "touchNavigation": { "type": "boolean", "default": true },
+        "captionsMode": { "type": "boolean", "default": false },
+        "reducedMotion": { "type": "boolean", "default": false },
+        "highContrast": { "type": "boolean", "default": false },
+        "textSize": { "type": "string", "enum": ["normal", "large", "xlarge"], "default": "normal" }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [],
+      "description": "Etiquetas para búsqueda y filtrado"
+    },
+    "verificationStatus": {
+      "type": "string",
+      "enum": ["draft", "validated", "verified"],
+      "default": "draft",
+      "description": "Estado de validación pedagógica"
+    }
+  }
+}

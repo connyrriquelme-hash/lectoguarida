@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lectoguarida.cl/schemas/learner-profiles.schema.json",
+  "title": "Learner Profiles",
+  "description": "Perfiles lectores de Lectoguarida - Definición de 8 perfiles evolutivos",
+  "type": "object",
+  "properties": {
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "createdAt": { "type": "string" },
+    "description": { "type": "string" },
+    "profiles": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": ["id", "order", "name", "description", "ageRangeReference", "courseReference", "entryIndicators", "exitIndicators", "primaryDomains", "recommendedSupports", "allowedChallengeTypes", "maximumInitialOptions", "audioInstructionRequired", "visualSupportRequired", "independentReadingRequired"],
+        "properties": {
+          "id": { "type": "string", "enum": ["oral_explorer", "non_reader", "emergent_reader", "initial_decoder", "advanced_decoder", "developing_fluency", "comprehending_reader", "story_author"] },
+          "order": { "type": "integer", "minimum": 0, "maximum": 7 },
+          "name": { "type": "string", "minLength": 1 },
+          "nameEN": { "type": "string" },
+          "description": { "type": "string" },
+          "descriptionEN": { "type": "string" },
+          "ageRangeReference": { "type": "string" },
+          "courseReference": { "type": "array", "items": { "type": "string" } },
+          "entryIndicators": { "type": "array", "items": { "type": "string" } },
+          "exitIndicators": { "type": "array", "items": { "type": "string" } },
+          "primaryDomains": { "type": "array", "items": { "type": "string" } },
+          "recommendedSupports": { "type": "array", "items": { "type": "string" } },
+          "allowedChallengeTypes": { "type": "array", "items": { "type": "string" } },
+          "maximumInitialOptions": { "type": "integer", "minimum": 1, "maximum": 4 },
+          "audioInstructionRequired": { "type": "boolean" },
+          "visualSupportRequired": { "type": "boolean" },
+          "independentReadingRequired": { "type": "boolean" }
+        }
+      }
+    },
+    "globalRules": {
+      "type": "object"
+    }
+  },
+  "required": ["version", "createdAt", "profiles"],
+  "additionalProperties": false
+}

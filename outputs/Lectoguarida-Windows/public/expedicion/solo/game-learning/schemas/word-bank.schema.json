@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lectoguarida.cl/schemas/word-bank.schema.json",
+  "title": "Word Bank",
+  "description": "Esquema para el contenedor del banco de palabras de Lectoguarida — Valida estructura raíz (version, language, words). Para validar palabras individuales usar word-entry.schema.json",
+  "type": "object",
+  "properties": {
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "updatedAt": { "type": "string" },
+    "description": { "type": "string" },
+    "language": { "type": "string", "enum": ["es-CL"], "default": "es-CL" },
+    "words": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "word-entry.schema.json" }
+    }
+  },
+  "required": ["version", "updatedAt", "language", "words"]
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lectoguarida.cl/schemas/skill-graph.schema.json",
+  "title": "Skill Graph",
+  "description": "Grafo de dependencias de habilidades lectoras — DAG acíclico para progresión adaptativa",
+  "type": "object",
+  "properties": {
+    "version": { "type": "string", "format": "semver" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "description": { "type": "string" },
+    "nodes": {
+      "type": "array",
+      "minItems": 40,
+      "maxItems": 60,
+      "items": {
+        "type": "object",
+        "required": ["id", "domainId", "order", "prerequisites", "unlocks"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$" },
+          "domainId": { "type": "string" },
+          "order": { "type": "integer", "minimum": 0 },
+          "prerequisites": { "type": "array", "items": { "type": "string" } },
+          "unlocks": { "type": "array", "items": { "type": "string" } },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "stage": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "difficultyBand": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "masteryRuleId": { "type": "string" },
+          "transferRequirement": { "type": "boolean" },
+          "retentionRequirement": { "type": "boolean" },
+          "curriculumRefs": { "type": "array", "items": { "type": "string" } },
+          "status": { "type": "string", "enum": ["active", "deprecated", "draft"] }
+        }
+      }
+    },
+    "edges": { "type": "array" },
+    "crossDomainLinks": { "type": "array" },
+    "milestones": { "type": "array" },
+    "adaptiveRules": { "type": "object" }
+  },
+  "required": ["version", "createdAt", "description", "nodes", "milestones", "adaptiveRules"],
+  "additionalProperties": false
+}
