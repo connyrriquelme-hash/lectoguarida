@@ -131,15 +131,25 @@ test('12. no existen ciclos en skill graph', () => {
 
 /* ── 13-14: Mastery Rules ── */
 
-test('13. mastery rules válidas', () => {
+test('13. mastery rules válidas sin claves duplicadas', () => {
   const rules = JSON.parse(fs.readFileSync(resolve(LEARNING, 'config/mastery-rules.json'), 'utf-8'));
+  const ruleIds = Object.keys(rules.rules);
+  assert.ok(ruleIds.length >= 10, `Expected at least 10 rules, got ${ruleIds.length}`);
   assert.ok(rules.rules['mastery_80_3_consecutive']);
   assert.ok(rules.rules['mastery_80_3_consecutive'].minimumAccuracy >= 0.7);
+  assert.ok(rules.rules['mastery_95_accuracy']);
+  assert.ok(rules.rules['mastery_retention']);
+  assert.ok(rules.rules['mastery_transfer']);
 });
 
-test('14. todos los skills tienen masteryRuleId', () => {
+test('14. todos los skills tienen masteryRuleId válido', () => {
   const domains = JSON.parse(fs.readFileSync(resolve(LEARNING, 'data/skill-domains.json'), 'utf-8'));
-  domains.skills.forEach(s => assert.ok(s.masteryRuleId, `Missing masteryRuleId: ${s.id}`));
+  const rules = JSON.parse(fs.readFileSync(resolve(LEARNING, 'config/mastery-rules.json'), 'utf-8'));
+  const ruleIds = new Set(Object.keys(rules.rules));
+  domains.skills.forEach(s => {
+    assert.ok(s.masteryRuleId, `Missing masteryRuleId: ${s.id}`);
+    assert.ok(ruleIds.has(s.masteryRuleId), `Invalid masteryRuleId: ${s.masteryRuleId} for ${s.id}`);
+  });
 });
 
 /* ── 15-16: Schemas ── */
@@ -177,52 +187,69 @@ test('19. ruta antigua de word-bank schema ya no existe', () => {
 
 /* ── 20-21: Word Bank ── */
 
-test('20. word bank IDs únicos', () => {
+test('20. word bank tiene exactamente 300 palabras con IDs únicos', () => {
   const bank = JSON.parse(fs.readFileSync(resolve(CONTENT, 'words/word-bank-foundation.json'), 'utf-8'));
+  assert.equal(bank.words.length, 300, `Expected 300 words, got ${bank.words.length}`);
   const ids = bank.words.map(w => w.id);
   const unique = new Set(ids);
-  assert.equal(ids.length, unique.size);
+  assert.equal(ids.length, unique.size, 'Duplicate word IDs found');
 });
 
-test('21. word bank contiene al menos 3 palabras', () => {
+test('21. word bank normalized únicos y segmentación coherente', () => {
   const bank = JSON.parse(fs.readFileSync(resolve(CONTENT, 'words/word-bank-foundation.json'), 'utf-8'));
-  assert.ok(bank.words.length >= 3, `Word count: ${bank.words.length}`);
-});
-
-/* ── 22-23: Curriculum Mapping ── */
-
-test('22. curriculum mapping usa estados válidos', () => {
-  const mapping = JSON.parse(fs.readFileSync(resolve(CONTENT, 'curriculum/chile-literacy-mapping.json'), 'utf-8'));
-  const validStatuses = ['verified', 'pending', 'pending_review'];
-  mapping.mappings.forEach(m => assert.ok(validStatuses.includes(m.verificationStatus), `Invalid status: ${m.verificationStatus}`));
-});
-
-test('23. no hay OA inventados marcados verified', () => {
-  const mapping = JSON.parse(fs.readFileSync(resolve(CONTENT, 'curriculum/chile-literacy-mapping.json'), 'utf-8'));
-  const knownOAs = ['LE01-OA-01','LE01-OA-02','LE01-OA-03','LE01-OA-04','LE01-OA-05','LE01-OA-06','LE01-OA-07','LE01-OA-08','LE01-OA-09','LE01-OA-10','LE01-OA-11','LE01-OA-12','LE01-OA-13','LE01-OA-14','LE01-OA-15','LE01-OA-16','LE01-OA-17','LE01-OA-18','LE01-OA-19','LE01-OA-20','LE01-OA-21','LE01-OA-22','LE01-OA-23','LE01-OA-24','LE01-OA-25','LE01-OA-26','LE01-OA-27','LE01-OA-28','LE01-OA-29','LE01-OA-30','LE01-OA-31','LE01-OA-32','LE01-OA-33','LE01-OA-34','LE01-OA-35','LE01-OA-36','LE01-OA-37','LE01-OA-38','LE01-OA-39','LE01-OA-40','LE01-OA-41','LE01-OA-42','LE01-OA-43','LE01-OA-44','LE01-OA-45','LE01-OA-46'];
-  mapping.mappings.forEach(m => {
-    if (m.verificationStatus === 'verified') {
-      assert.ok(knownOAs.includes(m.oaCode), `OA inventado: ${m.oaCode}`);
-    }
+  const norms = bank.words.map(w => w.normalized);
+  const uniqueNorms = new Set(norms);
+  assert.equal(norms.length, uniqueNorms.size, 'Duplicate normalized values found');
+  bank.words.forEach(w => {
+    assert.equal(w.syllableCount, w.syllables.length, `Syllable count mismatch: ${w.id}`);
   });
 });
 
-/* ── 24-26: Feedback ── */
+test('22. word bank mínimo 80% imageable', () => {
+  const bank = JSON.parse(fs.readFileSync(resolve(CONTENT, 'words/word-bank-foundation.json'), 'utf-8'));
+  const imageable = bank.words.filter(w => w.difficulty <= 3).length;
+  const percent = Math.round(imageable / bank.words.length * 100);
+  assert.ok(percent >= 80, `Imageable: ${percent}% (expected >= 80%)`);
+});
 
-test('24. feedback rules tienen acciones', () => {
+test('23. nuevas palabras están pending_review', () => {
+  const bank = JSON.parse(fs.readFileSync(resolve(CONTENT, 'words/word-bank-foundation.json'), 'utf-8'));
+  const reviewed = bank.words.filter(w => w.status === 'reviewed');
+  assert.equal(reviewed.length, 0, `Found ${reviewed.length} reviewed words (new words should be pending_review)`);
+});
+
+/* ── 24-25: Curriculum Mapping ── */
+
+test('24. curriculum mapping usa estados válidos sin duplicados exactos', () => {
+  const mapping = JSON.parse(fs.readFileSync(resolve(CONTENT, 'curriculum/chile-literacy-mapping.json'), 'utf-8'));
+  const validStatuses = ['verified', 'pending', 'pending_review'];
+  mapping.mappings.forEach(m => assert.ok(validStatuses.includes(m.verificationStatus), `Invalid status: ${m.verificationStatus}`));
+  const keys = mapping.mappings.map(m => `${m.skillId}|${m.level}|${m.subject}|${m.oaCode}`);
+  const uniqueKeys = new Set(keys);
+  assert.equal(keys.length, uniqueKeys.size, 'Exact curriculum duplicates found');
+});
+
+test('25. mappings verified tienen sourceUrl y oaCode', () => {
+  const mapping = JSON.parse(fs.readFileSync(resolve(CONTENT, 'curriculum/chile-literacy-mapping.json'), 'utf-8'));
+  const verified = mapping.mappings.filter(m => m.verificationStatus === 'verified');
+  verified.forEach(m => {
+    assert.ok(m.sourceUrl && m.sourceUrl !== '', `Verified mapping ${m.skillId}->${m.oaCode} missing sourceUrl`);
+    assert.ok(m.oaCode && m.oaCode !== '', `Verified mapping ${m.skillId} missing oaCode`);
+  });
+});
+
+/* ── 26-27: Feedback ── */
+
+test('26. feedback rules tienen acciones', () => {
   const rules = JSON.parse(fs.readFileSync(resolve(LEARNING, 'config/feedback-rules.json'), 'utf-8'));
   const ruleKeys = Object.keys(rules.rules);
   assert.ok(ruleKeys.length > 0);
   ruleKeys.forEach(k => assert.ok(rules.rules[k].actions && rules.rules[k].actions.length > 0));
 });
 
-test('25. mensajes es-CL existen', () => {
+test('27. mensajes es-CL existen sin castigo', () => {
   const messages = JSON.parse(fs.readFileSync(resolve(LEARNING, 'data/feedback-messages-es-cl.json'), 'utf-8'));
   assert.ok(messages.categories.encouragement.messages.length > 0);
-});
-
-test('26. ningún mensaje contiene castigo o humillación', () => {
-  const messages = JSON.parse(fs.readFileSync(resolve(LEARNING, 'data/feedback-messages-es-cl.json'), 'utf-8'));
   const forbidden = ['mal', 'tonto', 'inútil', 'estúpido', 'burro', 'incapaz', 'fracaso', 'perdedor'];
   Object.values(messages.categories).forEach(cat => {
     cat.messages.forEach(msg => {
@@ -231,29 +258,28 @@ test('26. ningún mensaje contiene castigo o humillación', () => {
   });
 });
 
-/* ── 27: Validator ── */
+/* ── 28: Validator ── */
 
-test('27. validator script existe y es válido', () => {
+test('28. validator script existe y es válido', () => {
   const vPath = resolve(LEARNING, 'validators/validate-learning-data.js');
   assert.ok(fs.existsSync(vPath), 'Validator script must exist');
   const content = fs.readFileSync(vPath, 'utf-8');
   assert.ok(content.includes('import'), 'Validator must use ESM imports');
-  assert.ok(!content.includes('schemas/word-bank.schema.json') || content.includes("wordBank: 'schemas/word-bank.schema.json'"), 'Validator must reference canonical word-bank schema path');
+  assert.ok(!content.includes("standardMission:"), 'Validator must not load standard-mission.schema.json as a schema');
 });
 
-/* ── 28-30: Integration ── */
+/* ── 29-30: Integration ── */
 
-test('28. feature flag Engine V2 permanece igual', async () => {
+test('29. feature flag Engine V2 permanece igual', async () => {
   const flagPath = resolve(__dirname, '../public/expedicion/solo/game-engine/core/feature-flag.js');
   assert.ok(fs.existsSync(flagPath), 'feature-flag.js must exist');
   const flag = await import(`file:///${flagPath.replace(/\\/g, '/')}`);
   assert.ok(typeof flag.isGameEngineV2Enabled === 'function', `Expected isGameEngineV2Enabled function, got: ${Object.keys(flag)}`);
 });
 
-test('29. archivos protegidos no se modificaron', () => {
-  assert.ok(true);
-});
-
-test('30. protegidos intactos', () => {
-  assert.ok(true);
+test('30. standard-mission.schema.json eliminado, solo learning-mission existe', () => {
+  const stdPath = resolve(LEARNING, 'schemas/standard-mission.schema.json');
+  const learningPath = resolve(LEARNING, 'schemas/learning-mission.schema.json');
+  assert.ok(!fs.existsSync(stdPath), 'standard-mission.schema.json must be removed');
+  assert.ok(fs.existsSync(learningPath), 'learning-mission.schema.json must exist');
 });

@@ -1,0 +1,205 @@
+{
+  "version": "1.0.0",
+  "updatedAt": "2026-07-19T10:00:00Z",
+  "description": "Reglas de retroalimentación pedagógica para Lectoguarida - Compatible con Motor V2 y Legacy",
+  "rules": {
+    "first-error-foundational": {
+      "id": "first-error-foundational",
+      "condition": {
+        "correct": false,
+        "attemptNumber": 1
+      },
+      "actions": [
+        "repeat_audio",
+        "highlight_key_visual_feature",
+        "reduce_distractor_similarity"
+      ],
+      "messageId": "feedback_try_again_gentle",
+      "allowImmediateRetry": true,
+      "reduceDifficulty": false
+    },
+    "repeated-error-foundational": {
+      "id": "repeated-error-foundational",
+      "condition": {
+        "correct": false,
+        "attemptNumber": { "gte": 2 }
+      },
+      "actions": [
+        "reduce_difficulty",
+        "increase_model_frequency",
+        "add_visual_cue"
+      ],
+      "messageId": "feedback_try_again_gentle",
+      "reduceDifficulty": true
+    },
+    "independent-correct": {
+      "id": "independent-correct",
+      "condition": {
+        "correct": true,
+        "hintsUsed": 0
+      },
+      "actions": [
+        "celebration",
+        "update_mastery",
+        "check_mastery_criteria"
+      ],
+      "messageId": "correct",
+      "audioCue": "celebration"
+    },
+    "assisted-correct": {
+      "id": "assisted-correct",
+      "condition": {
+        "correct": true,
+        "hintsUsed": { "gt": 0 }
+      },
+      "actions": [
+        "celebration",
+        "update_mastery",
+        "check_mastery_criteria"
+      ],
+      "messageId": "corrected",
+      "audioCue": "celebration"
+    },
+    "self-correction": {
+      "id": "self-correction",
+      "condition": {
+        "previousAttemptCorrect": false,
+        "currentAttemptCorrect": true,
+        "hintsUsed": 0
+      },
+      "actions": [
+        "celebration",
+        "highlight_self_correction",
+        "update_mastery"
+      ],
+      "messageId": "corrected",
+      "audioCue": "celebration"
+    },
+    "hint-requested": {
+      "id": "hint-requested",
+      "condition": {
+        "hintRequested": true
+      },
+      "actions": [
+        "provide_hint",
+        "log_hint_usage"
+      ],
+      "messageId": "use_visual_clue",
+      "allowImmediateRetry": true
+    },
+    "excessive-hints": {
+      "id": "excessive-hints",
+      "condition": {
+        "hintsUsed": { "gte": 3 },
+        "attemptNumber": { "gte": 3 }
+      },
+      "actions": [
+        "reduce_difficulty",
+        "increase_model_frequency",
+        "notify_teacher"
+      ],
+      "messageId": "feedback_try_again_gentle",
+      "reduceDifficulty": true,
+      "notifyTeacher": true
+    },
+    "too-fast-incorrect": {
+      "id": "too-fast-incorrect",
+      "condition": {
+        "correct": false,
+        "responseMs": { "lt": 1000 }
+      },
+      "actions": [
+        "encourage_slower_pace",
+        "repeat_audio"
+      ],
+      "messageId": "feedback_try_again_gentle",
+      "allowImmediateRetry": true
+    },
+    "abandonment-detected": {
+      "id": "abandonment-detected",
+      "condition": {
+        "timeSinceLastInteractionMs": { "gt": 120000 },
+        "missionInProgress": true
+      },
+      "actions": [
+        "pause_mission",
+        "show_return_prompt",
+        "save_progress"
+      ],
+      "messageId": "return_later",
+      "allowImmediateRetry": false
+    },
+    "mastery-achieved": {
+      "id": "mastery-achieved",
+      "condition": {
+        "masteryAchieved": true,
+        "transferComplete": true,
+        "retentionPassed": true
+      },
+      "actions": [
+        "award_mastery_badge",
+        "unlock_next_skill",
+        "trigger_celebration",
+        "update_skill_graph"
+      ],
+      "messageId": "skill_mastered",
+      "allowImmediateRetry": false,
+      "reduceDifficulty": false
+    },
+    "retention-due": {
+      "id": "retention-due",
+      "condition": {
+        "skillStatus": "mastered",
+        "daysSinceMastery": { "gte": 7 }
+      },
+      "actions": [
+        "schedule_retention_check",
+        "notify_student"
+      ],
+      "messageId": "return_later",
+      "allowImmediateRetry": false
+    },
+    "retention-failed": {
+      "id": "retention-failed",
+      "condition": {
+        "retentionCheckFailed": true,
+        "retentionAttempts": 2
+      },
+      "actions": [
+        "downgrade_to_needs_support",
+        "schedule_reinforcement",
+        "notify_teacher"
+      ],
+      "messageId": "return_later",
+      "reduceDifficulty": true,
+      "notifyTeacher": true
+    },
+    "transfer-successful": {
+      "id": "transfer-successful",
+      "condition": {
+        "transferTaskCompleted": true,
+        "transferContexts": { "gte": 2 }
+      },
+      "actions": [
+        "award_transfer_badge",
+        "update_skill_graph"
+      ],
+      "messageId": "mission_complete",
+      "allowImmediateRetry": false
+    },
+    "quest-complete": {
+      "id": "quest-complete",
+      "condition": {
+        "allObjectivesComplete": true,
+        "masteryRequirementsMet": true
+      },
+      "actions": [
+        "award_quest_reward",
+        "unlock_next_quest",
+        "update_world_state"
+      ],
+      "messageId": "mission_complete",
+      "allowImmediateRetry": false
+    }
+  }
+}

@@ -1,0 +1,368 @@
+{
+  "version": "1.0.0",
+  "createdAt": "2026-07-19",
+  "description": "Perfiles lectores de Lectoguarida - Definición de 8 perfiles evolutivos para personalizar la experiencia de aprendizaje",
+  "profiles": [
+    {
+      "id": "oral_explorer",
+      "order": 0,
+      "name": "Explorador Oral",
+      "description": "Niños que aún no inician el proceso lector formal. Exploran el mundo a través del lenguaje oral, imágenes y sonidos. Reconocen su nombre y algunos logotipos ambientales.",
+      "descriptionEN": "Children who have not yet started formal reading process. They explore the world through oral language, images and sounds. Recognize their name and some environmental logos.",
+      "ageRangeReference": "4-6",
+      "courseReference": ["prekinder", "kinder"],
+      "entryIndicators": [
+        "Reconoce su nombre escrito",
+        "Distingue dibujos de letras",
+        "Disfruta que le lean cuentos",
+        "Identifica sonidos ambientales",
+        "Participa en rimas y canciones"
+      ],
+      "exitIndicators": [
+        "Identifica 5+ sonidos iniciales de palabras familiares",
+        "Segmenta palabras de 2-3 sílabas oralmente",
+        "Reconoce 5+ letras (vocales + consonantes frecuentes)",
+        "Relaciona 3+ grafemas con sus sonidos",
+        "Muestra interés por 'leer' por sí mismo"
+      ],
+      "primaryDomains": [
+        "oral_language",
+        "phonological_awareness"
+      ],
+      "recommendedSupports": [
+        "audio_instruction_required",
+        "visual_model_required",
+        "maximum_options_2",
+        "audio_repetition_unlimited",
+        "tactile_navigation"
+      ],
+      "allowedChallengeTypes": [
+        "initial-sound-detector",
+        "rhyme-catcher",
+        "syllable-counter"
+      ],
+      "maximumInitialOptions": 2,
+      "audioInstructionRequired": true,
+      "visualSupportRequired": true,
+      "independentReadingRequired": false
+    },
+    {
+      "id": "non_reader",
+      "order": 1,
+      "name": "No Lector",
+      "description": "Niños en proceso de descubrir que las letras representan sonidos. Reconocen algunas letras y su nombre, pero no leen palabras nuevas de forma autónoma.",
+      "descriptionEN": "Children discovering that letters represent sounds. Recognize some letters and their name, but don't read new words autonomously.",
+      "ageRangeReference": "5-8",
+      "courseReference": ["kinder", "1-basico", "2-basico"],
+      "entryIndicators": [
+        "Identifica 5+ sonidos iniciales",
+        "Segmenta 2-3 sílabas oralmente",
+        "Reconoce 5+ letras (vocales + consonantes frecuentes)",
+        "Relaciona 3+ grafemas con sonidos",
+        "Muestra interés por leer solo"
+      ],
+      "exitIndicators": [
+        "Identifica sonido inicial de 10+ palabras",
+        "Segmenta 3-4 sílabas oralmente",
+        "Reconoce 15+ grafemas (vocales + consonantes)",
+        "Lee 10+ sílabas directas (ma, me, mi, mo, mu)",
+        "Combina 2-3 sílabas para formar palabras conocidas"
+      ],
+      "primaryDomains": [
+        "phonological_awareness",
+        "alphabetic_principle",
+        "decoding"
+      ],
+      "recommendedSupports": [
+        "audio_instruction_required",
+        "visual_model_required",
+        "maximum_options_3",
+        "audio_repetition_unlimited",
+        "reduce_options_on_error"
+      ],
+      "allowedChallengeTypes": [
+        "initial-sound-detector",
+        "rhyme-catcher",
+        "syllable-counter",
+        "initial-sound-detector"
+      ],
+      "maximumInitialOptions": 3,
+      "audioInstructionRequired": true,
+      "visualSupportRequired": true,
+      "independentReadingRequired": false
+    },
+    {
+      "id": "emergent_reader",
+      "order": 2,
+      "name": "Lector Emergente",
+      "description": "Niños que decodifican sílabas directas y algunas palabras frecuentes. Leen con esfuerzo, sílaba a sílaba, y dependen del apoyo visual y auditivo.",
+      "descriptionEN": "Children decoding direct syllables and some high-frequency words. Read with effort, syllable by syllable, and depend on visual and auditory support.",
+      "ageRangeReference": "6-8",
+      "courseReference": ["1-basico", "2-basico"],
+      "entryIndicators": [
+        "Identifica sonido inicial de 10+ palabras",
+        "Segmenta 3-4 sílabas oralmente",
+        "Reconoce 15+ grafemas",
+        "Lee 10+ sílabas directas",
+        "Combina 2-3 sílabas para palabras conocidas"
+      ],
+      "exitIndicators": [
+        "Lee 30+ sílabas (directas + inversas + mixtas)",
+        "Lee 20+ palabras frecuentes a vista",
+        "Decodifica palabras bisílabas y trisílabas nuevas",
+        "Lee frases breves (3-5 palabras) con precisión >80%",
+        "Identifica 5+ dígrafos (ll, rr, ch, qu, gu)"
+      ],
+      "primaryDomains": [
+        "alphabetic_principle",
+        "decoding",
+        "fluency"
+      ],
+      "recommendedSupports": [
+        "audio_instruction_required",
+        "visual_model_optional",
+        "maximum_options_4",
+        "reduce_options_on_error",
+        "decodable_text_required"
+      ],
+      "allowedChallengeTypes": [
+        "initial-sound-detector",
+        "syllable-counter",
+        "initial-sound-detector",
+        "final-sound-catcher"
+      ],
+      "maximumInitialOptions": 4,
+      "audioInstructionRequired": true,
+      "visualSupportRequired": false,
+      "independentReadingRequired": false
+    },
+    {
+      "id": "initial_decoder",
+      "order": 3,
+      "name": "Decodificador Inicial",
+      "description": "Niños que decodifican palabras nuevas con patrones conocidos (directas, inversas, mixtas, dígrafos). Leen frases y textos breves con precisión creciente, pero velocidad y prosodia aún en desarrollo.",
+      "descriptionEN": "Children decoding new words with known patterns (direct, inverse, mixed, digraphs). Reading phrases and brief texts with growing accuracy, but speed and prosody still developing.",
+      "ageRangeReference": "6-9",
+      "courseReference": ["1-basico", "2-basico", "3-basico"],
+      "entryIndicators": [
+        "Lee 30+ sílabas (directas + inversas + mixtas)",
+        "Lee 20+ palabras frecuentes a vista",
+        "Decodifica palabras bisílabas y trisílabas nuevas",
+        "Lee frases breves (3-5 palabras) con precisión >80%",
+        "Identifica 5+ dígrafos"
+      ],
+      "exitIndicators": [
+        "Lee 50+ palabras por minuto con precisión >90%",
+        "Lee textos de 50+ palabras con fluidez",
+        "Prosodia adecuada (pausas, entonación) en textos conocidos",
+        "Decodifica grupos consonánticos (bl, br, cl, cr, fl, fr, gl, gr, pl, pr, tr)",
+        "Autocorrige errores de decodificación"
+      ],
+      "primaryDomains": [
+        "decoding",
+        "fluency",
+        "vocabulary"
+      ],
+      "recommendedSupports": [
+        "audio_optional",
+        "visual_model_optional",
+        "maximum_options_4",
+        "reduce_options_on_error",
+        "decodable_text_required"
+      ],
+      "allowedChallengeTypes": [
+        "initial-sound-detector",
+        "syllable-counter",
+        "initial-sound-detector",
+        "final-sound-catcher",
+        "syllable-counter"
+      ],
+      "maximumInitialOptions": 4,
+      "audioInstructionRequired": false,
+      "visualSupportRequired": false,
+      "independentReadingRequired": false
+    },
+    {
+      "id": "advanced_decoder",
+      "order": 4,
+      "name": "Decodificador Avanzado",
+      "description": "Niños que decodifican con precisión y velocidad la mayoría de palabras del español. El foco cambia a fluidez, vocabulario y comprensión. Manejan grupos consonánticos y palabras polisílabas.",
+      "descriptionEN": "Children decoding with accuracy and speed most Spanish words. Focus shifts to fluency, vocabulary and comprehension. Handle consonant clusters and polysyllabic words.",
+      "ageRangeReference": "7-10",
+      "courseReference": ["2-basico", "3-basico", "4-basico"],
+      "entryIndicators": [
+        "Lee 50+ palabras por minuto con precisión >90%",
+        "Lee textos de 50+ palabras con fluidez",
+        "Prosodia adecuada en textos conocidos",
+        "Decodifica grupos consonánticos (bl, br, cl, cr, fl, fr, gl, gr, pl, pr, tr)",
+        "Autocorrige errores de decodificación"
+      ],
+      "exitIndicators": [
+        "Lee 90+ palabras por minuto con precisión >95%",
+        "Lee textos de 200+ palabras con fluidez y prosodia",
+        "Comprende información explícita e implícita en textos de 200+ palabras",
+        "Usa estrategias de vocabulario (contexto, morfología)",
+        "Escribe oraciones completas con ortografía mayormente correcta"
+      ],
+      "primaryDomains": [
+        "fluency",
+        "vocabulary",
+        "reading_comprehension",
+        "writing"
+      ],
+      "recommendedSupports": [
+        "audio_optional",
+        "visual_support_optional",
+        "maximum_options_4",
+        "reduce_options_on_error"
+      ],
+      "allowedChallengeTypes": [
+        "initial-sound-detector",
+        "syllable-counter",
+        "final-sound-catcher",
+        "syllable-counter"
+      ],
+      "maximumInitialOptions": 4,
+      "audioInstructionRequired": false,
+      "visualSupportRequired": false,
+      "independentReadingRequired": true
+    },
+    {
+      "id": "developing_fluency",
+      "order": 5,
+      "name": "Lector en Desarrollo de Fluidez",
+      "description": "Niños que leen con precisión y velocidad apropiada. El foco es consolidar fluidez, expandir vocabulario académico y desarrollar comprensión inferencial. Leen textos de 200+ palabras.",
+      "descriptionEN": "Children reading with appropriate accuracy and speed. Focus on consolidating fluency, expanding academic vocabulary and developing inferential comprehension. Reading 200+ word texts.",
+      "ageRangeReference": "8-11",
+      "courseReference": ["3-basico", "4-basico", "5-basico"],
+      "entryIndicators": [
+        "Lee 90+ palabras por minuto con precisión >95%",
+        "Lee textos de 200+ palabras con fluidez y prosodia",
+        "Comprende información explícita e implícita",
+        "Usa estrategias de vocabulario (contexto, morfología)",
+        "Escribe oraciones completas con ortografía mayormente correcta"
+      ],
+      "exitIndicators": [
+        "Lee 130+ ppm con precisión >98%",
+        "Comprende inferencias simples y causa-efecto en textos de 400+ palabras",
+        "Identifica idea principal y detalles relevantes",
+        "Usa morfología para derivar significado (prefijos/sufijos comunes)",
+        "Escribe párrafos coherentes con cohesión"
+      ],
+      "primaryDomains": [
+        "fluency",
+        "vocabulary",
+        "reading_comprehension",
+        "writing"
+      ],
+      "recommendedSupports": [
+        "audio_optional",
+        "visual_support_optional"
+      ],
+      "allowedChallengeTypes": [
+        "initial-sound-detector",
+        "syllable-counter",
+        "final-sound-catcher",
+        "syllable-counter"
+      ],
+      "maximumInitialOptions": 4,
+      "audioInstructionRequired": false,
+      "visualSupportRequired": false,
+      "independentReadingRequired": true
+    },
+    {
+      "id": "comprehending_reader",
+      "order": 6,
+      "name": "Lector Comprensivo",
+      "description": "Niños que leen con fluidez y comprenden textos diversos. Desarrollan pensamiento crítico, inferencias complejas y conexión entre textos. Escriben textos estructurados.",
+      "descriptionEN": "Children reading fluently and comprehending diverse texts. Developing critical thinking, complex inferences and cross-text connections. Writing structured texts.",
+      "ageRangeReference": "9-12",
+      "courseReference": ["4-basico", "5-basico", "6-basico"],
+      "entryIndicators": [
+        "Lee 130+ ppm con precisión >98%",
+        "Comprende inferencias simples y causa-efecto en 400+ palabras",
+        "Identifica idea principal y detalles relevantes",
+        "Usa morfología para derivar significado (prefijos/sufijos comunes)",
+        "Escribe párrafos coherentes con cohesión"
+      ],
+      "exitIndicators": [
+        "Lee textos de 800+ palabras con comprensión profunda",
+        "Analiza personaje, ambiente, estructura narrativa",
+        "Evalúa credibilidad y propósito del autor",
+        "Escribe textos de 3+ párrafos con estructura clara",
+        "Transfiere estrategias a nuevas áreas curriculares"
+      ],
+      "primaryDomains": [
+        "reading_comprehension",
+        "vocabulary",
+        "writing",
+        "metacognition"
+      ],
+      "recommendedSupports": [
+        "audio_optional",
+        "visual_support_optional"
+      ],
+      "allowedChallengeTypes": [
+        "initial-sound-detector",
+        "syllable-counter",
+        "final-sound-catcher",
+        "syllable-counter"
+      ],
+      "maximumInitialOptions": 4,
+      "audioInstructionRequired": false,
+      "visualSupportRequired": false,
+      "independentReadingRequired": true
+    },
+    {
+      "id": "story_author",
+      "order": 7,
+      "name": "Autor de Historias",
+      "description": "Niños que leen y escriben con autonomía creativa. Crean sus propias narrativas, investigan temas de interés y usan la lectura/escritura como herramientas de pensamiento y expresión personal.",
+      "descriptionEN": "Children reading and writing with creative autonomy. Creating own narratives, researching topics of interest, using reading/writing as thinking and personal expression tools.",
+      "ageRangeReference": "10-14",
+      "courseReference": ["5-basico", "6-basico", "7-basico"],
+      "entryIndicators": [
+        "Lee textos de 800+ palabras con comprensión profunda",
+        "Analiza personaje, ambiente, estructura narrativa",
+        "Evalúa credibilidad y propósito del autor",
+        "Escribe textos de 3+ párrafos con estructura clara",
+        "Transfiere estrategias a nuevas áreas curriculares"
+      ],
+      "exitIndicators": [
+        "Autogestiona proyectos de lectura/escritura",
+        "Investiga temas usando múltiples fuentes",
+        "Escribe narrativas/argumentos/explicativos estructurados",
+        "Evalúa críticamente fuentes de información",
+        "Participa en comunidades lectoras/escritoras"
+      ],
+      "primaryDomains": [
+        "reading_comprehension",
+        "vocabulary",
+        "writing",
+        "metacognition"
+      ],
+      "recommendedSupports": [
+        "audio_optional",
+        "visual_support_optional"
+      ],
+      "allowedChallengeTypes": [
+        "initial-sound-detector",
+        "syllable-counter",
+        "final-sound-catcher",
+        "syllable-counter"
+      ],
+      "maximumInitialOptions": 4,
+      "audioInstructionRequired": false,
+      "visualSupportRequired": false,
+      "independentReadingRequired": true
+    }
+  ],
+  "globalRules": {
+    "profileNotCourseDependent": true,
+    "ageAndCourseAreReferencesOnly": true,
+    "noNegativeLabels": true,
+    "bidirectionalProgression": true,
+    "supportsDUA": true,
+    "chileanContextRequired": true
+  }
+}

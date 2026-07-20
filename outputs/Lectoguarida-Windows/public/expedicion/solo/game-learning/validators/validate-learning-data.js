@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Validador de datos pedagógicos - Lectoguarida Learning Foundation
- * Valida JSON, schemas, IDs únicos, referencias, ausencia de ciclos, etc.
+ * Validador de datos pedagógicos - Lectoguarida Learning Foundation V1
+ * Valida JSON, schemas, IDs únicos, referencias, mastery, word bank, curriculum, etc.
  */
 
 import fs from 'fs';
@@ -28,13 +28,11 @@ const FILES = {
 const SCHEMAS = {
   learnerProfiles: 'schemas/learner-profiles.schema.json',
   skillGraph: 'schemas/skill-graph.schema.json',
-  masteryRules: 'config/mastery-rules.json',
   studentState: 'schemas/student-skill-state.schema.json',
   evidence: 'schemas/learning-evidence.schema.json',
   mission: 'schemas/learning-mission.schema.json',
   wordEntry: 'schemas/word-entry.schema.json',
   wordBank: 'schemas/word-bank.schema.json',
-  standardMission: 'schemas/standard-mission.schema.json',
 };
 
 function loadJSON(relativePath) {
@@ -229,16 +227,169 @@ async function main() {
     console.log('  ✅ Sin ciclos en skill-graph.json');
   }
 
-  // 6. Check word bank count
-  console.log('\n📚 Verificando banco de palabras...');
+  // 5f. All masteryRuleId references must exist
+  console.log('\n🔗 Verificando referencias mastery...');
+  const masteryRuleIds = new Set(Object.keys(files.masteryRules.rules));
+  const invalidMasteryRefs = [];
+  files.learningDomains.skills.forEach(s => {
+    if (s.masteryRuleId && !masteryRuleIds.has(s.masteryRuleId)) {
+      invalidMasteryRefs.push({ skill: s.id, rule: s.masteryRuleId });
+    }
+  });
+  if (invalidMasteryRefs.length > 0) {
+    console.error('  ❌ Invalid mastery references:');
+    invalidMasteryRefs.forEach(r => console.error(`    ${r.skill} -> ${r.rule}`));
+    exitCode = 1;
+  } else {
+    console.log('  ✅ All masteryRuleId references valid');
+  }
+
+  // 6. Mastery rules validation
+  console.log('\n📐 Validando mastery rules...');
+  const masteryRules = files.masteryRules.rules;
+  const ruleIds = Object.keys(masteryRules);
+
+  // 6a. Rule IDs must match keys
+  ruleIds.forEach(key => {
+    if (masteryRules[key].id !== key) {
+      console.error(`  ❌ mastery-rules.json: Rule key '${key}' has id '${masteryRules[key].id}'`);
+      exitCode = 1;
+    }
+  });
+
+  // 6b. Criteria weights must sum to 1 (tolerance 0.001)
+  ruleIds.forEach(key => {
+    const rule = masteryRules[key];
+    if (rule.criteria) {
+      const weights = Object.values(rule.criteria).map(c => typeof c === 'object' ? c.weight : c);
+      const sum = weights.reduce((a, b) => a + b, 0);
+      if (Math.abs(sum - 1) > 0.001) {
+        console.error(`  ❌ mastery-rules.json: ${key} criteria weights sum to ${sum}, expected 1`);
+        exitCode = 1;
+      }
+    }
+  });
+
+  // 6c. Proportions between 0 and 1
+  ruleIds.forEach(key => {
+    const rule = masteryRules[key];
+    ['minimumAccuracy', 'minimumIndependentAccuracy', 'maximumHintRate', 'minimumRetentionAccuracy', 'minimumRatio'].forEach(field => {
+      if (rule[field] !== undefined && (rule[field] < 0 || rule[field] > 1)) {
+        console.error(`  ❌ mastery-rules.json: ${key}.${field} = ${rule[field]}, expected 0-1`);
+        exitCode = 1;
+      }
+    });
+  });
+
+  // 6d. minimumAttempts >= 1, minimumSessions >= 1
+  ruleIds.forEach(key => {
+    const rule = masteryRules[key];
+    if (rule.minimumAttempts !== undefined && rule.minimumAttempts < 1) {
+      console.error(`  ❌ mastery-rules.json: ${key}.minimumAttempts = ${rule.minimumAttempts}, expected >= 1`);
+      exitCode = 1;
+    }
+    if (rule.minimumSessions !== undefined && rule.minimumSessions < 1) {
+      console.error(`  ❌ mastery-rules.json: ${key}.minimumSessions = ${rule.minimumSessions}, expected >= 1`);
+      exitCode = 1;
+    }
+  });
+
+  console.log(`  ✅ ${ruleIds.length} mastery rules, no duplicate keys`);
+
+  // 7. Word bank validation
+  console.log('\n📚 Validando banco de palabras...');
   const wordCount = files.wordBank.words.length;
-  if (wordCount < 300) {
-    console.log(`  ⚠️  Word bank has ${wordCount}/300 words (pending)`);
+  if (wordCount !== 300) {
+    console.error(`  ❌ Word bank has ${wordCount}/300 words (expected exactly 300)`);
+    exitCode = 1;
   } else {
     console.log(`  ✅ Word bank: ${wordCount} words`);
   }
 
-  // 7. Final result
+  // 7a. Unique IDs
+  if (!checkUniqueIds(files.wordBank.words, 'id', 'word-bank-foundation.json')) exitCode = 1;
+
+  // 7b. Unique normalized
+  const norms = files.wordBank.words.map(w => w.normalized);
+  const normDups = norms.filter((n, i) => norms.indexOf(n) !== i);
+  if (normDups.length > 0) {
+    console.error(`  ❌ word-bank-foundation.json: Duplicate normalized values:`, [...new Set(normDups)]);
+    exitCode = 1;
+  }
+
+  // 7c. Syllable count coherence
+  let syllableErrors = 0;
+  files.wordBank.words.forEach(w => {
+    if (w.syllableCount !== w.syllables.length) {
+      console.error(`  ❌ word-bank: ${w.id} syllableCount=${w.syllableCount} but syllables.length=${w.syllables.length}`);
+      syllableErrors++;
+    }
+  });
+  if (syllableErrors > 0) {
+    exitCode = 1;
+  } else {
+    console.log('  ✅ All syllable counts coherent');
+  }
+
+  // 7d. Minimum 80% imageable (difficulty <= 3 as proxy)
+  const imageableCount = files.wordBank.words.filter(w => w.difficulty <= 3).length;
+  const imageablePercent = Math.round(imageableCount / wordCount * 100);
+  if (imageablePercent < 80) {
+    console.error(`  ❌ Word bank: ${imageablePercent}% imageable (expected >= 80%)`);
+    exitCode = 1;
+  } else {
+    console.log(`  ✅ Imageable: ${imageableCount}/${wordCount} (${imageablePercent}%)`);
+  }
+
+  // 7e. New words should be pending_review
+  const reviewedCount = files.wordBank.words.filter(w => w.status === 'reviewed').length;
+  if (reviewedCount > 0) {
+    console.error(`  ❌ Word bank: ${reviewedCount} words marked as reviewed (new words should be pending_review)`);
+    exitCode = 1;
+  }
+
+  // 8. Curriculum validation
+  console.log('\n📋 Validando currículo...');
+  const mappings = files.curriculumMapping.mappings;
+
+  // 8a. Exact duplicates (skillId + level + subject + oaCode)
+  const exactKeys = mappings.map(m => `${m.skillId}|${m.level}|${m.subject}|${m.oaCode}`);
+  const exactDups = exactKeys.filter((k, i) => exactKeys.indexOf(k) !== i);
+  if (exactDups.length > 0) {
+    console.error(`  ❌ Curriculum: ${exactDups.length} exact duplicate(s) found`);
+    exitCode = 1;
+  } else {
+    console.log('  ✅ No exact curriculum duplicates');
+  }
+
+  // 8b. Verified mappings must have sourceUrl
+  const verifiedNoSource = mappings.filter(m => m.verificationStatus === 'verified' && (!m.sourceUrl || m.sourceUrl === ''));
+  if (verifiedNoSource.length > 0) {
+    console.error(`  ❌ Curriculum: ${verifiedNoSource.length} verified mappings without sourceUrl`);
+    verifiedNoSource.forEach(m => console.error(`    ${m.skillId} -> ${m.oaCode}`));
+    exitCode = 1;
+  }
+
+  // 8c. Verified mappings must have oaCode
+  const verifiedNoOA = mappings.filter(m => m.verificationStatus === 'verified' && (!m.oaCode || m.oaCode === ''));
+  if (verifiedNoOA.length > 0) {
+    console.error(`  ❌ Curriculum: ${verifiedNoOA.length} verified mappings without oaCode`);
+    exitCode = 1;
+  }
+
+  console.log(`  ✅ ${mappings.length} curriculum mappings`);
+
+  // 9. Standard mission schema removed
+  console.log('\n🗑️  Verificando eliminación de standard-mission.schema.json...');
+  const stdMissionPath = path.join(ROOT, 'schemas', 'standard-mission.schema.json');
+  if (fs.existsSync(stdMissionPath)) {
+    console.error('  ❌ standard-mission.schema.json still exists');
+    exitCode = 1;
+  } else {
+    console.log('  ✅ standard-mission.schema.json removed');
+  }
+
+  // 10. Final result
   console.log('\n' + '='.repeat(50));
   if (exitCode === 0) {
     console.log('✅ VALIDACIÓN EXITOSA - Learning Foundation V1');

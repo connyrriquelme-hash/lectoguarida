@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lectoguarida.cl/schemas/student-skill-state.schema.json",
+  "title": "Student Skill State",
+  "description": "Estado de una habilidad para un estudiante específico",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "studentId",
+    "skillId",
+    "status",
+    "mastery",
+    "attempts",
+    "correct",
+    "independentCorrect",
+    "consecutiveCorrect",
+    "averageResponseMs",
+    "hintsUsed",
+    "audioRepetitions",
+    "sessions",
+    "transferTasksCompleted",
+    "lastAttemptAt",
+    "recommendedDifficulty"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "studentId": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]{3,64}$",
+      "description": "Identificador único del estudiante (pseudónimo, no datos reales)"
+    },
+    "skillId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$",
+      "description": "ID de la habilidad (formato: domain.subdomain.skill)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "introduced",
+        "practicing",
+        "approaching_mastery",
+        "mastered",
+        "retention_due",
+        "needs_support"
+      ],
+      "description": "Estado actual de la habilidad en la progresión"
+    },
+    "mastery": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Nivel de dominio (0.0 - 1.0)"
+    },
+    "attempts": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total de intentos registrados"
+    },
+    "correct": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Intentos correctos totales"
+    },
+    "independentCorrect": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Intentos correctos sin ayudas (independientes)"
+    },
+    "consecutiveCorrect": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Aciertos consecutivos actuales"
+    },
+    "averageResponseMs": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Tiempo medio de respuesta en milisegundos"
+    },
+    "hintsUsed": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total de pistas/ayudas usadas"
+    },
+    "audioRepetitions": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Veces que se repitió instrucción de audio"
+    },
+    "sessions": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Número de sesiones con práctica de esta habilidad"
+    },
+    "transferTasksCompleted": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Tareas de transferencia completadas en contextos distintos"
+    },
+    "lastAttemptAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp del último intento (ISO 8601 UTC)"
+    },
+    "lastMasteryChangeAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Último cambio de estado de dominio (ISO 8601 UTC)"
+    },
+    "recommendedDifficulty": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3,
+      "description": "Dificultad recomendada para próximo intento (1=apoyo, 2=estándar, 3=desafío)"
+    },
+    "teacherOverride": {
+      "type": ["object", "null"],
+      "properties": {
+        "overriddenBy": { "type": "string" },
+        "overriddenAt": { "type": "string", "format": "date-time" },
+        "previousStatus": { "type": "string" },
+        "newStatus": { "type": "string" },
+        "justification": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["overriddenBy", "overriddenAt", "previousStatus", "newStatus", "justification"]
+    },
+    "historySummary": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": ["timestamp", "status", "mastery"],
+        "properties": {
+          "timestamp": { "type": "string", "format": "date-time" },
+          "status": { "type": "string" },
+          "mastery": { "type": "number", "minimum": 0, "maximum": 1 },
+          "attemptsDelta": { "type": "integer" },
+          "correctDelta": { "type": "integer" }
+        }
+      },
+      "description": "Historial resumido de cambios de estado (máx 20 entradas)"
+    }
+  }
+}

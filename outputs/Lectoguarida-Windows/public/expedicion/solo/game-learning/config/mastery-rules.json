@@ -1,0 +1,202 @@
+{
+  "version": "1.0.0",
+  "createdAt": "2026-07-19",
+  "description": "Reglas de dominio (mastery rules) para habilidades lectoras de Lectoguarida",
+  "rules": {
+    "mastery_80_3_consecutive": {
+      "id": "mastery_80_3_consecutive",
+      "name": "Dominio Estándar Fundacional",
+      "description": "Regla base para habilidades fundacionales: precisión mínima 80%, 3 correctas consecutivas",
+      "minimumAttempts": 8,
+      "minimumAccuracy": 0.8,
+      "minimumIndependentAccuracy": 0.7,
+      "maximumHintRate": 0.35,
+      "consecutiveCorrectRequired": 3,
+      "requiredSessions": 2,
+      "requiredTransferTasks": 1,
+      "retentionCheckAfterDays": 7,
+      "minimumRetentionAccuracy": 0.7,
+      "allowTeacherOverride": true
+    },
+    "mastery_95_accuracy": {
+      "id": "mastery_95_accuracy",
+      "name": "Precisión Alta (Fluidez)",
+      "description": "Para fluidez y decodificación avanzada: precisión ≥95% en lectura oral",
+      "minimumAttempts": 20,
+      "minimumAccuracy": 0.95,
+      "minimumIndependentAccuracy": 0.9,
+      "maximumHintRate": 0.1,
+      "consecutiveCorrectRequired": 5,
+      "requiredSessions": 3,
+      "requiredTransferTasks": 2,
+      "retentionCheckAfterDays": 14,
+      "minimumRetentionAccuracy": 0.9,
+      "allowTeacherOverride": true
+    },
+    "mastery_wpm_benchmarks": {
+      "id": "mastery_wpm_benchmarks",
+      "name": "Velocidad Lectora (WPM)",
+      "description": "Benchmarks de palabras por minuto por nivel y banda de dificultad",
+      "benchmarks": {
+        "1_basico_apoyo": 30,
+        "1_basico_estandar": 40,
+        "1_basico_desafio": 60,
+        "2_basico_apoyo": 50,
+        "2_basico_estandar": 70,
+        "2_basico_desafio": 90,
+        "3_basico_apoyo": 70,
+        "3_basico_estandar": 90,
+        "3_basico_desafio": 110,
+        "4_basico_apoyo": 90,
+        "4_basico_estandar": 110,
+        "4_basico_desafio": 130,
+        "5_basico_apoyo": 110,
+        "5_basico_estandar": 130,
+        "5_basico_desafio": 150
+      },
+      "minimumAccuracy": 0.95,
+      "requiredSessions": 3,
+      "retentionCheckAfterDays": 30
+    },
+    "mastery_prosody_rubric": {
+      "id": "mastery_prosody_rubric",
+      "name": "Rúbrica de Prosodia",
+      "description": "Evaluación cualitativa de pausas, entonación, expresión y fluidez",
+      "criteria": {
+        "pausas_adecuadas": {
+          "weight": 0.3,
+          "description": "Pausas en signos de puntuación y cambios de idea"
+        },
+        "entonacion_expresiva": {
+          "weight": 0.3,
+          "description": "Variación de tono acorde al texto (preguntas, exclamaciones, diálogos)"
+        },
+        "expresion_emocional": {
+          "weight": 0.2,
+          "description": "Voz refleja emoción del texto"
+        },
+        "fluidez_sin_tartamudeo": {
+          "weight": 0.2,
+          "description": "Lectura continua sin detenciones frecuentes"
+        }
+      },
+      "minimumScore": 0.75,
+      "minimumSessions": 3
+    },
+    "mastery_self_correction_rate": {
+      "id": "mastery_self_correction_rate",
+      "name": "Tasa de Autocorrección",
+      "description": "Proporción de errores autocorregidos / total errores ≥ 0.5",
+      "formula": "autocorrecciones / (errores + autocorrecciones) >= 0.5",
+      "minimumSessions": 5,
+      "minimumRatio": 0.5
+    },
+    "mastery_rubric_composition": {
+      "id": "mastery_rubric_composition",
+      "name": "Rúbrica de Composición",
+      "description": "Evaluación holística de escritura: estructura, coherencia, vocabulario, ortografía",
+      "criteria": {
+        "estructura": {
+          "weight": 0.3,
+          "description": "Inicio, desarrollo, cierre coherentes"
+        },
+        "coherencia": {
+          "weight": 0.25,
+          "description": "Ideas conectadas, conectores lógicos"
+        },
+        "vocabulario": {
+          "weight": 0.2,
+          "description": "Vocabulario variado, preciso, apropiado"
+        },
+        "ortografia": {
+          "weight": 0.15,
+          "description": "Ortografía mayormente correcta"
+        },
+        "gramatica": {
+          "weight": 0.1,
+          "description": "Concordancia, puntuación, mayúsculas"
+        }
+      },
+      "minimumScore": 0.75,
+      "minimumSessions": 3
+    },
+    "mastery_rubric_revision": {
+      "id": "mastery_rubric_revision",
+      "name": "Rúbrica de Revisión",
+      "description": "Evalúa capacidad de detectar y corregir errores propios",
+      "criteria": {
+        "deteccion_errores": {
+          "weight": 0.4,
+          "description": "Identifica errores propios (ortografía, coherencia, puntuación)"
+        },
+        "correccion_efectiva": {
+          "weight": 0.4,
+          "description": "Corrige errores detectados adecuadamente"
+        },
+        "mejora_global": {
+          "weight": 0.2,
+          "description": "Texto final superior al borrador"
+        }
+      },
+      "minimumScore": 0.7,
+      "minimumSessions": 3
+    },
+    "mastery_rubric_genre": {
+      "id": "mastery_rubric_genre",
+      "name": "Rúbrica por Género Textual",
+      "description": "Criterios específicos por género (narrativo, informativo, poético, argumentativo)",
+      "genreCriteria": {
+        "narrativo": ["personaje", "ambiente", "problema", "resolucion", "secuencia_temporal"],
+        "informativo": ["tema_claro", "informacion_organizada", "vocabulario_tecnico", "fuentes"],
+        "poetico": ["recursos_poeticos", "ritmo", "imagenes", "emocion"],
+        "argumentativo": ["tesis_clara", "argumentos", "evidencia", "conclusion"]
+      },
+      "minimumElements": 3,
+      "minimumSessions": 2
+    },
+    "mastery_retention": {
+      "id": "mastery_retention",
+      "name": "Retención a 7/30 Días",
+      "description": "Verifica que la habilidad se mantiene tras intervalo sin práctica",
+      "checkAfterDays": [7, 30],
+      "minimumAccuracy": 0.7,
+      "requiredAttempts": 5
+    },
+    "mastery_transfer": {
+      "id": "mastery_transfer",
+      "name": "Transferencia de Habilidad",
+      "description": "Aplica la habilidad en contexto distinto al de aprendizaje",
+      "requiredContexts": 2,
+      "minimumAccuracy": 0.7,
+      "contextTypes": ["game", "text", "oral", "written", "cross_cutting"]
+    }
+  },
+  "progressionStates": [
+    "not_started",
+    "introduced",
+    "practicing",
+    "approaching_mastery",
+    "mastered",
+    "retention_due",
+    "needs_support"
+  ],
+  "teacherOverrideRules": {
+    "canAdvance": true,
+    "canDelay": true,
+    "canModifyDifficulty": true,
+    "canSetCustomMasteryRule": true,
+    "requiresJustification": true,
+    "auditTrail": true
+  },
+  "difficultyBands": {
+    "1": { "label": "Apoyo", "maxOptions": 3, "modelSupport": true },
+    "2": { "label": "Estándar", "maxOptions": 4, "modelSupport": "optional" },
+    "3": { "label": "Desafío", "maxOptions": 4, "modelSupport": false }
+  },
+  "spacedRepetitionIntervals": [1, 3, 7, 14, 30],
+  "difficultyAdjustment": {
+    "reduceOnErrorStreak": 3,
+    "increaseOnSuccessStreak": 5,
+    "maxDifficultyReductions": 2
+  }
+}

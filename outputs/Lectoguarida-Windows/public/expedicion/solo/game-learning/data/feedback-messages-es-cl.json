@@ -1,0 +1,127 @@
+{
+  "version": "1.0.0",
+  "updatedAt": "2026-07-19T10:00:00Z",
+  "language": "es-CL",
+  "description": "Catálogo de mensajes de retroalimentación en español de Chile para Lectoguarida",
+  "categories": {
+    "encouragement": {
+      "name": "Ánimo y motivación",
+      "messages": [
+        "¡Vamos, tú puedes! 💪",
+        "¡Tú puedes! 💪",
+        "¡Sigue así! 🌟",
+        "¡Vas muy bien! 👏",
+        "¡Qué bien lo haces! 🎉",
+        "¡Sigue así, vas genial! 🌟",
+        "¡No te rindas, tú puedes! 💪",
+        "¡Vamos paso a paso! 👣"
+      ]
+    },
+    "correct": {
+      "name": "Respuesta correcta",
+      "messages": [
+        "¡Correcto! 🎉",
+        "¡Exacto! ✨",
+        "¡Muy bien! 🎯",
+        "¡Acertaste! 🌟",
+        "¡Qué bien lo hiciste! 👏",
+        "¡Así se hace! 💫",
+        "¡Perfecto! 🎯",
+        "¡Bien hecho! 👏"
+      ]
+    },
+    "corrected": {
+      "name": "Respuesta correcta con ayuda",
+      "messages": [
+        "¡Bien! Con un poco de ayuda lo lograste 👍",
+        "¡Lo lograste con apoyo! Bien hecho 👏",
+        "¡Buen trabajo con la pista! ✨",
+        "¡Lo resolviste con ayuda! 🌟"
+      ]
+    },
+    "try_again": {
+      "name": "Reintentar",
+      "messages": [
+        "¡Inténtalo de nuevo! 🔄",
+        "¡Casi! Intenta otra vez 🔄",
+        "¡No te preocupes, inténtalo de nuevo! 💪",
+        "¡Vamos, tú puedes! Intenta otra vez 🔄",
+        "¡Casi lo tienes! Prueba otra vez 🌟",
+        "¡Vamos, inténtalo de nuevo! 💪"
+      ]
+    },
+    "listen_again": {
+      "name": "Escuchar de nuevo",
+      "messages": [
+        "¿Quieres escucharlo otra vez? 🔊",
+        "¿Quieres que lo repita? 🔊",
+        "Escucha con atención... 🔊",
+        "Escucha con atención otra vez... 🔊"
+      ]
+    },
+    "look_at_first_sound": {
+      "name": "Mirar el primer sonido",
+      "messages": [
+        "Mira el primer sonido... 👀",
+        "Fíjate en cómo empieza la palabra... 👀",
+        "¿Con qué sonido empieza? 👀",
+        "Mira la primera letra... 👀"
+      ]
+    },
+    "count_syllables": {
+      "name": "Contar sílabas",
+      "messages": [
+        "Cuenta las sílabas... 👏",
+        "Golpea las sílabas... 👏",
+        "¿Cuántas sílabas tiene? 👏",
+        "Separa en sílabas... 👏"
+      ]
+    },
+    "compare_endings": {
+      "name": "Comparar finales",
+      "messages": [
+        "Mira cómo termina la palabra... 👀",
+        "Fíjate en el final... 👀",
+        "¿Con qué termina? 👀",
+        "Compara los finales... 👀"
+      ]
+    },
+    "use_visual_clue": {
+      "name": "Usar pista visual",
+      "messages": [
+        "Usa la imagen como pista... 🖼️",
+        "La imagen te ayuda... 🖼️",
+        "Mira la imagen con atención... 🖼️",
+        "La pista está en la imagen... 🖼️"
+      ]
+    },
+    "mission_complete": {
+      "name": "Misión completada",
+      "messages": [
+        "¡Misión completada! 🎉",
+        "¡Misión cumplida! 🎉",
+        "¡Lograste la misión! 🎉",
+        "¡Completaste la misión! 🏆",
+        "¡Lo lograste! Misión cumplida 🏆"
+      ]
+    },
+    "skill_mastered": {
+      "name": "Habilidad dominada",
+      "messages": [
+        "¡Habilidad dominada! 🏆",
+        "¡Dominaste esta habilidad! 🏆",
+        "¡Lograste el dominio! 🏆",
+        "¡Habilidad maestra! 🏆"
+      ]
+    },
+    "return_later": {
+      "name": "Volver más tarde",
+      "messages": [
+        "Puedes volver más tarde... 🔄",
+        "Volveremos a esto después... 🔄",
+        "Continuemos en otro momento... 🔄",
+        "Guardamos tu progreso... 💾"
+      ]
+    }
+  }
+}
