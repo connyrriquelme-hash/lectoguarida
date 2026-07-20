@@ -10,8 +10,11 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, resolve, join } from 'node:path';
 import { createRequire } from 'node:module';
 import { JSDOM } from 'jsdom';
+import { createFakeAnimationFrame } from './helpers/fake-animation-frame.mjs';
 
 const require = createRequire(import.meta.url);
+
+const raf = createFakeAnimationFrame();
 
 const dom = new JSDOM('<!DOCTYPE html><html><head></head><body></body></html>', {
   pretendToBeVisual: true,
@@ -21,8 +24,7 @@ global.window = dom.window;
 global.document = dom.window.document;
 global.localStorage = dom.window.localStorage;
 global.performance = { now: function () { return Date.now(); } };
-global.requestAnimationFrame = function (cb) { return setTimeout(cb, 16); };
-global.cancelAnimationFrame = function (id) { clearTimeout(id); };
+raf.install();
 Object.defineProperty(global, 'navigator', { value: { userAgent: 'node.js', maxTouchPoints: 0 }, writable: true, configurable: true });
 global.HTMLElement = dom.window.HTMLElement;
 
