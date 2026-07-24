@@ -30,6 +30,14 @@ var _eye_nodes: Array[MeshInstance3D] = []
 var _head_yaw: float = 0.0  # for head turning
 
 
+# ── Anti-stuck (movement jam detection) ──
+var _stuck_timer: float = 0.0
+var _stuck_positions: Array[Vector3] = []
+var _stuck_index: int = 0
+const STUCK_THRESHOLD_TIME: float = 3.0
+const STUCK_POSITION_THRESHOLD: float = 0.15
+
+
 func _ready() -> void:
 	# ── Create SpringArm3D at runtime ──
 	spring_arm = get_node_or_null("SpringArm3D") as SpringArm3D
@@ -49,6 +57,10 @@ func _ready() -> void:
 		if script:
 			cat_customizer.set_script(script)
 	_add_accessories()
+	# ── Anti-stuck system ──
+	_stuck_timer = 0.0
+	_stuck_positions = []
+	_stuck_index = 0
 
 
 func _setup_camera() -> void:
@@ -287,7 +299,7 @@ func _old_add_parts_to_body_body_not_used(body: Node3D) -> void:
 
 
 func _add_accessories() -> void:
-	# First, rebuild cat body as procedural 3D model
+	# ── Anti-stuck system ──
 	_rebuild_cat_body()
 
 	# Delegate to CatCustomizer if present
@@ -514,3 +526,30 @@ func _on_interact() -> void:
 	for area in areas:
 		if area.has_method("interact"):
 			area.interact()
+
+
+# ── Anti-stuck rescue ──
+
+func _rescue_from_stuck() -> void:
+	"""Player is pressing movement keys but not moving - rescue to safe spot."""
+	print("Player: atascado - rescatando a posición segura")
+	
+	# Try SafetySystem first (exists on MainWorld)
+	var world: Node = get_tree().current_scene
+	if world and world.has_method("get_safe_spawn"):
+		var spawn: Vector3 = world.get_safe_spawn()
+		global_position = spawn
+		velocity = Vector3.ZERO
+		return
+	
+	# Fallback: find any safe_ground
+	var space_state: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
+	var query := PhysicsRayQueryParameters3D.create(
+		global_position + Vector3(0, 2, 0),
+		global_position + Vector3(0, -10, 0),
+		1
+	)
+	var result: Dictionary = space_state.intersect_ray(query)
+	if not result.is_empty():
+		global_position = result["position"] + Vector3(0, 0.5, 0)
+		velocity = Vector3.ZERO
