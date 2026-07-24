@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://d3te44mxdlmk0"]
+
+[ext_resource type="PackedScene" uid="uid://byvpstbjmj581" path="res://scenes/zone_a_coastal.tscn" id="1_za"]
+[ext_resource type="PackedScene" path="res://scenes/zone_b_humedal.tscn" id="2_zb"]
+[ext_resource type="PackedScene" path="res://scenes/zone_c_estribaciones.tscn" id="3_zc"]
+[ext_resource type="Script" uid="uid://c1uy6jd5alwj3" path="res://scripts/main_world.gd" id="4_scr"]
+[ext_resource type="Script" uid="uid://dygdgaa7vwkrj" path="res://scripts/fauna_spawner.gd" id="5_fs"]
+[ext_resource type="PackedScene" path="res://scenes/zone_d_puerto.tscn" id="6_zd"]
+[ext_resource type="PackedScene" path="res://scenes/zone_e_litoral.tscn" id="7_ze"]
+
+[node name="OpenWorld" type="Node3D" unique_id=1784178566]
+script = ExtResource("4_scr")
+
+[node name="FaunaSpawner" type="Node3D" parent="." unique_id=982747752]
+script = ExtResource("5_fs")
+
+[node name="ZoneA_Coastal" parent="." unique_id=1910700579 instance=ExtResource("1_za")]
+
+[node name="ZoneB_Wetland" parent="." unique_id=655638369 instance=ExtResource("2_zb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55, 0, 0)
+
+[node name="ZoneC_Foothills" parent="." unique_id=404755632 instance=ExtResource("3_zc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55, 0, 0)
+
+[node name="ZoneD_Puerto" parent="." unique_id=2131404674 instance=ExtResource("6_zd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 100)
+
+[node name="ZoneE_Litoral" parent="." unique_id=1837359098 instance=ExtResource("7_ze")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -100)

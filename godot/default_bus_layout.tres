@@ -1,0 +1,14 @@
+[gd_resource type="AudioBusLayout" format=3 uid="uid://bt6jd5kttk7qg"]
+
+[sub_resource type="AudioEffectLowPassFilter" id="AudioEffectLowPassFilter_j3pel"]
+resource_name = "LowPassFilter"
+
+[sub_resource type="AudioEffectDistortion" id="AudioEffectDistortion_j3pel"]
+resource_name = "Distortion"
+
+[resource]
+bus/0/volume_db = 6.0199986
+bus/0/effect/0/effect = SubResource("AudioEffectLowPassFilter_j3pel")
+bus/0/effect/0/enabled = true
+bus/0/effect/1/effect = SubResource("AudioEffectDistortion_j3pel")
+bus/0/effect/1/enabled = true

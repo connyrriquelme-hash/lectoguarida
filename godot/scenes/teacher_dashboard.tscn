@@ -1,0 +1,87 @@
+[gd_scene load_steps=2 format=3 uid="uid://teacherdash"]
+
+[ext_resource type="Script" path="res://scripts/teacher_dashboard.gd" id="1"]
+
+[node name="TeacherDashboard" type="CanvasLayer"]
+script = ExtResource("1")
+layer = 10
+visible = false
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchor_left = 0.1
+anchor_top = 0.05
+anchor_right = 0.9
+anchor_bottom = 0.95
+mouse_filter = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+
+[node name="TitleLabel" type="Label" parent="PanelContainer/VBoxContainer"]
+text = "📊 Panel del Guardián — Progreso de Lectura"
+add_theme_font_size_override/font_size = 28
+add_theme_color_override/font_color = Color(0.169, 0.176, 0.259, 1)
+
+[node name="HeaderContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+
+[node name="RouteLabel" type="Label" parent="PanelContainer/VBoxContainer/HeaderContainer"]
+text = "Ruta: Explorador"
+add_theme_font_size_override/font_size = 22
+add_theme_color_override/font_color = Color(0.169, 0.176, 0.259, 1)
+
+[node name="SupportLabel" type="Label" parent="PanelContainer/VBoxContainer/HeaderContainer"]
+text = "Apoyo: Nivel 3"
+add_theme_font_size_override/font_size = 22
+add_theme_color_override/font_color = Color(0.906, 0.6, 0.38, 1)
+offset_left = 30.0
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer"]
+
+[node name="SkillsLabel" type="Label" parent="PanelContainer/VBoxContainer"]
+text = "📈 Habilidades"
+add_theme_font_size_override/font_size = 20
+
+[node name="SkillsContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer"]
+
+[node name="HSeparator2" type="HSeparator" parent="PanelContainer/VBoxContainer"]
+
+[node name="StatsContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer"]
+
+[node name="ActivitiesLabel" type="Label" parent="PanelContainer/VBoxContainer/StatsContainer"]
+text = "Actividades: 0"
+add_theme_font_size_override/font_size = 18
+
+[node name="HintsLabel" type="Label" parent="PanelContainer/VBoxContainer/StatsContainer"]
+text = "Pistas usadas: 0"
+
+[node name="AudioLabel" type="Label" parent="PanelContainer/VBoxContainer/StatsContainer"]
+text = "Audios solicitados: 0"
+
+[node name="ToysLabel" type="Label" parent="PanelContainer/VBoxContainer/StatsContainer"]
+text = "Juguetes Dorados: 0"
+
+[node name="HSeparator3" type="HSeparator" parent="PanelContainer/VBoxContainer"]
+
+[node name="ActionsContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+
+[node name="AdjustRouteButton" type="Button" parent="PanelContainer/VBoxContainer/ActionsContainer"]
+text = "🔄 Cambiar Ruta"
+custom_minimum_size = Vector2(200, 50)
+add_theme_font_size_override/font_size = 20
+
+[node name="ResetButton" type="Button" parent="PanelContainer/VBoxContainer/ActionsContainer"]
+text = "🔄 Reiniciar Perfil"
+custom_minimum_size = Vector2(200, 50)
+add_theme_font_size_override/font_size = 20
+
+[node name="CloseButton" type="Button" parent="PanelContainer/VBoxContainer/ActionsContainer"]
+text = "❌ Cerrar"
+custom_minimum_size = Vector2(200, 50)
+add_theme_font_size_override/font_size = 20

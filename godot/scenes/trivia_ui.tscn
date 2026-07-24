@@ -1,0 +1,113 @@
+[gd_scene load_steps=4 format=3 uid="uid://tr1v14u1tscn"]
+
+[ext_resource type="Script" path="res://scripts/trivia_ui.gd" id="1_scr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.1, 0.14, 0.25, 0.95)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.9, 0.7, 0.2, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_left = 20
+corner_radius_bottom_right = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_narrate"]
+bg_color = Color(0.16, 0.62, 0.56, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 5
+border_color = Color(0.1, 0.08, 0.2, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_left = 14
+corner_radius_bottom_right = 14
+
+[node name="TriviaUI" type="CanvasLayer"]
+script = ExtResource("1_scr")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1024.0
+offset_bottom = 600.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -180.0
+offset_right = 320.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SpacerTop" type="Control" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+
+[node name="TitleLabel" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Totem de Sabiduria"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+
+[node name="TextLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 60)
+text = "Texto informativo."
+theme_override_font_sizes/normal_font_size = 14
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+
+[node name="PlayNarration" type="Button" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "🔊  Escuchar Historia"
+theme_override_font_sizes/font_size = 22
+custom_minimum_size = Vector2(0, 52)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_narrate")
+theme_override_styles/hover = SubResource("StyleBoxFlat_narrate")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_narrate")
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/default_color = Color(0.9, 0.7, 0.2, 0.5)
+
+[node name="QuestionLabel" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Pregunta de opcion multiple"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="Option1Button" type="Button" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Opcion 1"
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="Option2Button" type="Button" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Opcion 2"
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="FeedbackLabel" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Excelente!"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.4, 1, 0.4, 1)

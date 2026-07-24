@@ -1,0 +1,810 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_jar04"]
+[ext_resource type="Script" path="res://scripts/zone_portal.gd" id="2_f3hka"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_j0f3j"]
+size = Vector3(40, 0.3, 30)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qn2bx"]
+size = Vector3(40, 0.3, 30)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cwivo"]
+albedo_color = Color(0.45, 0.48, 0.42, 1)
+roughness = 0.85
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7wtd0"]
+size = Vector3(40, 0.15, 20)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mf2rg"]
+size = Vector3(40, 0.15, 20)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sa3fh"]
+albedo_color = Color(0.2, 0.4, 0.58, 1)
+metallic = 0.15
+roughness = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0myc7"]
+size = Vector3(10, 0.15, 30)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wjbv4"]
+size = Vector3(10, 0.15, 30)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jt21p"]
+size = Vector3(10, 0.15, 30)
+
+[sub_resource type="BoxMesh" id="BoxMesh_4xlqw"]
+size = Vector3(10, 0.15, 30)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lq4qa"]
+albedo_color = Color(0.48, 0.45, 0.42, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dqlki"]
+albedo_color = Color(0.35, 0.25, 0.15, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fyl7f"]
+albedo_color = Color(0.22, 0.38, 0.18, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o3cr0"]
+albedo_color = Color(0.52, 0.44, 0.36, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cyfnx"]
+albedo_color = Color(0.35, 0.3, 0.25, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pjw24"]
+albedo_color = Color(0.55, 0.3, 0.22, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d4jt4"]
+albedo_color = Color(0.45, 0.32, 0.2, 1)
+roughness = 0.85
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7k5wm"]
+size = Vector3(8, 0.15, 1.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_8hl7l"]
+size = Vector3(8, 0.15, 1.5)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_eouyc"]
+height = 3.0
+radius = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_54ya3"]
+albedo_color = Color(1, 0.85, 0.4, 1)
+metallic = 0.5
+roughness = 0.25
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_v044n"]
+height = 3.0
+radius = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wd218"]
+albedo_color = Color(0.85, 0.5, 0.2, 1)
+metallic = 0.5
+roughness = 0.25
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fcylo"]
+radius = 0.35
+height = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4e6gf"]
+albedo_color = Color(0.95, 0.55, 0.15, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i4agx"]
+albedo_color = Color(0.95, 0.9, 0.8, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_04hq6"]
+albedo_color = Color(0.15, 0.12, 0.1, 1)
+roughness = 0.7
+
+[node name="LitoralPoetico" type="Node3D" unique_id=1203115435]
+
+[node name="Ground" type="StaticBody3D" parent="." unique_id=2140616565]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+
+[node name="CS" type="CollisionShape3D" parent="Ground" unique_id=2065036737]
+shape = SubResource("BoxShape3D_j0f3j")
+
+[node name="MI" type="MeshInstance3D" parent="Ground" unique_id=1939118756]
+mesh = SubResource("BoxMesh_qn2bx")
+surface_material_override/0 = SubResource("StandardMaterial3D_cwivo")
+
+[node name="Ocean_N" type="StaticBody3D" parent="." unique_id=542004245]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -20)
+
+[node name="CS" type="CollisionShape3D" parent="Ocean_N" unique_id=533424760]
+shape = SubResource("BoxShape3D_7wtd0")
+
+[node name="MI" type="MeshInstance3D" parent="Ocean_N" unique_id=1751259300]
+mesh = SubResource("BoxMesh_mf2rg")
+surface_material_override/0 = SubResource("StandardMaterial3D_sa3fh")
+
+[node name="Ocean_W" type="StaticBody3D" parent="." unique_id=99028540]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, -0.15, 4)
+
+[node name="CS" type="CollisionShape3D" parent="Ocean_W" unique_id=24794615]
+shape = SubResource("BoxShape3D_0myc7")
+
+[node name="MI" type="MeshInstance3D" parent="Ocean_W" unique_id=1201535578]
+mesh = SubResource("BoxMesh_wjbv4")
+surface_material_override/0 = SubResource("StandardMaterial3D_sa3fh")
+
+[node name="Ocean_E" type="StaticBody3D" parent="." unique_id=403069693]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, -0.15, 4)
+
+[node name="CS" type="CollisionShape3D" parent="Ocean_E" unique_id=1752549894]
+shape = SubResource("BoxShape3D_jt21p")
+
+[node name="MI" type="MeshInstance3D" parent="Ocean_E" unique_id=205798481]
+mesh = SubResource("BoxMesh_4xlqw")
+surface_material_override/0 = SubResource("StandardMaterial3D_sa3fh")
+
+[node name="Rock" type="CSGSphere3D" parent="." unique_id=1936519496]
+transform = Transform3D(0.76623183, 0, 0, 0, 0.5029642, 0, 0, 0, 1.0975986, -15, 0.6186774, -8)
+radius = 1.7617999
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="@CSGSphere3D@2" type="CSGSphere3D" parent="." unique_id=468515794]
+transform = Transform3D(1.0212598, 0, 0, 0, 0.6325396, 0, 0, 0, 1.0536615, -10, 0.5166544, -12)
+radius = 1.7806164
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="@CSGSphere3D@3" type="CSGSphere3D" parent="." unique_id=1660489764]
+transform = Transform3D(1.1400582, 0, 0, 0, 0.48031154, 0, 0, 0, 1.2871906, -5, 0.464825, -10)
+radius = 0.8501961
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="@CSGSphere3D@4" type="CSGSphere3D" parent="." unique_id=343642888]
+transform = Transform3D(1.0891471, 0, 0, 0, 0.5907651, 0, 0, 0, 0.87378037, 8, 0.4296313, -9)
+radius = 1.5225335
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="@CSGSphere3D@5" type="CSGSphere3D" parent="." unique_id=580710186]
+transform = Transform3D(1.2733085, 0, 0, 0, 0.6397218, 0, 0, 0, 1.0294248, 14, 0.6561635, -11)
+radius = 1.7954737
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="@CSGSphere3D@6" type="CSGSphere3D" parent="." unique_id=868418447]
+transform = Transform3D(1.0066794, 0, 0, 0, 0.30114138, 0, 0, 0, 1.1592782, 0, 0.36462623, -7)
+radius = 1.0325474
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="@CSGSphere3D@7" type="CSGSphere3D" parent="." unique_id=1947914316]
+transform = Transform3D(1.2126905, 0, 0, 0, 0.5528, 0, 0, 0, 1.2247887, -18, 0.4417413, -5)
+radius = 1.9788423
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="@CSGSphere3D@8" type="CSGSphere3D" parent="." unique_id=1529586443]
+transform = Transform3D(1.008175, 0, 0, 0, 0.36159217, 0, 0, 0, 1.0782273, 18, 0.3406813, -6)
+radius = 2.175186
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="@CSGSphere3D@9" type="CSGSphere3D" parent="." unique_id=380866382]
+transform = Transform3D(1.2915118, 0, 0, 0, 0.5902899, 0, 0, 0, 0.8637416, -3, 0.5259516, -14)
+radius = 1.0230691
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="@CSGSphere3D@10" type="CSGSphere3D" parent="." unique_id=1929390342]
+transform = Transform3D(1.1710259, 0, 0, 0, 0.36080116, 0, 0, 0, 0.8183285, 12, 0.60368574, -13)
+radius = 1.1291414
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="Cliff_0" type="CSGSphere3D" parent="." unique_id=1468125416]
+transform = Transform3D(1, 0, 0, 0, 0.35923234, 0, 0, 0, 0.8717066, -16, 0.3, -16)
+radius = 3.0248039
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="Cliff_1" type="CSGSphere3D" parent="." unique_id=815724211]
+transform = Transform3D(1, 0, 0, 0, 0.41268057, 0, 0, 0, 1.0513952, -9, 0.3, -16)
+radius = 3.326353
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="Cliff_2" type="CSGSphere3D" parent="." unique_id=591636909]
+transform = Transform3D(1, 0, 0, 0, 0.5362001, 0, 0, 0, 0.8924742, -2, 0.3, -16)
+radius = 2.9702373
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="Cliff_3" type="CSGSphere3D" parent="." unique_id=1901330804]
+transform = Transform3D(1, 0, 0, 0, 0.45898616, 0, 0, 0, 0.8635389, 5, 0.3, -16)
+radius = 3.3053346
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="Cliff_4" type="CSGSphere3D" parent="." unique_id=1420792522]
+transform = Transform3D(1, 0, 0, 0, 0.370261, 0, 0, 0, 1.0758538, 12, 0.3, -16)
+radius = 1.717726
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="Cliff_5" type="CSGSphere3D" parent="." unique_id=631683954]
+transform = Transform3D(1, 0, 0, 0, 0.4540034, 0, 0, 0, 1.1818886, 19, 0.3, -16)
+radius = 1.5586379
+material = SubResource("StandardMaterial3D_lq4qa")
+
+[node name="Pine_0" type="Node3D" parent="." unique_id=2051997704]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.497519, 0.2, 13.005591)
+
+[node name="Trunk" type="CSGCylinder3D" parent="Pine_0" unique_id=424857101]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8818961, 0)
+radius = 0.12
+height = 1.7637922
+material = SubResource("StandardMaterial3D_dqlki")
+
+[node name="Foliage_0" type="CSGCylinder3D" parent="Pine_0" unique_id=860670694]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1758615, 0)
+radius = 0.8113444
+height = 0.7349134
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_1" type="CSGCylinder3D" parent="Pine_0" unique_id=298301848]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7049991, 0)
+radius = 0.6349652
+height = 0.7349134
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_2" type="CSGCylinder3D" parent="Pine_0" unique_id=256927883]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2341368, 0)
+radius = 0.45858598
+height = 0.7349134
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Pine_1" type="Node3D" parent="." unique_id=1240130770]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.979727, 0.2, 9.845867)
+
+[node name="Trunk" type="CSGCylinder3D" parent="Pine_1" unique_id=1011686531]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0625908, 0)
+radius = 0.12
+height = 2.1251817
+material = SubResource("StandardMaterial3D_dqlki")
+
+[node name="Foliage_0" type="CSGCylinder3D" parent="Pine_1" unique_id=1495661978]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4167879, 0)
+radius = 0.97758365
+height = 0.8854924
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_1" type="CSGCylinder3D" parent="Pine_1" unique_id=1931025495]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0543423, 0)
+radius = 0.76506543
+height = 0.8854924
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_2" type="CSGCylinder3D" parent="Pine_1" unique_id=65639596]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.691897, 0)
+radius = 0.5525473
+height = 0.8854924
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Pine_2" type="Node3D" parent="." unique_id=232284662]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.875598, 0.2, 9.790486)
+
+[node name="Trunk" type="CSGCylinder3D" parent="Pine_2" unique_id=717294038]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.98745316, 0)
+radius = 0.12
+height = 1.9749063
+material = SubResource("StandardMaterial3D_dqlki")
+
+[node name="Foliage_0" type="CSGCylinder3D" parent="Pine_2" unique_id=1583168666]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3166043, 0)
+radius = 0.9084569
+height = 0.82287765
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_1" type="CSGCylinder3D" parent="Pine_2" unique_id=166937050]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9090761, 0)
+radius = 0.7109663
+height = 0.82287765
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_2" type="CSGCylinder3D" parent="Pine_2" unique_id=971660626]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.501548, 0)
+radius = 0.51347566
+height = 0.82287765
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Pine_3" type="Node3D" parent="." unique_id=1063091947]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.400547, 0.2, 4.591588)
+
+[node name="Trunk" type="CSGCylinder3D" parent="Pine_3" unique_id=1434550449]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.68325275, 0)
+radius = 0.12
+height = 1.3665055
+material = SubResource("StandardMaterial3D_dqlki")
+
+[node name="Foliage_0" type="CSGCylinder3D" parent="Pine_3" unique_id=1699839266]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.91100365, 0)
+radius = 0.6285925
+height = 0.56937724
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_1" type="CSGCylinder3D" parent="Pine_3" unique_id=1163741439]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3209553, 0)
+radius = 0.49194196
+height = 0.56937724
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_2" type="CSGCylinder3D" parent="Pine_3" unique_id=1315431320]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.730907, 0)
+radius = 0.35529143
+height = 0.56937724
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Pine_4" type="Node3D" parent="." unique_id=643281016]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.4299335, 0.2, 12.595239)
+
+[node name="Trunk" type="CSGCylinder3D" parent="Pine_4" unique_id=1638143168]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5470301, 0)
+radius = 0.12
+height = 1.0940602
+material = SubResource("StandardMaterial3D_dqlki")
+
+[node name="Foliage_0" type="CSGCylinder3D" parent="Pine_4" unique_id=2044604954]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72937346, 0)
+radius = 0.5032677
+height = 0.4558584
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_1" type="CSGCylinder3D" parent="Pine_4" unique_id=664559194]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0575916, 0)
+radius = 0.39386165
+height = 0.4558584
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_2" type="CSGCylinder3D" parent="Pine_4" unique_id=263401884]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3858095, 0)
+radius = 0.28445566
+height = 0.4558584
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Pine_5" type="Node3D" parent="." unique_id=1891085205]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.46322542, 0.2, 4.489605)
+
+[node name="Trunk" type="CSGCylinder3D" parent="Pine_5" unique_id=897882326]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7079796, 0)
+radius = 0.12
+height = 1.4159592
+material = SubResource("StandardMaterial3D_dqlki")
+
+[node name="Foliage_0" type="CSGCylinder3D" parent="Pine_5" unique_id=2103001101]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9439728, 0)
+radius = 0.65134126
+height = 0.58998305
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_1" type="CSGCylinder3D" parent="Pine_5" unique_id=1146929647]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3687606, 0)
+radius = 0.50974536
+height = 0.58998305
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_2" type="CSGCylinder3D" parent="Pine_5" unique_id=3332619]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7935483, 0)
+radius = 0.3681494
+height = 0.58998305
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Pine_6" type="Node3D" parent="." unique_id=895413338]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6633964, 0.2, 8.890153)
+
+[node name="Trunk" type="CSGCylinder3D" parent="Pine_6" unique_id=1384710322]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6210563, 0)
+radius = 0.12
+height = 1.2421126
+material = SubResource("StandardMaterial3D_dqlki")
+
+[node name="Foliage_0" type="CSGCylinder3D" parent="Pine_6" unique_id=1958620126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8280751, 0)
+radius = 0.57137185
+height = 0.51754695
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_1" type="CSGCylinder3D" parent="Pine_6" unique_id=946769805]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.200709, 0)
+radius = 0.44716057
+height = 0.51754695
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_2" type="CSGCylinder3D" parent="Pine_6" unique_id=797739174]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5733427, 0)
+radius = 0.3229493
+height = 0.51754695
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Pine_7" type="Node3D" parent="." unique_id=154135621]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.0795946, 0.2, 12.31991)
+
+[node name="Trunk" type="CSGCylinder3D" parent="Pine_7" unique_id=1974688045]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.124271, 0)
+radius = 0.12
+height = 2.248542
+material = SubResource("StandardMaterial3D_dqlki")
+
+[node name="Foliage_0" type="CSGCylinder3D" parent="Pine_7" unique_id=367747527]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4990281, 0)
+radius = 1.0343294
+height = 0.93689257
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_1" type="CSGCylinder3D" parent="Pine_7" unique_id=2115429465]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1735907, 0)
+radius = 0.8094752
+height = 0.93689257
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_2" type="CSGCylinder3D" parent="Pine_7" unique_id=1117912605]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8481534, 0)
+radius = 0.58462095
+height = 0.93689257
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Pine_8" type="Node3D" parent="." unique_id=1058154101]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.522006, 0.2, 4.17432)
+
+[node name="Trunk" type="CSGCylinder3D" parent="Pine_8" unique_id=1033868804]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.59797245, 0)
+radius = 0.12
+height = 1.1959449
+material = SubResource("StandardMaterial3D_dqlki")
+
+[node name="Foliage_0" type="CSGCylinder3D" parent="Pine_8" unique_id=1793582499]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7972966, 0)
+radius = 0.55013466
+height = 0.49831036
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_1" type="CSGCylinder3D" parent="Pine_8" unique_id=1057790843]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15608, 0)
+radius = 0.43054014
+height = 0.49831036
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_2" type="CSGCylinder3D" parent="Pine_8" unique_id=571927246]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5148635, 0)
+radius = 0.31094566
+height = 0.49831036
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Pine_9" type="Node3D" parent="." unique_id=809307637]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.483353, 0.2, 12.521654)
+
+[node name="Trunk" type="CSGCylinder3D" parent="Pine_9" unique_id=1597886006]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.94970244, 0)
+radius = 0.12
+height = 1.8994049
+material = SubResource("StandardMaterial3D_dqlki")
+
+[node name="Foliage_0" type="CSGCylinder3D" parent="Pine_9" unique_id=1012065907]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2662699, 0)
+radius = 0.87372625
+height = 0.7914187
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_1" type="CSGCylinder3D" parent="Pine_9" unique_id=686187999]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8360914, 0)
+radius = 0.68378574
+height = 0.7914187
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_2" type="CSGCylinder3D" parent="Pine_9" unique_id=940938197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4059129, 0)
+radius = 0.49384525
+height = 0.7914187
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Pine_10" type="Node3D" parent="." unique_id=1395179872]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.982693, 0.2, 4.336948)
+
+[node name="Trunk" type="CSGCylinder3D" parent="Pine_10" unique_id=327375777]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.50779796, 0)
+radius = 0.12
+height = 1.0155959
+material = SubResource("StandardMaterial3D_dqlki")
+
+[node name="Foliage_0" type="CSGCylinder3D" parent="Pine_10" unique_id=1594211896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67706394, 0)
+radius = 0.4671741
+height = 0.42316496
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_1" type="CSGCylinder3D" parent="Pine_10" unique_id=175140611]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9817427, 0)
+radius = 0.36561453
+height = 0.42316496
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_2" type="CSGCylinder3D" parent="Pine_10" unique_id=1232068323]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2864214, 0)
+radius = 0.26405492
+height = 0.42316496
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Pine_11" type="Node3D" parent="." unique_id=539341761]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.806725, 0.2, 6.561122)
+
+[node name="Trunk" type="CSGCylinder3D" parent="Pine_11" unique_id=619335482]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85467345, 0)
+radius = 0.12
+height = 1.7093469
+material = SubResource("StandardMaterial3D_dqlki")
+
+[node name="Foliage_0" type="CSGCylinder3D" parent="Pine_11" unique_id=151173803]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1395646, 0)
+radius = 0.7862996
+height = 0.7122279
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_1" type="CSGCylinder3D" parent="Pine_11" unique_id=1562980892]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6523687, 0)
+radius = 0.6153649
+height = 0.7122279
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="Foliage_2" type="CSGCylinder3D" parent="Pine_11" unique_id=1014406099]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1651728, 0)
+radius = 0.4444302
+height = 0.7122279
+material = SubResource("StandardMaterial3D_fyl7f")
+
+[node name="CasaPoeta" type="Node3D" parent="." unique_id=699305419]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 12)
+
+[node name="WallB" type="CSGBox3D" parent="CasaPoeta" unique_id=1731892827]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, -2)
+size = Vector3(6, 3.5, 0.4)
+material = SubResource("StandardMaterial3D_o3cr0")
+
+[node name="WallF" type="CSGBox3D" parent="CasaPoeta" unique_id=1365116727]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 2)
+size = Vector3(6, 3.5, 0.4)
+material = SubResource("StandardMaterial3D_o3cr0")
+
+[node name="WallL" type="CSGBox3D" parent="CasaPoeta" unique_id=377209651]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.75, 0)
+size = Vector3(0.4, 3.5, 4)
+material = SubResource("StandardMaterial3D_o3cr0")
+
+[node name="WallR" type="CSGBox3D" parent="CasaPoeta" unique_id=376130942]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.75, 0)
+size = Vector3(0.4, 3.5, 4)
+material = SubResource("StandardMaterial3D_o3cr0")
+
+[node name="WinF1" type="CSGBox3D" parent="CasaPoeta" unique_id=1238812242]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2.5, 2.21)
+size = Vector3(1, 1.2, 0.1)
+material = SubResource("StandardMaterial3D_cyfnx")
+
+[node name="WinF2" type="CSGBox3D" parent="CasaPoeta" unique_id=1869578420]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2.5, 2.21)
+size = Vector3(1, 1.2, 0.1)
+material = SubResource("StandardMaterial3D_cyfnx")
+
+[node name="WinB1" type="CSGBox3D" parent="CasaPoeta" unique_id=1682912229]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2.5, -2.21)
+size = Vector3(1, 1.2, 0.1)
+material = SubResource("StandardMaterial3D_cyfnx")
+
+[node name="WinB2" type="CSGBox3D" parent="CasaPoeta" unique_id=669954231]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2.5, -2.21)
+size = Vector3(1, 1.2, 0.1)
+material = SubResource("StandardMaterial3D_cyfnx")
+
+[node name="RoofL" type="CSGBox3D" parent="CasaPoeta" unique_id=1311002479]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.9, -1)
+size = Vector3(7, 0.3, 3)
+material = SubResource("StandardMaterial3D_pjw24")
+
+[node name="RoofR" type="CSGBox3D" parent="CasaPoeta" unique_id=477377647]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.9, 1)
+size = Vector3(7, 0.3, 3)
+material = SubResource("StandardMaterial3D_pjw24")
+
+[node name="Ridge" type="CSGBox3D" parent="CasaPoeta" unique_id=715152713]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.15, 0)
+size = Vector3(7.3, 0.2, 0.2)
+material = SubResource("StandardMaterial3D_cyfnx")
+
+[node name="Door" type="CSGBox3D" parent="CasaPoeta" unique_id=1455672277]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 2.21)
+size = Vector3(1.2, 2.2, 0.15)
+material = SubResource("StandardMaterial3D_cyfnx")
+
+[node name="Chimney" type="CSGCylinder3D" parent="CasaPoeta" unique_id=106766111]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 4.5, -1)
+radius = 0.2
+material = SubResource("StandardMaterial3D_o3cr0")
+
+[node name="Post_0" type="CSGCylinder3D" parent="." unique_id=1193866833]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, -6)
+radius = 0.06
+height = 1.5
+material = SubResource("StandardMaterial3D_d4jt4")
+
+[node name="Post_1" type="CSGCylinder3D" parent="." unique_id=189538666]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1, -6)
+radius = 0.06
+height = 1.5
+material = SubResource("StandardMaterial3D_d4jt4")
+
+[node name="Post_2" type="CSGCylinder3D" parent="." unique_id=447435587]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -6)
+radius = 0.06
+height = 1.5
+material = SubResource("StandardMaterial3D_d4jt4")
+
+[node name="Post_3" type="CSGCylinder3D" parent="." unique_id=886250975]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, -6)
+radius = 0.06
+height = 1.5
+material = SubResource("StandardMaterial3D_d4jt4")
+
+[node name="Post_4" type="CSGCylinder3D" parent="." unique_id=596901933]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1, -6)
+radius = 0.06
+height = 1.5
+material = SubResource("StandardMaterial3D_d4jt4")
+
+[node name="Pier" type="StaticBody3D" parent="." unique_id=780466865]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -12)
+
+[node name="CS" type="CollisionShape3D" parent="Pier" unique_id=527698303]
+shape = SubResource("BoxShape3D_7k5wm")
+
+[node name="MI" type="MeshInstance3D" parent="Pier" unique_id=1292386761]
+mesh = SubResource("BoxMesh_8hl7l")
+surface_material_override/0 = SubResource("StandardMaterial3D_d4jt4")
+
+[node name="PierLeg_0" type="CSGCylinder3D" parent="." unique_id=931638858]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, -12)
+radius = 0.08
+material = SubResource("StandardMaterial3D_d4jt4")
+
+[node name="PierLeg_1" type="CSGCylinder3D" parent="." unique_id=1622026231]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -12)
+radius = 0.08
+material = SubResource("StandardMaterial3D_d4jt4")
+
+[node name="PierLeg_2" type="CSGCylinder3D" parent="." unique_id=964402390]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.5, -12)
+radius = 0.08
+material = SubResource("StandardMaterial3D_d4jt4")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=745448750]
+transform = Transform3D(0.866, 0, -0.5, -0.2, 0.9, -0.346, 0.45, 0.435, 0.78, 8, 10, -5)
+light_color = Color(0.65, 0.72, 0.85, 1)
+light_energy = 1.6
+shadow_enabled = true
+
+[node name="AmbientFill" type="DirectionalLight3D" parent="." unique_id=835509910]
+transform = Transform3D(0.5, -0.866, 0, 0.612, 0.354, -0.707, 0.612, 0.354, 0.707, -8, 5, -8)
+light_color = Color(0.45, 0.52, 0.7, 1)
+light_energy = 0.3
+
+[node name="FogLight" type="DirectionalLight3D" parent="." unique_id=1106072156]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 3, 0)
+light_color = Color(0.55, 0.6, 0.72, 1)
+light_energy = 0.25
+
+[node name="GameCamera" type="Camera3D" parent="." unique_id=809311279]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 18)
+current = true
+fov = 55.0
+far = 200.0
+
+[node name="portal_coastal" type="Area3D" parent="." unique_id=1587919643]
+script = ExtResource("2_f3hka")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0.3, 14)
+collision_layer = 4
+
+[node name="CS" type="CollisionShape3D" parent="portal_coastal" unique_id=1273453020]
+shape = SubResource("CylinderShape3D_eouyc")
+
+[node name="Ring" type="CSGCylinder3D" parent="portal_coastal" unique_id=1294539751]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+radius = 1.3
+height = 0.15
+material = SubResource("StandardMaterial3D_54ya3")
+
+[node name="PortalLabel" type="Label3D" parent="portal_coastal" unique_id=1326083717]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+pixel_size = 0.004
+billboard = 1
+modulate = Color(1, 0.85, 0.4, 1)
+text = "Plaza Costera"
+font_size = 26
+outline_size = 4
+
+[node name="portal_puerto" type="Area3D" parent="." unique_id=1549866789]
+script = ExtResource("2_f3hka")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0.3, 14)
+collision_layer = 4
+
+[node name="CS" type="CollisionShape3D" parent="portal_puerto" unique_id=1846954406]
+shape = SubResource("CylinderShape3D_v044n")
+
+[node name="Ring" type="CSGCylinder3D" parent="portal_puerto" unique_id=1051027151]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+radius = 1.3
+height = 0.15
+material = SubResource("StandardMaterial3D_wd218")
+
+[node name="PortalLabel" type="Label3D" parent="portal_puerto" unique_id=1297251643]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+pixel_size = 0.004
+billboard = 1
+modulate = Color(0.85, 0.5, 0.2, 1)
+text = "Puerto Principal"
+font_size = 26
+outline_size = 4
+
+[node name="Player" type="CharacterBody3D" parent="." unique_id=843458956]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -6)
+script = ExtResource("1_jar04")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=2058741301]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("CapsuleShape3D_fcylo")
+
+[node name="CatBody" type="Node3D" parent="Player" unique_id=1377403324]
+
+[node name="Torso" type="CSGCylinder3D" parent="Player/CatBody" unique_id=782080321]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.48, 0)
+radius = 0.22
+height = 0.85
+material = SubResource("StandardMaterial3D_4e6gf")
+
+[node name="Head" type="CSGSphere3D" parent="Player/CatBody" unique_id=846487246]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.44, -0.52)
+radius = 0.2
+material = SubResource("StandardMaterial3D_4e6gf")
+
+[node name="Belly" type="CSGSphere3D" parent="Player/CatBody" unique_id=1237490979]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0.05)
+radius = 0.16
+material = SubResource("StandardMaterial3D_i4agx")
+
+[node name="LegFL" type="CSGCylinder3D" parent="Player/CatBody" unique_id=1061897962]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, 0.16, -0.22)
+radius = 0.07
+height = 0.32
+material = SubResource("StandardMaterial3D_04hq6")
+
+[node name="LegFR" type="CSGCylinder3D" parent="Player/CatBody" unique_id=1917946148]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12, 0.16, -0.22)
+radius = 0.07
+height = 0.32
+material = SubResource("StandardMaterial3D_04hq6")
+
+[node name="LegBL" type="CSGCylinder3D" parent="Player/CatBody" unique_id=1820574077]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, 0.16, 0.22)
+radius = 0.07
+height = 0.32
+material = SubResource("StandardMaterial3D_04hq6")
+
+[node name="LegBR" type="CSGCylinder3D" parent="Player/CatBody" unique_id=1730559286]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12, 0.16, 0.22)
+radius = 0.07
+height = 0.32
+material = SubResource("StandardMaterial3D_04hq6")
+
+[node name="Tail" type="CSGCylinder3D" parent="Player/CatBody" unique_id=549243359]
+transform = Transform3D(0.9659258, -0.25881904, 0, 0.1982669, 0.7399421, 0.6427876, -0.16636567, -0.62088513, 0.76604444, -0.08, 0.55, 0.38)
+radius = 0.05
+height = 0.45
+material = SubResource("StandardMaterial3D_4e6gf")
+
+[node name="EarL" type="CSGCylinder3D" parent="Player/CatBody" unique_id=1043723517]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0.58, -0.55)
+radius = 0.03
+height = 0.18
+material = SubResource("StandardMaterial3D_4e6gf")
+
+[node name="EarR" type="CSGCylinder3D" parent="Player/CatBody" unique_id=1092531130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.58, -0.55)
+radius = 0.03
+height = 0.18
+material = SubResource("StandardMaterial3D_4e6gf")

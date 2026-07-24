@@ -1,0 +1,34 @@
+# Godot auto-generated files
+.godot/
+*.godot.uid
+*.import
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backups
+backups/
+backups_3d/
+backups_cat/
+*.bak
+*.bak2
+
+# Export builds
+export/
+web/
+public/
+*.wasm
+*.pck
+*.js
+
+# Ziva agent addon (proprietary binary)
+addons/ziva_agent/
+
+# Scrap/temp
+node_modules/
+dist/
+build/
+*.log
+*.tmp
+*.cache

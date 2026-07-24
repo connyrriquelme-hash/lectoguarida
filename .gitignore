@@ -30,3 +30,7 @@ outputs/*/.env
 Thumbs.db
 # CI artifacts (not versioned)
 outputs/*/artifacts/
+
+# Godot project files
+godot/.godot/
+godot/*.import

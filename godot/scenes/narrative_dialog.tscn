@@ -1,0 +1,86 @@
+[gd_scene load_steps=3 format=3 uid="uid://narrativedialog"]
+
+[ext_resource type="Script" path="res://scripts/narrative_dialog.gd" id="1"]
+
+[sub_resource type="StyleBoxFlat" id="1"]
+bg_color = Color(0.96, 0.94, 0.91, 1.0)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.56, 0.41, 0.76, 1.0)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="NarrativeDialog" type="CanvasLayer"]
+layer = 20
+script = ExtResource("1")
+
+[node name="Overlay" type="ColorRect" parent="."]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.7)
+mouse_filter = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchor_left = 0.12
+anchor_top = 0.2
+anchor_right = 0.88
+anchor_bottom = 0.82
+theme_override_styles/panel = SubResource("1")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PortraitRect" type="TextureRect" parent="PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(128, 128)
+expand_mode = 1
+stretch_mode = 5
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SpeakerLabel" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+text = "Lechuza Lila"
+add_theme_font_size_override/font_size = 26
+add_theme_color_override/font_color = Color(0.56, 0.41, 0.76, 1.0)
+horizontal_alignment = 0
+
+[node name="TextLabel" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+text = ""
+custom_minimum_size = Vector2(0, 100)
+add_theme_font_size_override/font_size = 24
+add_theme_color_override/font_color = Color(0.17, 0.18, 0.26, 1.0)
+autowrap_mode = 2
+size_flags_vertical = 3
+
+[node name="AudioButton" type="Button" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+text = "🔊 Escuchar"
+custom_minimum_size = Vector2(160, 40)
+add_theme_font_size_override/font_size = 18
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+
+[node name="HSeparator2" type="HSeparator" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+alignment = 1
+
+[node name="ContinueButton" type="Button" parent="PanelContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+text = "Siguiente →"
+custom_minimum_size = Vector2(180, 50)
+add_theme_font_size_override/font_size = 22
+
+[node name="SkipButton" type="Button" parent="PanelContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+text = "Saltar"
+add_theme_font_size_override/font_size = 16
+flat = true
+add_theme_color_override/font_color = Color(0.56, 0.41, 0.76, 1.0)

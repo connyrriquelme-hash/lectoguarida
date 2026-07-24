@@ -1,0 +1,114 @@
+[gd_scene load_steps=3 format=3 uid="uid://readingchallenge"]
+
+[ext_resource type="Script" path="res://scripts/reading_challenge_ui.gd" id="1"]
+
+[sub_resource type="StyleBoxFlat" id="1"]
+bg_color = Color(0.957, 0.941, 0.906, 0.95)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.557, 0.412, 0.757, 0.3)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="ReadingChallengeUI" type="CanvasLayer"]
+script = ExtResource("1")
+layer = 10
+
+[node name="Overlay" type="ColorRect" parent="."]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.4)
+mouse_filter = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchor_left = 0.0
+anchor_top = 0.05
+anchor_right = 1.0
+anchor_bottom = 0.95
+offset_left = 420
+offset_right = -30
+offset_top = 0
+offset_bottom = 0
+theme_override_styles/panel = SubResource("1")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CatPortraitMargin" type="MarginContainer" parent="PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(10, 10)
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="AbilityLabel" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+text = "Habilidad: Reconocimiento de letras"
+add_theme_font_size_override/font_size = 18
+add_theme_color_override/font_color = Color(0.557, 0.412, 0.757, 1)
+horizontal_alignment = 0
+
+[node name="InstrLabel" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+text = "Instrucción"
+add_theme_font_size_override/font_size = 24
+add_theme_color_override/font_color = Color(0.169, 0.176, 0.259, 1)
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="AudioButton" type="Button" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+text = "🔊 Escuchar instrucción"
+custom_minimum_size = Vector2(200, 40)
+add_theme_font_size_override/font_size = 18
+size_flags_horizontal = 4
+
+[node name="StimulusLabel" type="RichTextLabel" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+text = ""
+custom_minimum_size = Vector2(0, 50)
+add_theme_font_size_override/normal_font_size = 28
+add_theme_color_override/default_color = Color(0.169, 0.176, 0.259, 1)
+horizontal_alignment = 1
+autowrap_mode = 2
+fit_content = true
+
+[node name="OptionsContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+alignment = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HintButton" type="Button" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+text = "💡 Pista"
+custom_minimum_size = Vector2(120, 40)
+add_theme_font_size_override/font_size = 18
+size_flags_horizontal = 4
+
+[node name="HintText" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+text = ""
+add_theme_font_size_override/font_size = 20
+add_theme_color_override/font_color = Color(0.482, 0.369, 0.655, 1)
+autowrap_mode = 2
+visible = false
+size_flags_horizontal = 4
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+
+[node name="FeedbackLabel" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+text = ""
+add_theme_font_size_override/font_size = 22
+autowrap_mode = 2
+horizontal_alignment = 1
+visible = false
+
+[node name="ConfirmButton" type="Button" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+text = "✅ Confirmar"
+custom_minimum_size = Vector2(260, 55)
+add_theme_font_size_override/font_size = 24
+disabled = true
+size_flags_horizontal = 4
