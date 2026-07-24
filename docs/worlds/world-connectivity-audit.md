@@ -64,3 +64,14 @@
 | Unlocked worlds | ✅ | ProgressionManager |
 | Golden kitten | ✅ | rescue_golden_kitten() preserved |
 | House furniture | ✅ | HouseBuilder saves to ProgressionManager |
+
+## Graphical Artifact Root Cause
+
+| Finding | Value |
+|---------|-------|
+| **ARTIFACT_ROOT_CAUSE** | **Surfaces coplanares confirmadas**: Puentes de `world_repair.gd` en Y=-0.1 (superficie superior Y=0.0) y suelos de zona en Y=-0.2 con alto 0.4 (superficie superior Y=0.0) — ambas superficies exactamente en Y=0.0 → z-fighting |
+| **AFFECTED_SCENES** | `main_world.tscn` (runtime), todas las conexiones entre zonas A-I |
+| **COPLANAR_SURFACES_FIXED** | 14 puentes bajados de Y=-0.1 → Y=-0.15 (superficie ahora Y=-0.05, ya no coincide con suelos) |
+| **DUPLICATE_MESHES_REMOVED** | ~134 líneas de geometría duplicada eliminadas de `main_world.gd` (Commit 1) |
+| **SHADOW_ACNE** | No presente (bias 0.005, normal_bias 0.01, PCF filter) |
+| **LINES_VISIBLE_AFTER** | **0 esperado** (QA humano requiere verificar en Godot) |
