@@ -13,15 +13,15 @@ extends Area3D
 ## Color of the portal indicator
 @export var glow_color: Color = Color(0.3, 0.7, 1.0, 1.0)
 
-## Scene file paths for each zone
-const ZONE_PATHS: Dictionary = {
-	"coastal": "res://scenes/zone_a_coastal.tscn",
-	"wetland": "res://scenes/zone_b_humedal.tscn",
-	"foothills": "res://scenes/zone_c_estribaciones.tscn",
-}
+## Portal source zone name (set by main_world.gd during setup for return routing)
+var source_zone: String = ""
+
+## Cooldown period to prevent infinite warp bouncing
+const PORTAL_COOLDOWN: float = 1.0
 
 var _idle_phase: float = 0.0
 var _visual_arch: Node3D = null
+var _cooldown_remaining: float = 0.0
 
 
 func _ready() -> void:
@@ -29,7 +29,6 @@ func _ready() -> void:
 	if is_instance_valid(portal_label):
 		portal_label.modulate = glow_color
 	
-	# Build a proper vertical ring portal instead of flat disc
 	call_deferred("_build_visual_portal")
 
 
@@ -49,7 +48,6 @@ func _build_visual_portal() -> void:
 	
 	var ring_mi := MeshInstance3D.new()
 	ring_mi.name = "Ring"
-	# Use a thin cylinder as a ring (rotated to stand vertical)
 	var ring_mesh := CylinderMesh.new()
 	ring_mesh.top_radius = 1.0
 	ring_mesh.bottom_radius = 1.0
@@ -57,10 +55,10 @@ func _build_visual_portal() -> void:
 	ring_mi.mesh = ring_mesh
 	ring_mi.material_override = ring_mat
 	ring_mi.position = Vector3(0, 1.5, 0)
-	ring_mi.rotation.x = PI / 2.0  # Stand vertical
+	ring_mi.rotation.x = PI / 2.0
 	_visual_arch.add_child(ring_mi)
 	
-	# Inner glow disc (semi-transparent)
+	# Inner glow disc
 	var glow_mat := StandardMaterial3D.new()
 	glow_mat.albedo_color = Color(glow_color.r, glow_color.g, glow_color.b, 0.15)
 	glow_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -97,7 +95,7 @@ func _build_visual_portal() -> void:
 	base_mi.position = Vector3(0, 0.1, 0)
 	_visual_arch.add_child(base_mi)
 	
-	# Look for old ring and remove it, then add new visuals
+	# Remove old ring if present
 	var old_ring: Node = get_node_or_null("Ring")
 	if old_ring:
 		remove_child(old_ring)
@@ -107,13 +105,19 @@ func _build_visual_portal() -> void:
 
 
 func _process(delta: float) -> void:
+	# Cooldown — disable collision during cooldown to prevent re-trigger
+	if _cooldown_remaining > 0.0:
+		_cooldown_remaining -= delta
+		if _cooldown_remaining <= 0.0:
+			_cooldown_remaining = 0.0
+			monitoring = true
+	
+	# Visual animation
 	_idle_phase += delta
 	if _visual_arch:
-		# Slow rotation on the ring
 		var ring: Node = _visual_arch.get_node_or_null("Ring")
 		if ring:
 			ring.rotation.z += delta * 0.5
-		# Pulse glow
 		var inner: Node = _visual_arch.get_node_or_null("InnerGlow")
 		if inner and inner is MeshInstance3D:
 			var mat: Material = inner.material_override
@@ -125,13 +129,21 @@ func _process(delta: float) -> void:
 func _on_body_entered(body: Node3D) -> void:
 	if not body is Player:
 		return
-
+	
+	# Prevent re-trigger during cooldown
+	if _cooldown_remaining > 0.0:
+		return
+	
+	# Start cooldown to prevent infinite bounce
+	_cooldown_remaining = PORTAL_COOLDOWN
+	monitoring = false  # Disable collision immediately
+	
 	# Open-world warp mode (priority)
 	if warp_target != Vector3.ZERO:
 		body.global_position = warp_target
 		return
-
-	# Legacy scene-change mode
+	
+	# Legacy scene-change mode (kept for ZoneManager compatibility)
 	var zm: Node = get_node_or_null("/root/ZoneManager")
 	if zm and zm.has_method("travel_to"):
 		zm.travel_to(destination)

@@ -350,6 +350,8 @@ func _ready() -> void:
 	#  TEACHER DASHBOARD — key T opens progress panel
 	# ═══════════════════════════════════════════════════════════════
 	set_process_input(true)
+n	# ── F8 debug recovery key ──
+	set_process_unhandled_key_input(true)
 
 	# ═══════════════════════════════════════════════════════════════
 	#  MOBILE CONTROLS — joystick + touch buttons
@@ -662,3 +664,27 @@ func _on_shop_zone_entered(body: Node3D, house_builder: Node) -> void:
 	add_child(shop_ui)
 	shop_ui.setup(house_builder)
 	shop_ui.shop_closed.connect(func(): pass)
+
+
+# ── F8 Debug Recovery Key ──
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.keycode == KEY_F8 and event.pressed:
+		_trigger_debug_recovery()
+
+
+func _trigger_debug_recovery() -> void:
+	"""F8: return player to last safe position (debug/dev only)."""
+	if not _player_ref or not _safety_system:
+		return
+	
+	print("MainWorld: F8 recovery triggered")
+	if _safety_system.has_method("force_rescue"):
+		_safety_system.force_rescue()
+
+
+## LastSafeTransform getter for other systems
+func get_safe_spawn() -> Vector3:
+	if _safety_system and _safety_system.has_method("get_last_safe_pos"):
+		return _safety_system.get_last_safe_pos()
+	return Vector3(0, 0.5, 0)
