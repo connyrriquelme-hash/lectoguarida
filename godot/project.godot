@@ -60,10 +60,20 @@ rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 textures/default_filters/anisotropic_filtering_level="4"
 anti_aliasing/quality/msaa_2d="0"
-anti_aliasing/quality/msaa_3d="1"
+anti_aliasing/quality/msaa_3d="2"
 anti_aliasing/quality/use_debanding="true"
 
 [run]
 
 main_scene="uid://d3te44mxdlmk0"
+
+
+[shadows]
+shadow/size/atlas_quadrant_0=1024
+shadow/size/atlas_quadrant_1=1024
+shadow/size/atlas_quadrant_2=2048
+shadow/size/atlas_quadrant_3=2048
+
+[quality]
+shadows/filter_mode=3
 

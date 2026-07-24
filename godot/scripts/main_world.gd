@@ -57,10 +57,6 @@ func _ready() -> void:
 	print("Zones: F=", "ok" if zf else "FAIL", " G=", "ok" if zg else "FAIL", " H=", "ok" if zh else "FAIL", " I=", "ok" if zi else "FAIL")
 
 	# ── Add collision grounds to zones that lack them (F-I use CSG only) ──
-	if zf: _add_zone_ground(zf as Node3D, Vector3(12, 0.1, 12), Vector3(0, -0.2, 0), Color(0.5, 0.7, 0.3))
-	if zg: _add_zone_ground(zg as Node3D, Vector3(10, 0.1, 10), Vector3(0, -0.2, 0), Color(0.6, 0.5, 0.4))
-	if zh: _add_zone_ground(zh as Node3D, Vector3(12, 0.1, 8), Vector3(0, -0.2, -2), Color(0.5, 0.45, 0.35))
-	if zi: _add_zone_ground(zi as Node3D, Vector3(12, 0.15, 12), Vector3(0, -0.2, 0), Color(0.7, 0.65, 0.55))
 
 	# ── Remove duplicate singletons from all non-A zones ──
 	_remove_all(zb, DUPLICATE_OLD)
@@ -80,9 +76,10 @@ func _ready() -> void:
 	global_sun.light_indirect_energy = 0.4
 	global_sun.light_specular = 0.3
 	global_sun.shadow_enabled = true
-	global_sun.shadow_blur = 8
-	global_sun.shadow_bias = 0.05
-	global_sun.directional_shadow_max_distance = 200.0
+	global_sun.shadow_blur = 2
+	global_sun.shadow_bias = 0.005
+	global_sun.shadow_normal_bias = 0.01
+	global_sun.directional_shadow_max_distance = 150.0
 	global_sun.rotation_degrees = Vector3(-45, 135, 0)  # ~mid-morning angle
 	global_sun.light_color = Color(1.0, 0.98, 0.92)     # warm white
 	add_child(global_sun)
@@ -402,31 +399,7 @@ func _set_warp(zone: Node3D, portal_name: String, target: Vector3) -> void:
 ## Creates a runtime portal (Area3D with zone_portal.gd logic) at given position
 # ── Zone ground safety ──
 
-func _add_zone_ground(zone: Node3D, size: Vector3, pos: Vector3, col: Color) -> void:
-	"""Add StaticBody3D collision floor to a zone that only has CSG visuals."""
-	var body := StaticBody3D.new()
-	body.name = "GroundCollision"
-	var shape := CollisionShape3D.new()
-	var box := BoxShape3D.new()
-	box.size = size
-	shape.shape = box
-	body.add_child(shape)
-	body.position = pos
-	zone.add_child(body)
-	# Visual mesh matching the collision
-	var mesh := MeshInstance3D.new()
-	var box_mesh := BoxMesh.new()
-	box_mesh.size = size
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = col
-	mat.roughness = 0.9
-	box_mesh.surface_set_material(0, mat)
-	mesh.mesh = box_mesh
-	mesh.position = pos
-	zone.add_child(mesh)
 
-
-func _add_edge_barrier(zone_name: String, pos: Vector3, size: Vector3) -> void:
 	"""Add an invisible collision barrier at zone edges to prevent falls.
 	The barrier extends past the ground edge to prevent any gap."""
 	var barrier := StaticBody3D.new()
@@ -449,7 +422,6 @@ func _add_edge_barrier(zone_name: String, pos: Vector3, size: Vector3) -> void:
 	add_child(barrier)
 
 
-func _add_connection_bridge(middle: Vector3, size: Vector3, col: Color) -> void:
 	"""Add a visual + physics bridge between two zones."""
 	var bridge := StaticBody3D.new()
 	bridge.name = "ConnectionBridge"
@@ -473,7 +445,6 @@ func _add_connection_bridge(middle: Vector3, size: Vector3, col: Color) -> void:
 	add_child(mesh)
 
 
-func _add_fence_segment(pos: Vector3, size: Vector3, col: Color) -> void:
 	"""Add a visible fence/barrier (visual hint, no collision)."""
 	var mesh := MeshInstance3D.new()
 	var box_mesh := BoxMesh.new()
@@ -542,106 +513,8 @@ func _add_portal(zone: Node3D, portal_name: String, clr: Color, pos: Vector3, la
 # ═══════════════════════════════════════════════════════════════
 
 func _build_zone_connections() -> void:
-	"""Connect all zones with bridges & edge barriers. Run once after all zones are loaded."""
-
-	var BRIDGE_COL := Color(0.5, 0.45, 0.35)  # earth tone
-	var FENCE_COL := Color(0.4, 0.25, 0.15)   # dark wood
-
-	# ── Bridges between adjacent zones ──
-	# A↔B: gap X=20 to X=30, 10 units wide. Bridge spans X=20 to X=30 at Z=0
-	_add_connection_bridge(Vector3(25, -0.15, 0), Vector3(10, 0.2, 20), BRIDGE_COL)
-	# A↔C: gap X=-30 to X=-20, 10 units wide
-	_add_connection_bridge(Vector3(-25, -0.15, 0), Vector3(10, 0.2, 20), BRIDGE_COL)
-	# B↔F: gap X=80 to X=94, 14 units wide
-	_add_connection_bridge(Vector3(87, -0.15, 0), Vector3(14, 0.2, 20), BRIDGE_COL)
-	# C↔G: gap X=-95 to X=-80, 15 units wide
-	_add_connection_bridge(Vector3(-87.5, -0.15, 0), Vector3(15, 0.2, 20), BRIDGE_COL)
-	# A↔Sanctuary: X=20 to X=20 (adjacent). Bridge at X=20
-	_add_connection_bridge(Vector3(10, -0.15, 0), Vector3(20, 0.2, 20), BRIDGE_COL)
-
-	# ── Edge barriers at all zone perimeters ──
-	# All barriers are centered ON the ground edge, overlapping 0.25 units inward
-	# Zone A: 40x40 centered at (0,0,0). Barriers split to leave passages for bridges & portals
-	_add_edge_barrier("A_E_N", Vector3(19.75, 0.5, -12), Vector3(0.5, 1.5, 16))   # Z=-20 to -4
-	_add_edge_barrier("A_E_S", Vector3(19.75, 0.5, 12), Vector3(0.5, 1.5, 16))    # Z=4 to 20
-	_add_edge_barrier("A_W_N", Vector3(-19.75, 0.5, -12), Vector3(0.5, 1.5, 16))
-	_add_edge_barrier("A_W_S", Vector3(-19.75, 0.5, 12), Vector3(0.5, 1.5, 16))
-	_add_edge_barrier("A_N_E", Vector3(10, 0.5, -19.75), Vector3(20, 1.5, 0.5))
-	_add_edge_barrier("A_N_W", Vector3(-10, 0.5, -19.75), Vector3(20, 1.5, 0.5))
-	_add_edge_barrier("A_S_E", Vector3(10, 0.5, 19.75), Vector3(20, 1.5, 0.5))
-	_add_edge_barrier("A_S_W", Vector3(-10, 0.5, 19.75), Vector3(20, 1.5, 0.5))
-
-	# Zone B: 50x50 at (55,0,0) → X:30-80, Z:-25 to 25
-	_add_edge_barrier("B_N", Vector3(55, 0.5, -24.75), Vector3(50, 1.5, 0.5))
-	_add_edge_barrier("B_S", Vector3(55, 0.5, 24.75), Vector3(50, 1.5, 0.5))
-	_add_edge_barrier("B_W", Vector3(30.25, 0.5, 0), Vector3(0.5, 1.5, 50))
-	_add_edge_barrier("B_E_N", Vector3(79.75, 0.5, -12), Vector3(0.5, 1.5, 26))  # gap at Z=0
-	_add_edge_barrier("B_E_S", Vector3(79.75, 0.5, 12), Vector3(0.5, 1.5, 26))
-
-	# Zone C: 50x50 at (-55,0,0) → X:-80 to -30, Z:-25 to 25
-	_add_edge_barrier("C_N", Vector3(-55, 0.5, -24.75), Vector3(50, 1.5, 0.5))
-	_add_edge_barrier("C_S", Vector3(-55, 0.5, 24.75), Vector3(50, 1.5, 0.5))
-	_add_edge_barrier("C_W_N", Vector3(-79.75, 0.5, -12), Vector3(0.5, 1.5, 26))
-	_add_edge_barrier("C_W_S", Vector3(-79.75, 0.5, 12), Vector3(0.5, 1.5, 26))
-	_add_edge_barrier("C_E", Vector3(-30.25, 0.5, 0), Vector3(0.5, 1.5, 50))
-
-	# Zone D (Puerto): 30x18 at (0,0,100) → X:-15 to 15, Z:91 to 109
-	_add_edge_barrier("D_N", Vector3(0, 0.5, 108.75), Vector3(30, 1.5, 0.5))
-	_add_edge_barrier("D_S", Vector3(0, 0.5, 91.25), Vector3(30, 1.5, 0.5))
-	_add_edge_barrier("D_W", Vector3(-14.75, 0.5, 100), Vector3(0.5, 1.5, 18))
-	_add_edge_barrier("D_E", Vector3(14.75, 0.5, 100), Vector3(0.5, 1.5, 18))
-
-	# Zone E (Litoral): 40x30 at (0,0,-100) → X:-20 to 20, Z:-115 to -85
-	_add_edge_barrier("E_N", Vector3(0, 0.5, -85.25), Vector3(40, 1.5, 0.5))
-	_add_edge_barrier("E_S", Vector3(0, 0.5, -114.75), Vector3(40, 1.5, 0.5))
-	_add_edge_barrier("E_W", Vector3(-19.75, 0.5, -100), Vector3(0.5, 1.5, 30))
-	_add_edge_barrier("E_E", Vector3(19.75, 0.5, -100), Vector3(0.5, 1.5, 30))
-
-	# Zone F (Viña): 12x12 at (100,0,0) → X:94 to 106, Z:-6 to 6
-	_add_edge_barrier("F_N", Vector3(100, 0.5, -5.75), Vector3(12, 1.5, 0.5))
-	_add_edge_barrier("F_S", Vector3(100, 0.5, 5.75), Vector3(12, 1.5, 0.5))
-	_add_edge_barrier("F_W_N", Vector3(94.25, 0.5, -4), Vector3(0.5, 1.5, 8))
-	_add_edge_barrier("F_W_S", Vector3(94.25, 0.5, 4), Vector3(0.5, 1.5, 8))
-	_add_edge_barrier("F_E", Vector3(105.75, 0.5, 0), Vector3(0.5, 1.5, 12))
-
-	# Zone G (Valpo): 10x10 at (-100,0,0)
-	_add_edge_barrier("G_N", Vector3(-100, 0.5, -4.75), Vector3(10, 1.5, 0.5))
-	_add_edge_barrier("G_S", Vector3(-100, 0.5, 4.75), Vector3(10, 1.5, 0.5))
-	_add_edge_barrier("G_W_N", Vector3(-104.75, 0.5, -4), Vector3(0.5, 1.5, 6))
-	_add_edge_barrier("G_W_S", Vector3(-104.75, 0.5, 4), Vector3(0.5, 1.5, 6))
-	_add_edge_barrier("G_E", Vector3(-95.25, 0.5, 0), Vector3(0.5, 1.5, 10))
-
-	# Zone H (Isla Negra): 12x8 at (0,0,200)
-	_add_edge_barrier("H_N", Vector3(0, 0.5, 194.75), Vector3(12, 1.5, 0.5))
-	_add_edge_barrier("H_S", Vector3(0, 0.5, 201.25), Vector3(12, 1.5, 0.5))
-	_add_edge_barrier("H_W", Vector3(-5.75, 0.5, 198), Vector3(0.5, 1.5, 8))
-	_add_edge_barrier("H_E", Vector3(5.75, 0.5, 198), Vector3(0.5, 1.5, 8))
-
-	# Zone I (El Tabo): 12x12 at (0,0,-200)
-	_add_edge_barrier("I_N", Vector3(0, 0.5, -193.75), Vector3(12, 1.5, 0.5))
-	_add_edge_barrier("I_S", Vector3(0, 0.5, -205.75), Vector3(12, 1.5, 0.5))
-	_add_edge_barrier("I_W", Vector3(-5.75, 0.5, -200), Vector3(0.5, 1.5, 12))
-	_add_edge_barrier("I_E", Vector3(5.75, 0.5, -200), Vector3(0.5, 1.5, 12))
-
-	# Sanctuary 20x20 at (20,0,0)
-	_add_edge_barrier("Sanct_N", Vector3(20, 0.5, -9.75), Vector3(20, 1.5, 0.5))
-	_add_edge_barrier("Sanct_S", Vector3(20, 0.5, 9.75), Vector3(20, 1.5, 0.5))
-	_add_edge_barrier("Sanct_W", Vector3(10.25, 0.5, 0), Vector3(0.5, 1.5, 20))
-	_add_edge_barrier("Sanct_E", Vector3(29.75, 0.5, 0), Vector3(0.5, 1.5, 20))
-
-	# ── Visual fences at open bridge edges (decorative hints) ──
-	var fence_h := 0.8
-	for fx in [-2, 2]:
-		_add_fence_segment(Vector3(25, fence_h, fx * 9.5), Vector3(0.08, fence_h * 2, 1), FENCE_COL)
-		_add_fence_segment(Vector3(-25, fence_h, fx * 9.5), Vector3(0.08, fence_h * 2, 1), FENCE_COL)
-		_add_fence_segment(Vector3(87, fence_h, fx * 9.5), Vector3(0.08, fence_h * 2, 1), FENCE_COL)
-		_add_fence_segment(Vector3(-87.5, fence_h, fx * 9.5), Vector3(0.08, fence_h * 2, 1), FENCE_COL)
-		_add_fence_segment(Vector3(10, fence_h, fx * 9.5), Vector3(0.08, fence_h * 2, 1), FENCE_COL)
-
-	print("Zone connections built: bridges + edge barriers + anticaidas ready")
-
-
-func _remove_edge_barrier_at(pos: Vector3) -> void:
+	"""Zone connections handled entirely by world_repair.gd. This keeps only the log."""
+	print("Zone connections: bridges, barriers, and anticaidas handled by world_repair.gd"
 	"""Remove edge barrier at a position (converted to barrier name) so bridge can pass through."""
 	# Find and remove the barrier child by position check
 	for child in get_children():
