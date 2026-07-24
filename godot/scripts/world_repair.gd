@@ -140,29 +140,29 @@ static func _add_all_bridges(world: Node3D) -> void:
 	"""Puentes continuos entre zonas (Y fijo = 0.0 en superficie)."""
 	var bridges := [
 		# A↔B: gap X=20 to 30, Z a lo largo de -20 a 20
-		{ "mid": Vector3(25, -0.1, 0), "size": Vector3(10, 0.2, 40), "col": Color(0.5, 0.45, 0.35) },
+		{ "mid": Vector3(25, -0.15, 0), "size": Vector3(10, 0.2, 40), "col": Color(0.5, 0.45, 0.35) },
 		# A↔C: gap X=-30 to -20
-		{ "mid": Vector3(-25, -0.1, 0), "size": Vector3(10, 0.2, 40), "col": Color(0.5, 0.45, 0.35) },
+		{ "mid": Vector3(-25, -0.15, 0), "size": Vector3(10, 0.2, 40), "col": Color(0.5, 0.45, 0.35) },
 		# B↔F: gap X=80 to 94
-		{ "mid": Vector3(87, -0.1, 0), "size": Vector3(14, 0.2, 40), "col": Color(0.5, 0.45, 0.35) },
+		{ "mid": Vector3(87, -0.15, 0), "size": Vector3(14, 0.2, 40), "col": Color(0.5, 0.45, 0.35) },
 		# C↔G: gap X=-95 to -80
-		{ "mid": Vector3(-87.5, -0.1, 0), "size": Vector3(15, 0.2, 40), "col": Color(0.5, 0.45, 0.35) },
+		{ "mid": Vector3(-87.5, -0.15, 0), "size": Vector3(15, 0.2, 40), "col": Color(0.5, 0.45, 0.35) },
 		# A↔Sanctuary: X=20 to 20 (adyacente)
-		{ "mid": Vector3(10, -0.1, 0), "size": Vector3(20, 0.2, 40), "col": Color(0.5, 0.45, 0.35) },
+		{ "mid": Vector3(10, -0.15, 0), "size": Vector3(20, 0.2, 40), "col": Color(0.5, 0.45, 0.35) },
 		# A↔D: gap Z=40 to 91 (52 units!)
-		{ "mid": Vector3(0, -0.1, 65.5), "size": Vector3(30, 0.2, 51), "col": Color(0.5, 0.45, 0.35) },
+		{ "mid": Vector3(0, -0.15, 65.5), "size": Vector3(30, 0.2, 51), "col": Color(0.5, 0.45, 0.35) },
 		# A↔E: gap Z=-85 to -40
-		{ "mid": Vector3(0, -0.1, -62.5), "size": Vector3(40, 0.2, 45), "col": Color(0.5, 0.45, 0.35) },
+		{ "mid": Vector3(0, -0.15, -62.5), "size": Vector3(40, 0.2, 45), "col": Color(0.5, 0.45, 0.35) },
 		# D↔B: Z=100 to Z=0, X=27.5 to 30 (gap at corner)
-		{ "mid": Vector3(42.5, -0.1, 50), "size": Vector3(25, 0.2, 100), "col": Color(0.5, 0.4, 0.35) },
+		{ "mid": Vector3(42.5, -0.15, 50), "size": Vector3(25, 0.2, 100), "col": Color(0.5, 0.4, 0.35) },
 		# D↔H: gap Z=109 to 194
-		{ "mid": Vector3(0, -0.1, 151.5), "size": Vector3(30, 0.2, 85), "col": Color(0.5, 0.45, 0.35) },
+		{ "mid": Vector3(0, -0.15, 151.5), "size": Vector3(30, 0.2, 85), "col": Color(0.5, 0.45, 0.35) },
 		# E↔I: gap Z=-115 to -194
-		{ "mid": Vector3(0, -0.1, -154.5), "size": Vector3(40, 0.2, 80), "col": Color(0.5, 0.45, 0.35) },
+		{ "mid": Vector3(0, -0.15, -154.5), "size": Vector3(40, 0.2, 80), "col": Color(0.5, 0.45, 0.35) },
 		# F↔H: gap X=106 to 0, Z=0 to 194
-		{ "mid": Vector3(53, -0.1, 97), "size": Vector3(106, 0.2, 194), "col": Color(0.5, 0.4, 0.35) },
+		{ "mid": Vector3(53, -0.15, 97), "size": Vector3(106, 0.2, 194), "col": Color(0.5, 0.4, 0.35) },
 		# G↔H: gap X=-106 to 0, Z=0 to 194
-		{ "mid": Vector3(-53, -0.1, 97), "size": Vector3(106, 0.2, 194), "col": Color(0.5, 0.4, 0.35) },
+		{ "mid": Vector3(-53, -0.15, 97), "size": Vector3(106, 0.2, 194), "col": Color(0.5, 0.4, 0.35) },
 	]
 
 	for b: Dictionary in bridges:

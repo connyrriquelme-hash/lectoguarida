@@ -515,18 +515,10 @@ func _add_portal(zone: Node3D, portal_name: String, clr: Color, pos: Vector3, la
 # ═══════════════════════════════════════════════════════════════
 
 func _build_zone_connections() -> void:
-	"""Zone connections handled entirely by world_repair.gd. This keeps only the log."""
-	print("Zone connections: bridges, barriers, and anticaidas handled by world_repair.gd"
-	"""Remove edge barrier at a position (converted to barrier name) so bridge can pass through."""
-	# Find and remove the barrier child by position check
-	for child in get_children():
-		if child.name.begins_with("EdgeBarrier_") and child.position.distance_to(pos) < 0.5:
-			child.queue_free()
+	"""Zone connections handled entirely by world_repair.gd."""
+	print("Zone connections handled by world_repair.gd")
 
 
-# ═══════════════════════════════════════════════════════════════
-#  SAFETY SYSTEM — per-world anti-fall with checkpoints
-# ═══════════════════════════════════════════════════════════════
 
 var _player_ref: Node3D = null
 var _safety_system = null
