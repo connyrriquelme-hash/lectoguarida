@@ -8,6 +8,8 @@
 
 config_version=5
 
+; [anti_aliasing] msaa handled via rendering section
+
 [application]
 
 config/name="LECTOGUARIDA"
@@ -67,13 +69,19 @@ anti_aliasing/quality/use_debanding="true"
 
 main_scene="uid://d3te44mxdlmk0"
 
+[shadow]
+
+size/atlas_quadrant_0="1024"
+size/atlas_quadrant_1="1024"
+size/atlas_quadrant_2="2048"
+size/atlas_quadrant_3="2048"
 
 [shadows]
-shadow/size/atlas_quadrant_0=1024
-shadow/size/atlas_quadrant_1=1024
-shadow/size/atlas_quadrant_2=2048
-shadow/size/atlas_quadrant_3=2048
 
-[quality]
-shadows/filter_mode=3
+filter_mode="3"
 
+[ziva]
+
+multiplayer/user_id="jkYll6VY2OgHqXz1jmYn2PzTJ3jkWP6a"
+multiplayer/relay_url="wss://ziva-multiplayer.ziva-multiplayer.workers.dev"
+multiplayer/game_id="aec24f8af0074a08bc00ee00955748"
